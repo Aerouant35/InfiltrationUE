@@ -17,7 +17,7 @@ AMyCharacter::AMyCharacter()
 
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->TargetArmLength = 300.0f;
-	SpringArmComponent->SetRelativeRotation(FRotator(-10.f, 0.f, 0.f));
+	SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
 
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 
@@ -49,6 +49,8 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 	
 	InputComponent->BindAxis("HorizontalRotation", this, &AMyCharacter::HorizontalRotation);
 	InputComponent->BindAxis("VerticalRotation", this, &AMyCharacter::VerticalRotation);
+
+	InputComponent->BindAction("Interact", IE_Pressed, this, &AMyCharacter::Interact);
 
 }
 
@@ -100,5 +102,11 @@ void AMyCharacter::Zoom(float Value)
 			SpringArmComponent->TargetArmLength = FinalZoomLength;
 		}
 	}
+}
+
+void AMyCharacter::Interact()
+{
+	// TODO
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Pressed the Interact Key !"));
 }
 

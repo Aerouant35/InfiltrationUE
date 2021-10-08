@@ -37,6 +37,8 @@ public:
 
 	void Zoom(float Value);
 
+	void Interact();
+
 	UPROPERTY(EditAnywhere, Category="Zoom")
 		float ZoomInMax = 140;
 	UPROPERTY(EditAnywhere, Category="Zoom")
