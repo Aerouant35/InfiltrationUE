@@ -21,7 +21,6 @@ AMyCharacter::AMyCharacter()
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->TargetArmLength = 300.0f;
 	SpringArmComponent->bUsePawnControlRotation = true;
-	// SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f)); 
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
@@ -29,7 +28,8 @@ AMyCharacter::AMyCharacter()
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 540, 0);
-
+	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	
 	TurnRate = 45.f;
 	LookUpRate = 45.f;
 	Speed = 1.f;
