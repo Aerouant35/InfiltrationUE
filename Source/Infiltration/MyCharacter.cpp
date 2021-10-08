@@ -3,6 +3,8 @@
 
 #include "MyCharacter.h"
 
+#include "GameFramework/CharacterMovementComponent.h"
+
 // Sets default values
 AMyCharacter::AMyCharacter()
 {
@@ -10,17 +12,27 @@ AMyCharacter::AMyCharacter()
 	PrimaryActorTick.bCanEverTick = true;
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
-	bUseControllerRotationYaw = false;
-	
-	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
-	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 
+	bUseControllerRotationYaw = false;
+	bUseControllerRotationPitch = false;
+	bUseControllerRotationRoll = false;
+	
+	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArmComponent->SetupAttachment(RootComponent);
 	SpringArmComponent->TargetArmLength = 300.0f;
-	SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f));
+	SpringArmComponent->bUsePawnControlRotation = true;
+	// SpringArmComponent->SetRelativeRotation(FRotator(-60.f, 0.f, 0.f)); 
 
+	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
+	CameraComponent->bUsePawnControlRotation = false;
 
+	GetCharacterMovement()->bOrientRotationToMovement = true;
+	GetCharacterMovement()->RotationRate = FRotator(0, 540, 0);
+
+	TurnRate = 45.f;
+	LookUpRate = 45.f;
+	Speed = 1.f;
 }
 
 // Called when the game starts or when spawned
@@ -42,31 +54,45 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	InputComponent->BindAxis("Horizontal", this, &AMyCharacter::HorizontalMove);
-	InputComponent->BindAxis("Vertical", this, &AMyCharacter::VerticalMove);
+	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
 
-	InputComponent->BindAxis("Zoom", this, &AMyCharacter::Zoom);
+	PlayerInputComponent->BindAxis("Zoom", this, &AMyCharacter::Zoom);
 	
-	InputComponent->BindAxis("HorizontalRotation", this, &AMyCharacter::HorizontalRotation);
-	InputComponent->BindAxis("VerticalRotation", this, &AMyCharacter::VerticalRotation);
+	PlayerInputComponent->BindAxis("HorizontalRotation", this, &AMyCharacter::HorizontalRotation);
+	PlayerInputComponent->BindAxis("VerticalRotation", this, &AMyCharacter::VerticalRotation);
 
-	InputComponent->BindAction("Interact", IE_Pressed, this, &AMyCharacter::Interact);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMyCharacter::Interact);
 
 }
 
-void AMyCharacter::HorizontalMove(float Value)
+void AMyCharacter::MoveForward(float Value)
 {
-	if(Value)
+	if(Controller != nullptr && Value != 0)
 	{
-		AddMovementInput(GetActorRightVector(), Value);
+		// Get the Rotation of the Controller as this may not be the same as the camera
+		FRotator Rotation = Controller->GetControlRotation();
+		// We only want the Yaw part
+		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		// Get the forward vector of the Rotator Yaw and make sure the length is 1
+		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+		
+		AddMovementInput(Direction, Value * Speed);
 	}
 }
 
-void AMyCharacter::VerticalMove(float Value)
+void AMyCharacter::MoveRight(float Value)
 {
-	if(Value)
+	if(Controller != nullptr && Value != 0)
 	{
-		AddMovementInput(GetActorForwardVector(), Value);
+		// Get the Rotation of the Controller as this may not be the same as the camera
+		FRotator Rotation = Controller->GetControlRotation();
+		// We only want the Yaw part
+		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		// Get the forward vector of the Rotator Yaw and make sure the length is 1
+		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
+		
+		AddMovementInput(Direction, Value * Speed);
 	}
 }
 
@@ -74,7 +100,7 @@ void AMyCharacter::HorizontalRotation(float Value)
 {
 	if(Value)
 	{
-		AddActorLocalRotation(FRotator(0, Value, 0));
+		AddControllerYawInput(Value * GetWorld()->GetDeltaSeconds() * TurnRate);
 	}
 }
 
@@ -82,12 +108,7 @@ void AMyCharacter::VerticalRotation(float Value)
 {
 	if(Value)
 	{
-		float FinalRotation = SpringArmComponent->GetRelativeRotation().Pitch + Value;
-		// Avoid rotate at weird angles
-		if(FinalRotation < 25 && FinalRotation > -65)
-		{
-			SpringArmComponent->AddLocalRotation(FRotator(Value, 0, 0));
-		}
+		AddControllerPitchInput(Value * -1 * GetWorld()->GetDeltaSeconds() * LookUpRate);
 	}
 }
 

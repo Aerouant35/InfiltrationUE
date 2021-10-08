@@ -29,8 +29,8 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	private:
-	void HorizontalMove(float Value);
-	void VerticalMove(float Value);
+	void MoveForward(float Value);
+	void MoveRight(float Value);
 
 	void HorizontalRotation(float Value);
 	void VerticalRotation(float Value);
@@ -38,6 +38,14 @@ public:
 	void Zoom(float Value);
 
 	void Interact();
+
+	UPROPERTY(EditAnywhere, Category="Character Speed")
+		float Speed;
+	
+	UPROPERTY(EditAnywhere, Category="Camera Speed")
+		float TurnRate;
+	UPROPERTY(EditAnywhere, Category="Camera Speed")
+		float LookUpRate;
 
 	UPROPERTY(EditAnywhere, Category="Zoom")
 		float ZoomInMax = 140;
