@@ -48,9 +48,9 @@ public:
 		float LookUpRate;
 
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomInMax = 140;
+		float ZoomInMax = 200;
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomOutMax = 310;
+		float ZoomOutMax = 700;
 
 	UPROPERTY()
 		USpringArmComponent* SpringArmComponent;
