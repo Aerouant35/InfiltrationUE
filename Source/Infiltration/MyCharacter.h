@@ -28,7 +28,15 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
+	FTimerHandle UnusedHandle;
+
+	UPROPERTY(EditAnywhere, Category="Animation boolean")
+		bool bIsCarrying;
+
 	private:
+
+	bool bIsPickingUp;
+	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
 
@@ -38,7 +46,7 @@ public:
 	void Zoom(float Value);
 
 	void Interact();
-
+	
 	UPROPERTY(EditAnywhere, Category="Character Speed")
 		float Speed;
 	
@@ -52,9 +60,14 @@ public:
 	UPROPERTY(EditAnywhere, Category="Zoom")
 		float ZoomOutMax = 700;
 
+	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
+		UAnimationAsset* AnimationAsset;
+
 	UPROPERTY()
 		USpringArmComponent* SpringArmComponent;
 	UPROPERTY()
 		UCameraComponent* CameraComponent;
-	
+
+	UFUNCTION()
+		void TimerPickUpAnim();
 };

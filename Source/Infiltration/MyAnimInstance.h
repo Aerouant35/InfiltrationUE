@@ -22,6 +22,15 @@ class INFILTRATION_API UMyAnimInstance : public UAnimInstance
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
 		bool bIsWalking;
 
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bIsCarrying;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bHasLost;
+
+	UPROPERTY(EditAnywhere, BlueprintReadWrite)
+		bool bHasWon;
+
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 };

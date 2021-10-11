@@ -3,6 +3,8 @@
 
 #include "MyAnimInstance.h"
 
+#include "MyCharacter.h"
+
 
 UMyAnimInstance::UMyAnimInstance()
 {
@@ -17,6 +19,11 @@ void UMyAnimInstance::NativeUpdateAnimation(float DeltaSeconds)
 	APawn* Pawn = TryGetPawnOwner();
 	if(Pawn)
 	{
-		bIsWalking = !Pawn->GetVelocity().IsZero();
+		AMyCharacter* MyCharacter = Cast<AMyCharacter>(Pawn);
+		if(MyCharacter)
+		{
+			bIsWalking = !MyCharacter->GetVelocity().IsZero();
+			bIsCarrying = MyCharacter->bIsCarrying;
+		}
 	}
 }

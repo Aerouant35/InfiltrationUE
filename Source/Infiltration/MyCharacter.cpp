@@ -33,6 +33,9 @@ AMyCharacter::AMyCharacter()
 	TurnRate = 45.f;
 	LookUpRate = 45.f;
 	Speed = 1.f;
+
+	bIsCarrying = false;
+	bIsPickingUp = false;
 }
 
 // Called when the game starts or when spawned
@@ -68,7 +71,7 @@ void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputCompone
 
 void AMyCharacter::MoveForward(float Value)
 {
-	if(Controller != nullptr && Value != 0)
+	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
 		// Get the Rotation of the Controller as this may not be the same as the camera
 		FRotator Rotation = Controller->GetControlRotation();
@@ -83,7 +86,7 @@ void AMyCharacter::MoveForward(float Value)
 
 void AMyCharacter::MoveRight(float Value)
 {
-	if(Controller != nullptr && Value != 0)
+	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
 		// Get the Rotation of the Controller as this may not be the same as the camera
 		FRotator Rotation = Controller->GetControlRotation();
@@ -127,7 +130,27 @@ void AMyCharacter::Zoom(float Value)
 
 void AMyCharacter::Interact()
 {
+	if(bIsCarrying)
+	{
+		bIsCarrying = false;
+		Speed = 1.f;
+	} else
+	{
+		bIsCarrying = true;
+		bIsPickingUp = true;
+		Speed = 0.5f;
+
+		GetMesh()->PlayAnimation(AnimationAsset, false);
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyCharacter::TimerPickUpAnim, 1.25, false);
+	}
 	// TODO
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Pressed the Interact Key !"));
 }
+
+void AMyCharacter::TimerPickUpAnim()
+{
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	bIsPickingUp = false;
+}
+
 
