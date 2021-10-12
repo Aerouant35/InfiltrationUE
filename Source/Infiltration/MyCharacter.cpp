@@ -92,7 +92,7 @@ void AMyCharacter::MoveRight(float Value)
 		FRotator Rotation = Controller->GetControlRotation();
 		// We only want the Yaw part
 		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
-		// Get the forward vector of the Rotator Yaw and make sure the length is 1
+		// Get the right vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 		
 		AddMovementInput(Direction, Value * Speed);
