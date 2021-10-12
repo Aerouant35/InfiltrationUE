@@ -18,7 +18,7 @@ class INFILTRATION_API AFood : public AActor
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* SphereComponent;
 
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditAnywhere)
 	unsigned SphereRadius = 50.f;
 
 	UPROPERTY(VisibleAnywhere)
@@ -29,11 +29,6 @@ public:
 	AFood();
 
 protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-	
-public:
-	
 	bool IsGrab() const
 	{
 		return bIsGrab;
@@ -43,10 +38,18 @@ public:
 	{
 		bIsGrab = IsGrab;
 	}
-
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 	UFUNCTION()
 	void OnSphereBeginOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
+
+	void DisablePhysics();
+	void EnablePhysics();
+
+public:
+	// Called every frame
+	virtual void Tick(float DeltaTime) override;
+
 };

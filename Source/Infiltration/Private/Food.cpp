@@ -10,14 +10,17 @@ AFood::AFood()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	StaticMeshComponent->SetSimulatePhysics(true);
-	StaticMeshComponent->SetEnableGravity(true);
+	EnablePhysics();
+	StaticMeshComponent->BodyInstance.bLockXRotation = true;
+	StaticMeshComponent->BodyInstance.bLockYRotation = true;
+	StaticMeshComponent->BodyInstance.bLockZRotation = true;
 	StaticMeshComponent->SetupAttachment(RootComponent);
 
 	SphereComponent = CreateDefaultSubobject<USphereComponent>(TEXT("Sphere"));
 	SphereComponent->InitSphereRadius(SphereRadius);
-	SphereComponent->SetCollisionProfileName(TEXT("Trigger"));
-	SphereComponent->SetupAttachment(RootComponent);
+	SphereComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
+	SphereComponent->SetupAttachment(StaticMeshComponent);
+
 }
 
 // Called when the game starts or when spawned
@@ -26,12 +29,8 @@ void AFood::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->OnComponentHit.AddDynamic(this, &AFood::OnSphereBeginOverlap);
-}
 
-// Called every frame
-void AFood::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
+	SphereComponent->SetSphereRadius(SphereRadius);
 
 }
 
@@ -40,3 +39,20 @@ void AFood::OnSphereBeginOverlap(UPrimitiveComponent* HitComp, AActor* OtherActo
 	//todo: continue overlap event
 }
 
+void AFood::DisablePhysics()
+{
+	StaticMeshComponent->SetSimulatePhysics(false);
+	StaticMeshComponent->SetEnableGravity(false);
+}
+
+void AFood::EnablePhysics()
+{
+	StaticMeshComponent->SetSimulatePhysics(true);
+	StaticMeshComponent->SetEnableGravity(true);
+}
+
+// Called every frame
+void AFood::Tick(float DeltaTime)
+{
+	Super::Tick(DeltaTime);
+}
