@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyCharacter.h"
+#include "PlayerCharacter.h"
 
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
-AMyCharacter::AMyCharacter()
+APlayerCharacter::APlayerCharacter()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -39,37 +39,37 @@ AMyCharacter::AMyCharacter()
 }
 
 // Called when the game starts or when spawned
-void AMyCharacter::BeginPlay()
+void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
 	
 }
 
 // Called every frame
-void AMyCharacter::Tick(float DeltaTime)
+void APlayerCharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void AMyCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &AMyCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &AMyCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
 
-	PlayerInputComponent->BindAxis("Zoom", this, &AMyCharacter::Zoom);
+	PlayerInputComponent->BindAxis("Zoom", this, &APlayerCharacter::Zoom);
 	
-	PlayerInputComponent->BindAxis("HorizontalRotation", this, &AMyCharacter::HorizontalRotation);
-	PlayerInputComponent->BindAxis("VerticalRotation", this, &AMyCharacter::VerticalRotation);
+	PlayerInputComponent->BindAxis("HorizontalRotation", this, &APlayerCharacter::HorizontalRotation);
+	PlayerInputComponent->BindAxis("VerticalRotation", this, &APlayerCharacter::VerticalRotation);
 
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &AMyCharacter::Interact);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::Interact);
 
 }
 
-void AMyCharacter::MoveForward(float Value)
+void APlayerCharacter::MoveForward(float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
@@ -84,7 +84,7 @@ void AMyCharacter::MoveForward(float Value)
 	}
 }
 
-void AMyCharacter::MoveRight(float Value)
+void APlayerCharacter::MoveRight(float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
@@ -99,7 +99,7 @@ void AMyCharacter::MoveRight(float Value)
 	}
 }
 
-void AMyCharacter::HorizontalRotation(float Value)
+void APlayerCharacter::HorizontalRotation(float Value)
 {
 	if(Value)
 	{
@@ -107,7 +107,7 @@ void AMyCharacter::HorizontalRotation(float Value)
 	}
 }
 
-void AMyCharacter::VerticalRotation(float Value)
+void APlayerCharacter::VerticalRotation(float Value)
 {
 	if(Value)
 	{
@@ -115,7 +115,7 @@ void AMyCharacter::VerticalRotation(float Value)
 	}
 }
 
-void AMyCharacter::Zoom(float Value)
+void APlayerCharacter::Zoom(float Value)
 {
 	if(Value)
 	{
@@ -128,7 +128,7 @@ void AMyCharacter::Zoom(float Value)
 	}
 }
 
-void AMyCharacter::Interact()
+void APlayerCharacter::Interact()
 {
 	if(bIsCarrying)
 	{
@@ -141,13 +141,11 @@ void AMyCharacter::Interact()
 		Speed = 0.5f;
 
 		GetMesh()->PlayAnimation(AnimationAsset, false);
-		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyCharacter::TimerPickUpAnim, 1.25, false);
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, 1.25, false);
 	}
-	// TODO
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("Pressed the Interact Key !"));
 }
 
-void AMyCharacter::TimerPickUpAnim()
+void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	bIsPickingUp = false;

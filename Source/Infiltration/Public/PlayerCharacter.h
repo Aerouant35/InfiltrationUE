@@ -6,16 +6,16 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
-#include "MyCharacter.generated.h"
+#include "PlayerCharacter.generated.h"
 
 UCLASS()
-class INFILTRATION_API AMyCharacter : public ACharacter
+class INFILTRATION_API APlayerCharacter : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AMyCharacter();
+	APlayerCharacter();
 
 protected:
 	// Called when the game starts or when spawned

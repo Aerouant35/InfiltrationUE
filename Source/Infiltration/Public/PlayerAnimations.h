@@ -4,18 +4,18 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "MyAnimInstance.generated.h"
+#include "PlayerAnimations.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INFILTRATION_API UMyAnimInstance : public UAnimInstance
+class INFILTRATION_API UPlayerAnimations : public UAnimInstance
 {
 	GENERATED_BODY()
 
 	public:
-	UMyAnimInstance();
+	UPlayerAnimations();
 	
 	protected:
 
