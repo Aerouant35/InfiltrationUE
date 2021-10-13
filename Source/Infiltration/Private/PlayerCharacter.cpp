@@ -3,6 +3,7 @@
 
 #include "PlayerCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -26,6 +27,10 @@ APlayerCharacter::APlayerCharacter()
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
 
+	HoldingComp = CreateDefaultSubobject<USceneComponent>("HoldingComponent");
+	HoldingComp->SetRelativeLocation(FVector(50.f, HoldingComp->GetRelativeLocation().Y, HoldingComp->GetRelativeLocation().Z));
+	HoldingComp->SetupAttachment(GetCapsuleComponent());
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
 	GetCharacterMovement()->RotationRate = FRotator(0, 540, 0);
 	GetCharacterMovement()->MaxWalkSpeed = 300.f;
@@ -36,12 +41,19 @@ APlayerCharacter::APlayerCharacter()
 
 	bIsCarrying = false;
 	bIsPickingUp = false;
+	bCanPickUp = false;
+
+	InCollisionFood = nullptr;
+	CarryFood = nullptr;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnComponentEndOverlap);
 	
 }
 
@@ -130,25 +142,52 @@ void APlayerCharacter::Zoom(float Value)
 
 void APlayerCharacter::Interact()
 {
-	if(bIsCarrying)
+	if(bCanPickUp || bIsCarrying)
 	{
-		bIsCarrying = false;
-		Speed = 1.f;
-	} else
-	{
-		bIsCarrying = true;
-		bIsPickingUp = true;
-		Speed = 0.5f;
+		if(bIsCarrying)
+		{
+			bIsCarrying = false;
+			Speed = 1.f;
+			CarryFood->PickUp();
+		} else
+		{
+			bIsCarrying = true;
+			bIsPickingUp = true;
+			Speed = 0.5f;
+			if(InCollisionFood != nullptr)
+			{
+				CarryFood = InCollisionFood;
 
-		GetMesh()->PlayAnimation(AnimationAsset, false);
-		GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, 1.25, false);
+				GetMesh()->PlayAnimation(AnimationAsset, false);
+				GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, 1.25, false);
+			}
+		}
 	}
 }
 
 void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	CarryFood->PickUp();
 	bIsPickingUp = false;
+}
+
+void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		InCollisionFood = Cast<AFood>(OtherActor);
+		bCanPickUp = true;
+	}
+}
+
+void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		bCanPickUp = false;
+		InCollisionFood = nullptr;
+	}
 }
 
 

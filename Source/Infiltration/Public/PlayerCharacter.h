@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
@@ -27,24 +28,27 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	FTimerHandle UnusedHandle;
-
+	
 	UPROPERTY(EditAnywhere, Category="Animation boolean")
 		bool bIsCarrying;
 
 	private:
 
 	bool bIsPickingUp;
+	bool bCanPickUp;
+	
+	AFood* InCollisionFood;
+	AFood* CarryFood;
+
+	FTimerHandle UnusedHandle;
 	
 	void MoveForward(float Value);
 	void MoveRight(float Value);
-
+	
 	void HorizontalRotation(float Value);
 	void VerticalRotation(float Value);
-
+	
 	void Zoom(float Value);
-
 	void Interact();
 	
 	UPROPERTY(EditAnywhere, Category="Character Speed")
@@ -68,6 +72,18 @@ public:
 	UPROPERTY()
 		UCameraComponent* CameraComponent;
 
+	UPROPERTY(EditAnywhere)
+		USceneComponent* HoldingComp;		
+	
 	UFUNCTION()
 		void TimerPickUpAnim();
+
+	UFUNCTION()
+		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	UFUNCTION()
+		void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 };
+
+
