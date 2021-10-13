@@ -65,7 +65,8 @@ public:
 		float ZoomOutMax = 700;
 
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
-		UAnimationAsset* AnimationAsset;
+		UAnimSequence* PickUpAnimationSequence;
+
 
 	UPROPERTY()
 		USpringArmComponent* SpringArmComponent;

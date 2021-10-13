@@ -148,6 +148,7 @@ void APlayerCharacter::Interact()
 		{
 			bIsCarrying = false;
 			Speed = 1.f;
+			
 			CarryFood->PickUp();
 		} else
 		{
@@ -158,8 +159,8 @@ void APlayerCharacter::Interact()
 			{
 				CarryFood = InCollisionFood;
 
-				GetMesh()->PlayAnimation(AnimationAsset, false);
-				GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, 1.25, false);
+				GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
+				GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 			}
 		}
 	}
