@@ -34,6 +34,8 @@ void AFood::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->SetSphereRadius(SphereRadius);
+	// Ignore collision with the camera
+	ChangeCollisionPreset();
 
 	// -- Not sure if this is good --
 	MyCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
@@ -66,7 +68,8 @@ void AFood::PickUp()
 	
 	StaticMeshComponent->SetSimulatePhysics(bIsGrab ? false : true);
 	StaticMeshComponent->SetEnableGravity(bHasGravity);
-	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
+	ChangeCollisionPreset();
+
 	
 	if(HoldingComp && bIsGrab)
 	{
@@ -79,3 +82,9 @@ void AFood::PickUp()
 	}
 }
 
+void AFood::ChangeCollisionPreset()
+{
+	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
+	// Ignore collision with the camera
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+}
