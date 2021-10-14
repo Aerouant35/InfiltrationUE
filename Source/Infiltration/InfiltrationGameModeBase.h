@@ -13,5 +13,6 @@ UCLASS()
 class INFILTRATION_API AInfiltrationGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
-	
+
+	AInfiltrationGameModeBase();
 };
