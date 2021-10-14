@@ -18,6 +18,12 @@ public:
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* BehaviorTree;
 
+	UPROPERTY(EditAnywhere, Category="Spots")
+	TArray<AActor*> FoodSpots;
+
+	UPROPERTY(EditAnywhere, Category="Spots")
+	AActor* EnemySpot;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
