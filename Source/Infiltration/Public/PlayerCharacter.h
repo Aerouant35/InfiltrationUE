@@ -28,16 +28,18 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-	
+
 	UPROPERTY(EditAnywhere, Category="Animation boolean")
 		bool bIsCarrying;
 
 	private:
-
+	
 	bool bIsPickingUp;
 	bool bCanPickUp;
-	
+
+	// Food that we are close to (OnOverlap)
 	AFood* InCollisionFood;
+	// Actual food we are carrying
 	AFood* CarryFood;
 
 	FTimerHandle UnusedHandle;
@@ -51,30 +53,39 @@ public:
 	void Zoom(float Value);
 	void Interact();
 	
+	float Speed;
+
 	UPROPERTY(EditAnywhere, Category="Character Speed")
-		float Speed;
+		float DefaultSpeed = 1.f;
+	UPROPERTY(EditAnywhere, Category="Character Speed")
+		float MaxWalkSpeed = 300.f;
 	
 	UPROPERTY(EditAnywhere, Category="Camera Speed")
-		float TurnRate;
+		float TurnRate = 45.f;
 	UPROPERTY(EditAnywhere, Category="Camera Speed")
-		float LookUpRate;
+		float LookUpRate = 45.f;
 
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomInMax = 200;
+		float ZoomInMax = 600.f;
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomOutMax = 700;
+		float ZoomOutMax = 1000.f;
 
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
 		UAnimSequence* PickUpAnimationSequence;
 
+	UPROPERTY(EditAnywhere, Category="Holding Component")
+		USceneComponent* HoldingComponent;
+	UPROPERTY(EditAnywhere, Category="Holding Component")
+		float HoldingComponentOffset = 50.f;
+
+	// Speed in which the mesh rotate to be in the same direction as the movement
+	UPROPERTY(EditAnywhere, Category="Rotation")
+		FRotator RotationRate = FRotator(0.f, 540.f, 0.f);
 
 	UPROPERTY()
 		USpringArmComponent* SpringArmComponent;
 	UPROPERTY()
 		UCameraComponent* CameraComponent;
-
-	UPROPERTY(EditAnywhere)
-		USceneComponent* HoldingComp;		
 	
 	UFUNCTION()
 		void TimerPickUpAnim();

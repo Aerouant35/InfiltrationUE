@@ -20,28 +20,32 @@ APlayerCharacter::APlayerCharacter()
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 300.0f;
+	SpringArmComponent->TargetArmLength = ZoomInMax;
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bDoCollisionTest = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
 
-	HoldingComp = CreateDefaultSubobject<USceneComponent>("HoldingComponent");
-	HoldingComp->SetRelativeLocation(FVector(50.f, HoldingComp->GetRelativeLocation().Y, HoldingComp->GetRelativeLocation().Z));
-	HoldingComp->SetupAttachment(GetCapsuleComponent());
+	HoldingComponent = CreateDefaultSubobject<USceneComponent>("HoldingComponent");
+	HoldingComponent->SetRelativeLocation(FVector(HoldingComponentOffset, HoldingComponent->GetRelativeLocation().Y, HoldingComponent->GetRelativeLocation().Z));
+	HoldingComponent->SetupAttachment(GetCapsuleComponent());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0, 540, 0);
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
+	GetCharacterMovement()->RotationRate = RotationRate;
+	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
 	
-	TurnRate = 45.f;
-	LookUpRate = 45.f;
-	Speed = 1.f;
+	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+	GetCapsuleComponent()->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 
 	bIsCarrying = false;
 	bIsPickingUp = false;
 	bCanPickUp = false;
+
+	Speed = DefaultSpeed;
 
 	InCollisionFood = nullptr;
 	CarryFood = nullptr;
@@ -147,14 +151,14 @@ void APlayerCharacter::Interact()
 		if(bIsCarrying)
 		{
 			bIsCarrying = false;
-			Speed = 1.f;
+			Speed = DefaultSpeed;
 			
 			CarryFood->PickUp();
 		} else
 		{
 			bIsCarrying = true;
 			bIsPickingUp = true;
-			Speed = 0.5f;
+			Speed = DefaultSpeed / 2.f;
 			if(InCollisionFood != nullptr)
 			{
 				CarryFood = InCollisionFood;
@@ -190,5 +194,3 @@ void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComp
 		InCollisionFood = nullptr;
 	}
 }
-
-
