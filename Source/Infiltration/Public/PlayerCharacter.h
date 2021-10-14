@@ -58,7 +58,7 @@ public:
 	UPROPERTY(EditAnywhere, Category="Character Speed")
 		float DefaultSpeed = 1.f;
 	UPROPERTY(EditAnywhere, Category="Character Speed")
-		float MaxWalkSpeed = 300.f;
+		float WalkSpeed = 500.f;
 	
 	UPROPERTY(EditAnywhere, Category="Camera Speed")
 		float TurnRate = 45.f;
