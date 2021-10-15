@@ -33,8 +33,7 @@ APlayerCharacter::APlayerCharacter()
 	HoldingComponent->SetupAttachment(GetCapsuleComponent());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = RotationRate;
-	GetCharacterMovement()->MaxWalkSpeed = MaxWalkSpeed;
+	
 	
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
@@ -58,6 +57,9 @@ void APlayerCharacter::BeginPlay()
 
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnComponentBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnComponentEndOverlap);
+
+	GetCharacterMovement()->RotationRate = RotationRate;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
 }
 
