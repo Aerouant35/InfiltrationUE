@@ -43,7 +43,7 @@ void AFood::BeginPlay()
 	MyCharacter->GetComponents(Components);
 	if(Components.Num() > 0)
 	{
-		for(auto& Comp : Components)
+		for(USceneComponent* Comp : Components)
 		{
 			if(Comp->GetName() == "HoldingComponent")
 			{

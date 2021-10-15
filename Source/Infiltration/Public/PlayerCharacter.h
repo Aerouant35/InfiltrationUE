@@ -53,10 +53,9 @@ public:
 	void Zoom(float Value);
 	void Interact();
 	
-	float Speed;
+	float CurrentSpeed;
+	float DefaultSpeed = 1.f;
 
-	UPROPERTY(EditAnywhere, Category="Character Speed")
-		float DefaultSpeed = 1.f;
 	UPROPERTY(EditAnywhere, Category="Character Speed")
 		float WalkSpeed = 500.f;
 	

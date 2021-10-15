@@ -44,7 +44,7 @@ APlayerCharacter::APlayerCharacter()
 	bIsPickingUp = false;
 	bCanPickUp = false;
 
-	Speed = DefaultSpeed;
+	CurrentSpeed = DefaultSpeed;
 
 	InCollisionFood = nullptr;
 	CarryFood = nullptr;
@@ -98,7 +98,7 @@ void APlayerCharacter::MoveForward(float Value)
 		// Get the forward vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -113,7 +113,7 @@ void APlayerCharacter::MoveRight(float Value)
 		// Get the right vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -153,14 +153,14 @@ void APlayerCharacter::Interact()
 		if(bIsCarrying)
 		{
 			bIsCarrying = false;
-			Speed = DefaultSpeed;
+			CurrentSpeed = DefaultSpeed;
 			
 			CarryFood->PickUp();
 		} else
 		{
 			bIsCarrying = true;
 			bIsPickingUp = true;
-			Speed = DefaultSpeed / 2.f;
+			CurrentSpeed = DefaultSpeed / 2.f;
 			if(InCollisionFood != nullptr)
 			{
 				CarryFood = InCollisionFood;
