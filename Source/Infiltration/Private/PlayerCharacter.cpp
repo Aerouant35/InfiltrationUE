@@ -3,6 +3,7 @@
 
 #include "PlayerCharacter.h"
 
+#include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
@@ -19,29 +20,46 @@ APlayerCharacter::APlayerCharacter()
 	
 	SpringArmComponent = CreateDefaultSubobject<USpringArmComponent>("SpringArm");
 	SpringArmComponent->SetupAttachment(RootComponent);
-	SpringArmComponent->TargetArmLength = 300.0f;
+	SpringArmComponent->TargetArmLength = ZoomInMax;
 	SpringArmComponent->bUsePawnControlRotation = true;
+	SpringArmComponent->bDoCollisionTest = true;
 
 	CameraComponent = CreateDefaultSubobject<UCameraComponent>("Camera");
 	CameraComponent->SetupAttachment(SpringArmComponent, USpringArmComponent::SocketName);
 	CameraComponent->bUsePawnControlRotation = false;
 
+	HoldingComponent = CreateDefaultSubobject<USceneComponent>("HoldingComponent");
+	HoldingComponent->SetRelativeLocation(FVector(HoldingComponentOffset, HoldingComponent->GetRelativeLocation().Y, HoldingComponent->GetRelativeLocation().Z));
+	HoldingComponent->SetupAttachment(GetCapsuleComponent());
+
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	GetCharacterMovement()->RotationRate = FRotator(0, 540, 0);
-	GetCharacterMovement()->MaxWalkSpeed = 300.f;
 	
-	TurnRate = 45.f;
-	LookUpRate = 45.f;
-	Speed = 1.f;
+	
+	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
+	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
+	GetMesh()->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
+	GetCapsuleComponent()->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 
 	bIsCarrying = false;
 	bIsPickingUp = false;
+	bCanPickUp = false;
+
+	CurrentSpeed = DefaultSpeed;
+
+	InCollisionFood = nullptr;
+	CarryFood = nullptr;
 }
 
 // Called when the game starts or when spawned
 void APlayerCharacter::BeginPlay()
 {
 	Super::BeginPlay();
+
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnComponentEndOverlap);
+
+	GetCharacterMovement()->RotationRate = RotationRate;
+	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
 	
 }
 
@@ -80,7 +98,7 @@ void APlayerCharacter::MoveForward(float Value)
 		// Get the forward vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -95,7 +113,7 @@ void APlayerCharacter::MoveRight(float Value)
 		// Get the right vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -130,25 +148,51 @@ void APlayerCharacter::Zoom(float Value)
 
 void APlayerCharacter::Interact()
 {
-	if(bIsCarrying)
+	if(bCanPickUp || bIsCarrying)
 	{
-		bIsCarrying = false;
-		Speed = 1.f;
-	} else
-	{
-		bIsCarrying = true;
-		bIsPickingUp = true;
-		Speed = 0.5f;
+		if(bIsCarrying)
+		{
+			bIsCarrying = false;
+			CurrentSpeed = DefaultSpeed;
+			
+			CarryFood->PickUp();
+		} else
+		{
+			bIsCarrying = true;
+			bIsPickingUp = true;
+			CurrentSpeed = DefaultSpeed / 2.f;
+			if(InCollisionFood != nullptr)
+			{
+				CarryFood = InCollisionFood;
 
-		GetMesh()->PlayAnimation(AnimationAsset, false);
-		GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, 1.25, false);
+				GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
+				GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
+			}
+		}
 	}
 }
 
 void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	CarryFood->PickUp();
 	bIsPickingUp = false;
 }
 
+void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		InCollisionFood = Cast<AFood>(OtherActor);
+		bCanPickUp = true;
+	}
+}
 
+void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		bCanPickUp = false;
+		InCollisionFood = nullptr;
+	}
+}

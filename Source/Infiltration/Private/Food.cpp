@@ -3,6 +3,9 @@
 
 #include "Food.h"
 
+#include "GameFramework/Character.h"
+#include "Kismet/GameplayStatics.h"
+
 // Sets default values
 AFood::AFood()
 {
@@ -10,7 +13,6 @@ AFood::AFood()
 	PrimaryActorTick.bCanEverTick = true;
 
 	StaticMeshComponent = CreateDefaultSubobject<UStaticMeshComponent>(TEXT("StaticMesh"));
-	EnablePhysics();
 	StaticMeshComponent->BodyInstance.bLockXRotation = true;
 	StaticMeshComponent->BodyInstance.bLockYRotation = true;
 	StaticMeshComponent->BodyInstance.bLockZRotation = true;
@@ -21,6 +23,9 @@ AFood::AFood()
 	SphereComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 	SphereComponent->SetupAttachment(StaticMeshComponent);
 
+	bIsGrab = false;
+	bHasGravity = true;
+
 }
 
 // Called when the game starts or when spawned
@@ -28,31 +33,58 @@ void AFood::BeginPlay()
 {
 	Super::BeginPlay();
 
-	SphereComponent->OnComponentHit.AddDynamic(this, &AFood::OnSphereBeginOverlap);
-
 	SphereComponent->SetSphereRadius(SphereRadius);
+	// Ignore collision with the camera
+	ChangeCollisionPreset();
 
-}
-
-void AFood::OnSphereBeginOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit)
-{
-	//todo: continue overlap event
-}
-
-void AFood::DisablePhysics()
-{
-	StaticMeshComponent->SetSimulatePhysics(false);
-	StaticMeshComponent->SetEnableGravity(false);
-}
-
-void AFood::EnablePhysics()
-{
-	StaticMeshComponent->SetSimulatePhysics(true);
-	StaticMeshComponent->SetEnableGravity(true);
+	// -- Not sure if this is good --
+	MyCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
+	TArray<USceneComponent*> Components;
+	MyCharacter->GetComponents(Components);
+	if(Components.Num() > 0)
+	{
+		for(USceneComponent* Comp : Components)
+		{
+			if(Comp->GetName() == "HoldingComponent")
+			{
+				HoldingComp = Cast<USceneComponent>(Comp);
+			}
+		}
+	}	
 }
 
 // Called every frame
 void AFood::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
+}
+
+void AFood::PickUp()
+{
+	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
+
+	bIsGrab = !bIsGrab;
+	bHasGravity = !bHasGravity;
+	
+	StaticMeshComponent->SetSimulatePhysics(bIsGrab ? false : true);
+	StaticMeshComponent->SetEnableGravity(bHasGravity);
+	ChangeCollisionPreset();
+
+	
+	if(HoldingComp && bIsGrab)
+	{
+		StaticMeshComponent->AttachToComponent(HoldingComp, FAttachmentTransformRules::KeepWorldTransform);
+		SetActorLocation(HoldingComp->GetComponentLocation());
+	}
+	if(!bIsGrab)
+	{
+		StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+	}
+}
+
+void AFood::ChangeCollisionPreset()
+{
+	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
+	// Ignore collision with the camera
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }

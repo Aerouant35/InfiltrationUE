@@ -34,12 +34,8 @@ public:
 	AGameHUD();
 
 protected:
-	virtual void DrawHUD() override;
-
 	virtual void BeginPlay() override;
-
-	virtual void Tick(float DeltaSeconds) override;
-
+	
 	void EnableMouseCursor(const bool bEnable) const;
 
 public:
@@ -50,8 +46,8 @@ public:
 	void UpdateProgressBarPercent(const float Percent) const;
 
 	UFUNCTION()
-	void ShowVictory() const;
+	void ShowVictoryScreen() const;
 
 	UFUNCTION()
-	void ShowDefeat() const;
+	void ShowDefeatScreen() const;
 };

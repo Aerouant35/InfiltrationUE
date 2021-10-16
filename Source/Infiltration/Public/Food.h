@@ -19,14 +19,19 @@ class INFILTRATION_API AFood : public AActor
 	USphereComponent* SphereComponent;
 
 	UPROPERTY(EditAnywhere)
-	unsigned SphereRadius = 50.f;
+	unsigned SphereRadius = 100.f;
 
 	UPROPERTY(VisibleAnywhere)
 	bool bIsGrab = false;
-	
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHasGravity = true;
 public:	
 	// Sets default values for this actor's properties
 	AFood();
+
+	UFUNCTION()
+		void PickUp();
 
 protected:
 	bool IsGrab() const
@@ -38,16 +43,18 @@ protected:
 	{
 		bIsGrab = IsGrab;
 	}
+
+	UPROPERTY(EditAnywhere)
+		USceneComponent* HoldingComp;
+	UPROPERTY(EditAnywhere)
+		ACharacter* MyCharacter;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 	UFUNCTION()
-	void OnSphereBeginOverlap(UPrimitiveComponent* HitComp, AActor* OtherActor, UPrimitiveComponent* OtherComp, FVector NormalImpulse, const FHitResult& Hit);
-
-	void DisablePhysics();
-	void EnablePhysics();
-
+		void ChangeCollisionPreset();
+	
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
