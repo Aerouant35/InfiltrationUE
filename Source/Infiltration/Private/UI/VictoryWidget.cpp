@@ -3,6 +3,7 @@
 
 #include "UI/VictoryWidget.h"
 
+#include "Infiltration/InfiltrationGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UVictoryWidget::UVictoryWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -16,6 +17,7 @@ void UVictoryWidget::NativeConstruct()
 
 void UVictoryWidget::RestartGame()
 {
+	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->ResetLevel();
 }
 
 void UVictoryWidget::QuitGame()

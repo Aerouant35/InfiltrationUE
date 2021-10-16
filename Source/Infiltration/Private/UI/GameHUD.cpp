@@ -3,13 +3,10 @@
 
 #include "UI/GameHUD.h"
 
+#include "Infiltration/InfiltrationGameModeBase.h"
+
 AGameHUD::AGameHUD()
 {
-}
-
-void AGameHUD::DrawHUD()
-{
-	Super::DrawHUD();
 }
 
 void AGameHUD::BeginPlay()
@@ -37,11 +34,6 @@ void AGameHUD::BeginPlay()
 	PlayerWidget->AddToViewport();
 }
 
-void AGameHUD::Tick(float DeltaSeconds)
-{
-	Super::Tick(DeltaSeconds);
-}
-
 void AGameHUD::EnableMouseCursor(const bool bEnable) const
 {
 	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
@@ -54,17 +46,17 @@ void AGameHUD::EnableMouseCursor(const bool bEnable) const
 void AGameHUD::UpdateProgressBarPercent(const float Percent) const
 {
 	if (!PlayerWidget) return;
-	PlayerWidget->UpdateProgressBarPercent(Percent);
+	PlayerWidget->UpdateProgressBarPercent(Percent / Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetNbFoodWin());
 }
 
-void AGameHUD::ShowVictory() const
+void AGameHUD::ShowVictoryScreen() const
 {
 	if (!VictoryWidget) return;
 	EnableMouseCursor(true);
 	VictoryWidget->AddToViewport();
 }
 
-void AGameHUD::ShowDefeat() const
+void AGameHUD::ShowDefeatScreen() const
 {
 	if (!DefeatWidget) return;
 	EnableMouseCursor(true);
