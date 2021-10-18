@@ -32,6 +32,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Animation boolean")
 		bool bIsCarrying;
 
+	UFUNCTION()
+		AFood* DropFood();
+	
 	private:
 	
 	bool bIsPickingUp;

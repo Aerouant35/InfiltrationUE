@@ -146,6 +146,14 @@ void APlayerCharacter::Zoom(float Value)
 	}
 }
 
+AFood* APlayerCharacter::DropFood()
+{
+	bIsCarrying = false;
+	CurrentSpeed = DefaultSpeed;
+	CarryFood->PickUp();
+	return CarryFood;
+}
+
 void APlayerCharacter::Interact()
 {
 	if(bCanPickUp || bIsCarrying)
@@ -182,7 +190,7 @@ void APlayerCharacter::TimerPickUpAnim()
 void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		InCollisionFood = Cast<AFood>(OtherActor);
 		bCanPickUp = true;
 	}
@@ -191,7 +199,7 @@ void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		bCanPickUp = false;
 		InCollisionFood = nullptr;
 	}
