@@ -1,12 +1,12 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-
+#include "BTFoodSpotSelection.h"
 
 #include "FoodSpot.h"
 #include "EnemySpot.h"
 #include "MyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
 
-#include "BTFoodSpotSelection.h"
+
 
 EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory)
 {

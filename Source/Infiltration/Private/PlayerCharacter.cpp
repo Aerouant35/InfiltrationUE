@@ -161,6 +161,7 @@ void APlayerCharacter::Interact()
 			bIsCarrying = true;
 			bIsPickingUp = true;
 			Speed = DefaultSpeed / 2.f;
+			
 			if(InCollisionFood != nullptr)
 			{
 				CarryFood = InCollisionFood;
