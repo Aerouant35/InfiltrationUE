@@ -3,6 +3,7 @@
 
 #include "UI/VictoryWidget.h"
 
+#include "Components/Button.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 #include "Kismet/KismetSystemLibrary.h"
 
@@ -13,6 +14,9 @@ UVictoryWidget::UVictoryWidget(const FObjectInitializer& ObjectInitializer) : Su
 void UVictoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	RestartBtn->OnClicked.AddDynamic(this, &UVictoryWidget::RestartGame);
+	QuitBtn->OnClicked.AddDynamic(this, &UVictoryWidget::QuitGame);
 }
 
 void UVictoryWidget::RestartGame()
