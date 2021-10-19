@@ -14,6 +14,9 @@ class INFILTRATION_API APlayerSafeZone : public AActor
 
 	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* BoxComponent;
+
+	UPROPERTY(VisibleAnywhere)
+		float CurrentScore;
 	
 public:	
 	// Sets default values for this actor's properties

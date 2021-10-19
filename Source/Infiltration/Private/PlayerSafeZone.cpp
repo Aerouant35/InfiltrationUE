@@ -4,6 +4,7 @@
 #include "PlayerSafeZone.h"
 
 #include "PlayerCharacter.h"
+#include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values
 APlayerSafeZone::APlayerSafeZone()
@@ -13,6 +14,8 @@ APlayerSafeZone::APlayerSafeZone()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	BoxComponent->SetupAttachment(RootComponent);
+
+	CurrentScore = 0.0;
 
 }
 
@@ -39,13 +42,24 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
 		if(Player->bIsCarrying)
 		{
-			GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("Player have food"));
 			AFood* Food = Player->DropFood();
 			Food->Destroy();
-			// Update score
-
-			// Test si score == NbFoodWin
-			// Yes --> Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->Victory();
+			// Update score and progress bar
+			CurrentScore += 1;
+			APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+			AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
+			if(GameHUD)
+			{
+				GameHUD->UpdateProgressBarPercent(CurrentScore);
+			}
+			
+			if(CurrentScore == Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetNbFoodWin())
+			{
+				GameHUD->ShowVictoryScreen();
+				Player->bHasWon = true;
+				// Disable user input
+				Player->DisableInput(PlayerController);
+			}
 		}
 	}
 }
