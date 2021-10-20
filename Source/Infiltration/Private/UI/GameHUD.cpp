@@ -4,6 +4,7 @@
 #include "UI/GameHUD.h"
 
 #include "Infiltration/InfiltrationGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 
 AGameHUD::AGameHUD()
 {
@@ -36,8 +37,8 @@ void AGameHUD::BeginPlay()
 
 void AGameHUD::EnableMouseCursor(const bool bEnable) const
 {
-	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
- 
+	APlayerController* MyController = UGameplayStatics::GetPlayerController(this, 0);
+	
 	MyController->bShowMouseCursor = bEnable;
 	MyController->bEnableClickEvents = bEnable;
 	MyController->bEnableMouseOverEvents = bEnable;
