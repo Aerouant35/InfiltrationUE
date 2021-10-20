@@ -36,21 +36,6 @@ void AFood::BeginPlay()
 	SphereComponent->SetSphereRadius(SphereRadius);
 	// Ignore collision with the camera
 	ChangeCollisionPreset();
-
-	// -- Not sure if this is good --
-	MyCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
-	TArray<USceneComponent*> Components;
-	MyCharacter->GetComponents(Components);
-	if(Components.Num() > 0)
-	{
-		for(USceneComponent* Comp : Components)
-		{
-			if(Comp->GetName() == "HoldingComponent")
-			{
-				HoldingComp = Cast<USceneComponent>(Comp);
-			}
-		}
-	}	
 }
 
 // Called every frame
@@ -59,7 +44,7 @@ void AFood::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFood::PickUp()
+void AFood::PickUp(ACharacter* CharacterPickUp)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
 
@@ -70,6 +55,7 @@ void AFood::PickUp()
 	StaticMeshComponent->SetEnableGravity(bHasGravity);
 	ChangeCollisionPreset();
 
+	HoldingComp = GetHoldingComponent(CharacterPickUp);
 	
 	if(HoldingComp && bIsGrab)
 	{
@@ -87,4 +73,21 @@ void AFood::ChangeCollisionPreset()
 	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
 	// Ignore collision with the camera
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+}
+
+USceneComponent* AFood::GetHoldingComponent(ACharacter* Character)
+{
+	TArray<USceneComponent*> Components;
+	Character->GetComponents(Components);
+	if(Components.Num() > 0)
+	{
+		for(USceneComponent* Comp : Components)
+		{
+			if(Comp->GetName() == "HoldingComponent")
+			{
+				return Cast<USceneComponent>(Comp);
+			}
+		}
+	}
+	return nullptr;
 }
