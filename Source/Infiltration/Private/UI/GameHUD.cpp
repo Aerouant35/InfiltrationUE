@@ -29,6 +29,11 @@ void AGameHUD::BeginPlay()
 		DefeatWidget = CreateWidget<UDefeatWidget>(GetWorld(), DefeatWidgetClass);
 	}
 	
+	if (PauseWidgetClass)
+	{
+		PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+	}
+	
 	if (!PlayerWidget) return;
 	EnableMouseCursor(false);
 	PlayerWidget->UpdateProgressBarPercent(0);
@@ -54,6 +59,8 @@ void AGameHUD::ShowVictoryScreen() const
 {
 	if (!VictoryWidget) return;
 	EnableMouseCursor(true);
+
+	PlayerWidget->RemoveFromViewport();
 	VictoryWidget->AddToViewport();
 }
 
@@ -61,5 +68,27 @@ void AGameHUD::ShowDefeatScreen() const
 {
 	if (!DefeatWidget) return;
 	EnableMouseCursor(true);
+	
+	PlayerWidget->RemoveFromViewport();
 	DefeatWidget->AddToViewport();
+}
+
+void AGameHUD::ShowPauseScreen()
+{
+	if (PauseWidget == nullptr) return;
+	EnableMouseCursor(true);
+	UGameplayStatics::SetGamePaused(GetWorld(), true);
+	
+	PlayerWidget->RemoveFromViewport();
+	PauseWidget->AddToViewport();
+}
+
+void AGameHUD::ResumeGame()
+{
+	if (PauseWidget == nullptr) return;
+	EnableMouseCursor(false);
+	UGameplayStatics::SetGamePaused(GetWorld(), false);
+
+	PauseWidget->RemoveFromViewport();
+	PlayerWidget->AddToViewport();
 }

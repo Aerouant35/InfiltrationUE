@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DefeatWidget.h"
+#include "PauseWidget.h"
 #include "PlayerWidget.h"
 #include "VictoryWidget.h"
 #include "GameFramework/HUD.h"
@@ -30,6 +31,9 @@ class INFILTRATION_API AGameHUD : public AHUD
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UDefeatWidget> DefeatWidgetClass;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Widget")
+	TSubclassOf<UPauseWidget> PauseWidgetClass;
+	
 public:
 	AGameHUD();
 
@@ -50,4 +54,10 @@ public:
 
 	UFUNCTION()
 	void ShowDefeatScreen() const;
+
+	UFUNCTION()
+	void ShowPauseScreen();
+
+	UFUNCTION()
+	void ResumeGame();
 };
