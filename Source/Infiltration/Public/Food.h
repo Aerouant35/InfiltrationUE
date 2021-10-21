@@ -27,13 +27,12 @@ class INFILTRATION_API AFood : public AActor
 	UPROPERTY(VisibleAnywhere)
 	bool bHasGravity = true;
 
-	USceneComponent* GetHoldingComponent(ACharacter* Character);
 public:	
 	// Sets default values for this actor's properties
 	AFood();
 
 	UFUNCTION()
-		void PickUp(ACharacter* CharacterPickUp);
+		void PickUp(USceneComponent* HoldingCompSend);
 
 protected:
 	bool IsGrab() const

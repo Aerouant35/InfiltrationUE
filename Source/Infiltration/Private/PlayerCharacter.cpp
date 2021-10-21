@@ -150,7 +150,7 @@ AFood* APlayerCharacter::DropFood()
 {
 	bIsCarrying = false;
 	CurrentSpeed = DefaultSpeed;
-	CarryFood->PickUp(this);
+	CarryFood->PickUp(HoldingComponent);
 	return CarryFood;
 }
 
@@ -163,7 +163,7 @@ void APlayerCharacter::Interact()
 			bIsCarrying = false;
 			CurrentSpeed = DefaultSpeed;
 			
-			CarryFood->PickUp(this);
+			CarryFood->PickUp(HoldingComponent);
 		} else
 		{
 			bIsCarrying = true;
@@ -183,7 +183,7 @@ void APlayerCharacter::Interact()
 void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp(this);
+	CarryFood->PickUp(HoldingComponent);
 	bIsPickingUp = false;
 }
 
