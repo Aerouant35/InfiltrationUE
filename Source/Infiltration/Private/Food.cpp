@@ -46,7 +46,7 @@ void AFood::Tick(float DeltaTime)
 
 void AFood::PickUp(USceneComponent* HoldingCompSend)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
 
 	bIsGrab = !bIsGrab;
 	bHasGravity = !bHasGravity;
