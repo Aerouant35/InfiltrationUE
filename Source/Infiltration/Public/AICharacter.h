@@ -47,9 +47,9 @@ private:
 	FTimerHandle UnusedHandle;
 
 	UPROPERTY(EditAnywhere, Category="Holding Component")
-	USceneComponent* HoldingComponent;
+		USceneComponent* HoldingComponent;
 	UPROPERTY(EditAnywhere, Category="Holding Component")
-	float HoldingComponentOffset = 50.f;
+		float HoldingComponentOffset = 50.f;
 
 	UPROPERTY(EditAnywhere, Category="Character Speed")
 	float DefaultSpeed = 1.f;

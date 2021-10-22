@@ -46,7 +46,11 @@ void AFood::Tick(float DeltaTime)
 
 void AFood::PickUp(USceneComponent* HoldingCompSend)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
+	if(!HoldingCompSend)
+	{
+		return;
+	}
+	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, HoldingCompSend->GetOwner()->GetName()); // Fait crash avec IA
 
 	bIsGrab = !bIsGrab;
 	bHasGravity = !bHasGravity;
@@ -60,9 +64,11 @@ void AFood::PickUp(USceneComponent* HoldingCompSend)
 	if(HoldingComp && bIsGrab)
 	{
 		StaticMeshComponent->AttachToComponent(HoldingComp, FAttachmentTransformRules::KeepWorldTransform);
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp 2"));
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, HoldingComp->GetComponentLocation().ToString());
 		SetActorLocation(HoldingComp->GetComponentLocation());
 	}
-	if(!bIsGrab)
+	else if(!bIsGrab)
 	{
 		StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	}
