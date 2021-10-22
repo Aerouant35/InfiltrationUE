@@ -44,7 +44,7 @@ APlayerCharacter::APlayerCharacter()
 	bIsPickingUp = false;
 	bCanPickUp = false;
 
-	Speed = DefaultSpeed;
+	CurrentSpeed = DefaultSpeed;
 
 	InCollisionFood = nullptr;
 	CarryFood = nullptr;
@@ -98,7 +98,7 @@ void APlayerCharacter::MoveForward(float Value)
 		// Get the forward vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -113,7 +113,7 @@ void APlayerCharacter::MoveRight(float Value)
 		// Get the right vector of the Rotator Yaw and make sure the length is 1
 		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 		
-		AddMovementInput(Direction, Value * Speed);
+		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
@@ -146,6 +146,14 @@ void APlayerCharacter::Zoom(float Value)
 	}
 }
 
+AFood* APlayerCharacter::DropFood()
+{
+	bIsCarrying = false;
+	CurrentSpeed = DefaultSpeed;
+	CarryFood->PickUp(HoldingComponent);
+	return CarryFood;
+}
+
 void APlayerCharacter::Interact()
 {
 	if(bCanPickUp || bIsCarrying)
@@ -153,14 +161,14 @@ void APlayerCharacter::Interact()
 		if(bIsCarrying)
 		{
 			bIsCarrying = false;
-			Speed = DefaultSpeed;
+			CurrentSpeed = DefaultSpeed;
 			
-			CarryFood->PickUp();
+			CarryFood->PickUp(HoldingComponent);
 		} else
 		{
 			bIsCarrying = true;
 			bIsPickingUp = true;
-			Speed = DefaultSpeed / 2.f;
+			CurrentSpeed = DefaultSpeed / 2.f;
 			if(InCollisionFood != nullptr)
 			{
 				CarryFood = InCollisionFood;
@@ -175,14 +183,14 @@ void APlayerCharacter::Interact()
 void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp();
+	CarryFood->PickUp(HoldingComponent);
 	bIsPickingUp = false;
 }
 
 void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		InCollisionFood = Cast<AFood>(OtherActor);
 		bCanPickUp = true;
 	}
@@ -191,7 +199,7 @@ void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		bCanPickUp = false;
 		InCollisionFood = nullptr;
 	}

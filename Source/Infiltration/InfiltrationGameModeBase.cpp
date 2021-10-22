@@ -8,6 +8,18 @@
 
 AInfiltrationGameModeBase::AInfiltrationGameModeBase()
 {
-		DefaultPawnClass = APlayerCharacter::StaticClass();
-		HUDClass = AGameHUD::StaticClass();
+	DefaultPawnClass = APlayerCharacter::StaticClass();
+	HUDClass = AGameHUD::StaticClass();
+
+	GameHUDClass = Cast<AGameHUD>(HUDClass);
+}
+
+void AInfiltrationGameModeBase::Victory()
+{
+	GameHUDClass->ShowVictoryScreen();
+}
+
+void AInfiltrationGameModeBase::Defeat()
+{
+	GameHUDClass->ShowDefeatScreen();
 }

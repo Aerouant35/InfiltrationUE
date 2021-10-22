@@ -24,6 +24,8 @@ void UPlayerAnimations::NativeUpdateAnimation(float DeltaSeconds)
 		{
 			bIsWalking = !MyCharacter->GetVelocity().IsZero();
 			bIsCarrying = MyCharacter->bIsCarrying;
+			bHasWon = MyCharacter->bHasWon;
+			bHasLost = MyCharacter->bHasLost;
 		}
 	}
 }
