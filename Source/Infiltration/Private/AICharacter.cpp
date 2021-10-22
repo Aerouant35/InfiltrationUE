@@ -12,6 +12,9 @@ AAICharacter::AAICharacter()
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	HoldingComponent = CreateDefaultSubobject<USceneComponent>("HoldingComponent");
+	HoldingComponent->SetupAttachment(GetCapsuleComponent());
+	HoldingComponent->SetRelativeLocation(FVector(HoldingComponentOffset, HoldingComponent->GetRelativeLocation().Y, HoldingComponent->GetRelativeLocation().Z));
 }
 
 // Called when the game starts or when spawned
@@ -52,11 +55,11 @@ void AAICharacter::Interact()
 		Speed = DefaultSpeed;
 
 		// Dépose la nourritre
-		CarryFood->PickUp();
+		CarryFood->PickUp(HoldingComponent);
 	}
 	else if(InCollisionFood != nullptr)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("PickUp"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pickup"));
 
 		IsCarrying = true;
 		Speed = DefaultSpeed * 0.5f;
@@ -64,14 +67,15 @@ void AAICharacter::Interact()
 		CarryFood = InCollisionFood;
 
 		GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
-		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
+		CarryFood->PickUp(HoldingComponent);
+		//GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 	}
 }
 
 void AAICharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp();
+	CarryFood->PickUp(HoldingComponent);
 
 	//bIsPickingUp = false;
 }
