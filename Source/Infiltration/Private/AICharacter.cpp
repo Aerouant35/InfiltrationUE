@@ -67,8 +67,7 @@ void AAICharacter::Interact()
 		CarryFood = InCollisionFood;
 
 		GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
-		CarryFood->PickUp(HoldingComponent);
-		//GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 	}
 }
 
