@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "AICharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "MyAIController.generated.h"
 
 UCLASS()
@@ -18,6 +19,9 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	/*Blackboard comp ref*/
 	UBlackboardComponent* BlackboardComp;
+
+	UPROPERTY(EditAnywhere)
+		UAIPerceptionComponent* AIPerceptionComponent; 
 
 	/*Blackboard keys*/
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -34,6 +38,10 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
+
+	UFUNCTION()
+	void OnTargetDetected(AActor* Actor, FAIStimulus Stimulis);
+
 
 public:
 
