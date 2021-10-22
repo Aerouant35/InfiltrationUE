@@ -22,10 +22,6 @@ AFood::AFood()
 	SphereComponent->InitSphereRadius(SphereRadius);
 	SphereComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 	SphereComponent->SetupAttachment(StaticMeshComponent);
-
-	bIsGrab = false;
-	bHasGravity = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -35,7 +31,7 @@ void AFood::BeginPlay()
 
 	SphereComponent->SetSphereRadius(SphereRadius);
 	// Ignore collision with the camera
-	ChangeCollisionPreset();
+	SetCollision(false);
 }
 
 // Called every frame
@@ -46,32 +42,34 @@ void AFood::Tick(float DeltaTime)
 
 void AFood::PickUp(USceneComponent* HoldingCompSend)
 {
-	//GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, HoldingCompSend->GetOwner()->GetName());
-
-	bIsGrab = !bIsGrab;
-	bHasGravity = !bHasGravity;
-	
-	StaticMeshComponent->SetSimulatePhysics(bIsGrab ? false : true);
-	StaticMeshComponent->SetEnableGravity(bHasGravity);
-	ChangeCollisionPreset();
+	SetPhysics(true);
 
 	HoldingComp = HoldingCompSend;
 	
-	if(HoldingComp && bIsGrab)
+	if(HoldingComp)
 	{
 		StaticMeshComponent->AttachToComponent(HoldingComp, FAttachmentTransformRules::KeepWorldTransform);
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
 		SetActorLocation(HoldingComp->GetComponentLocation());
-	}
-	else if(!bIsGrab)
-	{
-		StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
 	}
 }
 
-void AFood::ChangeCollisionPreset()
+void AFood::Drop()
+{
+	SetPhysics(false);
+
+	StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+}
+
+void AFood::SetPhysics(bool bIsGrab)
+{
+	StaticMeshComponent->SetSimulatePhysics(!bIsGrab);
+	StaticMeshComponent->SetEnableGravity(!bIsGrab);
+
+	SetCollision(bIsGrab);
+}
+
+void AFood::SetCollision(bool bIsGrab)
 {
 	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
-	// Ignore collision with the camera
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }

@@ -20,30 +20,22 @@ class INFILTRATION_API AFood : public AActor
 
 	UPROPERTY(EditAnywhere)
 	unsigned SphereRadius = 100.f;
-
-	UPROPERTY(VisibleAnywhere)
-	bool bIsGrab = false;
-
-	UPROPERTY(VisibleAnywhere)
-	bool bHasGravity = true;
-
+	
 public:	
 	// Sets default values for this actor's properties
 	AFood();
 
 	UFUNCTION()
 		void PickUp(USceneComponent* HoldingCompSend);
+	UFUNCTION()
+		void Drop();
+
+	UFUNCTION()
+		void SetPhysics(bool bIsGrab);
+	UFUNCTION()
+		void SetCollision(bool bIsGrab);
 
 protected:
-	bool IsGrab() const
-	{
-		return bIsGrab;
-	}
-
-	void SetIsGrab(const bool IsGrab)
-	{
-		bIsGrab = IsGrab;
-	}
 
 	UPROPERTY(EditAnywhere)
 		USceneComponent* HoldingComp;
@@ -52,10 +44,7 @@ protected:
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-	UFUNCTION()
-		void ChangeCollisionPreset();
-	
+		
 public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;

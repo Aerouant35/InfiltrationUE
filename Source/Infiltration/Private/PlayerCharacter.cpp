@@ -148,7 +148,7 @@ AFood* APlayerCharacter::DropFood()
 {
 	bIsCarrying = false;
 	CurrentSpeed = DefaultSpeed;
-	CarryFood->PickUp(HoldingComponent);
+	CarryFood->Drop();
 	return CarryFood;
 }
 
@@ -158,10 +158,7 @@ void APlayerCharacter::Interact()
 	{
 		if(bIsCarrying)
 		{
-			bIsCarrying = false;
-			CurrentSpeed = DefaultSpeed;
-			
-			CarryFood->PickUp(HoldingComponent);
+			DropFood();
 		} else
 		{
 			bIsCarrying = true;
