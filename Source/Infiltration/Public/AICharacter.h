@@ -36,6 +36,9 @@ private:
 	UPROPERTY(EditAnywhere)
 	bool IsCarrying;
 
+	UPROPERTY()
+	bool IsWalking;
+
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
 	// Actual food AI is carrying
@@ -60,6 +63,9 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	UFUNCTION()
+	bool GetISCarrying();
 
 	UFUNCTION()
 	void Interact();

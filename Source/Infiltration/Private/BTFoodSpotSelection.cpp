@@ -49,7 +49,7 @@ void UBTFoodSpotSelection::Begin()
 // Methode appeler si l'on se trouve au spot Enemy
 void UBTFoodSpotSelection::GoToFoodSpot()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FoodSpotLocation"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FoodSpotLocation"));
 
 	AFoodSpot* CurrentSpot = Cast<AFoodSpot>(BlackboardLocation);
 

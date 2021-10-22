@@ -26,6 +26,8 @@ void AAICharacter::BeginPlay()
 	// Ne possède pas de nourriture de base
 	IsCarrying = false;
 
+	IsWalking = false;
+	
 	Speed = DefaultSpeed;
 }
 
@@ -34,6 +36,11 @@ void AAICharacter::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+}
+
+bool AAICharacter::GetISCarrying()
+{
+	return IsCarrying;
 }
 
 // Prend ou dépose la nourriture à proximité
