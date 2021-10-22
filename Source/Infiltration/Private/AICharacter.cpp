@@ -52,7 +52,7 @@ void AAICharacter::Interact()
 		Speed = DefaultSpeed;
 
 		// Dépose la nourritre
-		CarryFood->PickUp();
+		CarryFood->PickUp(HoldingComponent);
 	}
 	else if(InCollisionFood != nullptr)
 	{
@@ -71,7 +71,7 @@ void AAICharacter::Interact()
 void AAICharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp();
+	CarryFood->PickUp(HoldingComponent);
 
 	//bIsPickingUp = false;
 }

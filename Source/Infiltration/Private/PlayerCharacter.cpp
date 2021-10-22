@@ -37,8 +37,6 @@ APlayerCharacter::APlayerCharacter()
 	
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
-	GetMesh()->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	GetCapsuleComponent()->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 
 	bIsCarrying = false;
 	bIsPickingUp = false;
