@@ -5,6 +5,7 @@
 
 #include "PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
@@ -30,8 +31,6 @@ void AAICharacter::BeginPlay()
 	IsCarrying = false;
 
 	IsWalking = false;
-	
-	Speed = DefaultSpeed;
 }
 
 // Called every frame
@@ -52,7 +51,7 @@ void AAICharacter::Interact()
 	if(IsCarrying)
 	{
 		IsCarrying = false;
-		Speed = DefaultSpeed;
+		SetSpeed(DefaultSpeed);
 
 		// Dépose la nourritre
 		CarryFood->PickUp(HoldingComponent);
@@ -62,7 +61,7 @@ void AAICharacter::Interact()
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pickup"));
 
 		IsCarrying = true;
-		Speed = DefaultSpeed * 0.5f;
+		SetSpeed(DefaultSpeed * 0.5f);
 		// Va prendre la nourriture avec laquel je collisionne
 		CarryFood = InCollisionFood;
 
@@ -83,7 +82,11 @@ void AAICharacter::TimerPickUpAnim()
 void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
+}
 
+void AAICharacter::SetSpeed(float NewSpeed)
+{
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
 // Collisions

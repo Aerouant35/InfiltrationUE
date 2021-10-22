@@ -30,9 +30,7 @@ protected:
 	virtual void BeginPlay() override;
 
 private:
-
-	float Speed;
-
+	
 	UPROPERTY(EditAnywhere)
 	bool IsCarrying;
 
@@ -51,8 +49,10 @@ private:
 	UPROPERTY(EditAnywhere, Category="Holding Component")
 		float HoldingComponentOffset = 50.f;
 
-	UPROPERTY(EditAnywhere, Category="Character Speed")
-	float DefaultSpeed = 1.f;
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float DefaultSpeed = 600;
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float CarrySpeed = DefaultSpeed / 2;
 
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
 	UAnimSequence* PickUpAnimationSequence;
@@ -72,6 +72,9 @@ public:
 
 	UFUNCTION()
 	void TimerPickUpAnim();
+
+	UFUNCTION()
+	void SetSpeed(float NewSpeed);
 
 	UFUNCTION()
 		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

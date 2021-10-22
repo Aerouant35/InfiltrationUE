@@ -68,7 +68,7 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 
 		//Cast because Array contains AActor*
 		NextSpot = Cast<AFoodSpot>(AvailableFoodSpots[RandomIndex]);
-	} while(CurrentSpot == NextSpot);
+	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Ne choisit pas un spot qui a déjà de la nourriture ou qui correspond au précédent
 
 	//Update next location in blackboard
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
