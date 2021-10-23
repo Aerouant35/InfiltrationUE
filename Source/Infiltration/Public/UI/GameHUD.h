@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "DefeatWidget.h"
+#include "OptionsWidget.h"
 #include "PauseWidget.h"
 #include "PlayerWidget.h"
 #include "VictoryWidget.h"
@@ -18,9 +19,11 @@ class INFILTRATION_API AGameHUD : public AHUD
 {
 	GENERATED_BODY()
 
-	UPlayerWidget* PlayerWidget;
-	UVictoryWidget* VictoryWidget;
-	UDefeatWidget* DefeatWidget;
+	class UPlayerWidget* PlayerWidget;
+	class UVictoryWidget* VictoryWidget;
+	class UDefeatWidget* DefeatWidget;
+	class UPauseWidget* PauseWidget;
+	class UOptionsWidget* OptionsWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UUserWidget> PlayerWidgetClass;
@@ -34,11 +37,16 @@ class INFILTRATION_API AGameHUD : public AHUD
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UPauseWidget> PauseWidgetClass;
 	
+	UPROPERTY(EditDefaultsOnly, Category="Widget")
+	TSubclassOf<UOptionsWidget> OptionsWidgetClass;
+	
 public:
 	AGameHUD();
 
 protected:
 	virtual void BeginPlay() override;
+
+	void InitWidget();
 	
 	void EnableMouseCursor(const bool bEnable) const;
 
@@ -60,4 +68,10 @@ public:
 
 	UFUNCTION()
 	void ResumeGame();
+
+	UFUNCTION()
+	void OptionsMenu();
+
+	UFUNCTION()
+	void BackToPauseMenu();
 };

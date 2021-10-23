@@ -2,10 +2,8 @@
 
 
 #include "UI/PauseWidget.h"
-
 #include "Components/Button.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/GameHUD.h"
 
 UPauseWidget::UPauseWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
@@ -16,13 +14,19 @@ void UPauseWidget::NativeConstruct()
 	Super::NativeConstruct();
 
 	ResumeBtn->OnClicked.AddDynamic(this, &UPauseWidget::ResumeGame);
+	OptionsBtn->OnClicked.AddDynamic(this, &UPauseWidget::OptionsMenu);
 	MenuBtn->OnClicked.AddDynamic(this, &UPauseWidget::BackToMenu);
 	QuitBtn->OnClicked.AddDynamic(this, &UPauseWidget::QuitGame);
 }
 
 void UPauseWidget::ResumeGame()
 {
-	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD())->ResumeGame();
+	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->ResumeGame();
+}
+
+void UPauseWidget::OptionsMenu()
+{
+	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->OptionsMenu();
 }
 
 void UPauseWidget::BackToMenu()

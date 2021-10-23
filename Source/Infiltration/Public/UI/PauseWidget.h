@@ -4,6 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
+#include "UI/GameHUD.h"
 #include "PauseWidget.generated.h"
 
 /**
@@ -13,9 +14,12 @@ UCLASS()
 class INFILTRATION_API UPauseWidget : public UUserWidget
 {
 	GENERATED_BODY()
-
+	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* ResumeBtn;
+	
+	UPROPERTY(EditAnywhere, meta = (BindWidget))
+	class UButton* OptionsBtn;
 	
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* MenuBtn;
@@ -33,6 +37,9 @@ public:
 	UFUNCTION()
 	void ResumeGame();
 
+	UFUNCTION()
+	void OptionsMenu();
+	
 	UFUNCTION()
 	void BackToMenu();
 
