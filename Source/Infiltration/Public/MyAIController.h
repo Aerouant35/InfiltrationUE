@@ -40,6 +40,8 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
 
+	virtual void BeginPlay() override;
+
 	UFUNCTION()
 		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
 

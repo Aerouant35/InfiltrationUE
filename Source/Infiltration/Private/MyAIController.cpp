@@ -33,11 +33,12 @@ AMyAIController::AMyAIController()
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	AIPerceptionComponent->SetDominantSense(ConfigSight->GetSenseImplementation());
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnTargetPerceptionUpdated);
 	AIPerceptionComponent->ConfigureSense(*ConfigSight);
 	
 	LocationToGoKey = "LocationToGo";
 }
+
+
 
 void AMyAIController::OnPossess(APawn* InPawn)
 {
@@ -67,6 +68,13 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	}
 }
 
+void AMyAIController::BeginPlay()
+{
+	Super::BeginPlay();
+
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnTargetPerceptionUpdated);
+}
+
 void AMyAIController::Interact()
 {
 	AIChar->Interact();
@@ -74,11 +82,15 @@ void AMyAIController::Interact()
 
 void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
+	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("See Player"));
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
 	if(Player)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Is Player"));
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
 		BlackboardComp->SetValueAsBool("CanSeePlayer", Stimuli.WasSuccessfullySensed());
+	} else
+	{
+		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Is not Player"));
 	}
 }
