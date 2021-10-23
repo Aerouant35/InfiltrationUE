@@ -48,9 +48,9 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	if(AIChar)
 	{
 		//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
-		if(AIChar->MainBehaviorTree->BlackboardAsset)
+		if(AIChar->DefaultBehaviorTree->BlackboardAsset)
 		{
-			BlackboardComp->InitializeBlackboard(*(AIChar->MainBehaviorTree->BlackboardAsset));
+			BlackboardComp->InitializeBlackboard(*(AIChar->DefaultBehaviorTree->BlackboardAsset));
 		}
 
 		//Populate the array of available FoodSpots
@@ -61,7 +61,7 @@ void AMyAIController::OnPossess(APawn* InPawn)
 		EnemySpot = AIChar->EnemySpot;
 
 		//Start the behavior tree which corresponds to the specific character
-		BehaviorComp->StartTree(*AIChar->MainBehaviorTree);
+		BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
 	}
 }
 
@@ -77,12 +77,35 @@ void AMyAIController::Interact()
 	AIChar->Interact();
 }
 
+AAICharacter* AMyAIController::GetAICharacter()
+{
+	return AIChar;
+}
+
+void AMyAIController::SetDefaultBehaviourTree()
+{
+	BehaviorComp->StopTree();
+	BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
+}
+
 void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
 	if(Player)
 	{
+		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
+		
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
+		BlackboardComp->SetValueAsRotator("PlayerDirection", Player->GetActorRotation());
+		
+		FRotator Rotation = Player->GetActorRotation();
+		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+		// WARNING : This Location can be outside the GameZone or the NavMesh
+		FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
+		BlackboardComp->SetValueAsVector("SupposedPlayerLocation", SupposedPlayerLocation);
+
+		BehaviorComp->StopTree();
 		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
 	}
 }

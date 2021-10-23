@@ -17,7 +17,7 @@ public:
 	AAICharacter();
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	class UBehaviorTree* MainBehaviorTree;
+	class UBehaviorTree* DefaultBehaviorTree;
 
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* ChaseBehaviorTree;
@@ -71,7 +71,10 @@ public:
 		bool GetIsCarrying();
 
 	UFUNCTION()
-	void Interact();
+		void DropFood();
+	
+	UFUNCTION()
+		void Interact();
 
 	UFUNCTION()
 	void TimerPickUpAnim();

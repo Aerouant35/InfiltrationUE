@@ -5,6 +5,7 @@
 
 #include "PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
+#include "GameFramework/CharacterMovementComponent.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
@@ -52,17 +53,21 @@ bool AAICharacter::GetIsCarrying()
 	return IsCarrying;
 }
 
+void AAICharacter::DropFood()
+{
+	IsCarrying = false;
+	Speed = DefaultSpeed;
+
+	CarryFood->Drop();
+}
+
 
 // Prend ou dépose la nourriture à proximité
 void AAICharacter::Interact()
 {
 	if(IsCarrying)
 	{
-		IsCarrying = false;
-		Speed = DefaultSpeed;
-
-		// Dépose la nourritre
-		CarryFood->Drop();
+		DropFood();
 	}
 	else if(InCollisionFood != nullptr)
 	{

@@ -59,4 +59,10 @@ public:
 
 	UFUNCTION()
 		void Interact();
+
+	UFUNCTION()
+		AAICharacter* GetAICharacter();
+
+	UFUNCTION()
+		void SetDefaultBehaviourTree();
 };
