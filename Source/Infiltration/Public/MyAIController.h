@@ -4,12 +4,10 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
+#include "AICharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "MyAIController.generated.h"
 
-/**
- * 
- */
 UCLASS()
 class INFILTRATION_API AMyAIController : public AAIController
 {
@@ -24,6 +22,9 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Blackboard keys*/
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName LocationToGoKey;
+
+	/*AIChar*/
+	AAICharacter* AIChar;
 
 	/*Foodspot storage*/
 	TArray<AActor*> FoodSpots;
@@ -44,4 +45,7 @@ public:
 	FORCEINLINE TArray<AActor*> GetAvailableFoodSpots() const { return FoodSpots; }
 
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
+
+	UFUNCTION()
+	void Interact();
 };
