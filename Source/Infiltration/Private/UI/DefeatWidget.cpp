@@ -5,6 +5,7 @@
 
 #include "Components/Button.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UDefeatWidget::UDefeatWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -21,7 +22,7 @@ void UDefeatWidget::NativeConstruct()
 
 void UDefeatWidget::RestartGame()
 {
-	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->ResetLevel();
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 void UDefeatWidget::QuitGame()
