@@ -3,6 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
+#include "FoodSpot.h"
 #include "GameFramework/GameModeBase.h"
 #include "UI/GameHUD.h"
 #include "InfiltrationGameModeBase.generated.h"
@@ -15,17 +17,31 @@ class INFILTRATION_API AInfiltrationGameModeBase : public AGameModeBase
 {
 	GENERATED_BODY()
 
-	AGameHUD* GameHUDClass;
+	UPROPERTY(EditDefaultsOnly, Category="Food")
+	TSubclassOf<AFood> FoodClass;
 	
-	UPROPERTY(EditDefaultsOnly)
+	UPROPERTY(EditDefaultsOnly, Category="Food")
 	unsigned NbFoodWin = 5;
+
+	UPROPERTY(VisibleAnywhere, Category="Food")
+	TArray<AFoodSpot*> FoodSpots;
+
 public:
+	AInfiltrationGameModeBase();
+
 	unsigned GetNbFoodWin() const
 	{
 		return NbFoodWin;
 	}
 
-	AInfiltrationGameModeBase();
+	TArray<AFoodSpot*> GetFoodSpots() const
+	{
+		return FoodSpots;
+	}
+	
+	virtual void BeginPlay() override;
+
+	void GenerateStartFood();
 	
 	void Victory();
 
