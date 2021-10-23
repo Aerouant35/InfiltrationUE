@@ -32,6 +32,7 @@ void AFood::BeginPlay()
 	SphereComponent->SetSphereRadius(SphereRadius);
 	// Ignore collision with the camera
 	SetCollision(false);
+	SphereComponent->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 }
 
 // Called every frame
@@ -72,4 +73,5 @@ void AFood::SetCollision(bool bIsGrab)
 {
 	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
 }
