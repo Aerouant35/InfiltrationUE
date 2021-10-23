@@ -23,16 +23,17 @@ AMyAIController::AMyAIController()
 
 
 	UAISenseConfig_Sight* ConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
+	SetPerceptionComponent(*AIPerceptionComponent);
 	ConfigSight->SightRadius = 1000.0f;
 	ConfigSight->LoseSightRadius = ConfigSight->SightRadius + 100.0f ;
-	ConfigSight->PeripheralVisionAngleDegrees = 135.0f;
+	ConfigSight->PeripheralVisionAngleDegrees = 135.0f / 2.0f;
 	ConfigSight->DetectionByAffiliation.bDetectEnemies = true;
 	ConfigSight->DetectionByAffiliation.bDetectNeutrals = true;
 	ConfigSight->DetectionByAffiliation.bDetectFriendlies = true;
 
 	AIPerceptionComponent = CreateDefaultSubobject<UAIPerceptionComponent>(TEXT("AIPerceptionComponent"));
 	AIPerceptionComponent->SetDominantSense(ConfigSight->GetSenseImplementation());
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::AMyAIController::OnTargetDetected);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnTargetPerceptionUpdated);
 	AIPerceptionComponent->ConfigureSense(*ConfigSight);
 	
 	LocationToGoKey = "LocationToGo";
@@ -71,13 +72,13 @@ void AMyAIController::Interact()
 	AIChar->Interact();
 }
 
-void AMyAIController::OnTargetDetected(AActor* Actor, FAIStimulus Stimulis)
+void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
 	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
 	if(Player)
 	{
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		BlackboardComp->SetValueAsBool("CanSeePlayer", Stimulis.WasSuccessfullySensed());
+		BlackboardComp->SetValueAsBool("CanSeePlayer", Stimuli.WasSuccessfullySensed());
 	}
 }

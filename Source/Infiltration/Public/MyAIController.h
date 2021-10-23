@@ -6,6 +6,7 @@
 #include "AIController.h"
 #include "AICharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
 #include "MyAIController.generated.h"
 
@@ -40,7 +41,7 @@ class INFILTRATION_API AMyAIController : public AAIController
 	virtual void OnPossess(APawn* InPawn) override;
 
 	UFUNCTION()
-	void OnTargetDetected(AActor* Actor, FAIStimulus Stimulis);
+		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
 
 
 public:
@@ -55,5 +56,5 @@ public:
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
 	UFUNCTION()
-	void Interact();
+		void Interact();
 };
