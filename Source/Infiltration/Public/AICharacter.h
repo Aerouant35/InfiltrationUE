@@ -68,7 +68,7 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-	bool GetISCarrying();
+		bool GetIsCarrying();
 
 	UFUNCTION()
 	void Interact();

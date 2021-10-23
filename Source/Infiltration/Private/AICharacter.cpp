@@ -47,10 +47,11 @@ void AAICharacter::Tick(float DeltaTime)
 
 }
 
-bool AAICharacter::GetISCarrying()
+bool AAICharacter::GetIsCarrying()
 {
 	return IsCarrying;
 }
+
 
 // Prend ou dépose la nourriture à proximité
 void AAICharacter::Interact()
