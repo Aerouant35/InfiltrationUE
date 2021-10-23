@@ -38,8 +38,6 @@ AMyAIController::AMyAIController()
 	LocationToGoKey = "LocationToGo";
 }
 
-
-
 void AMyAIController::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
@@ -50,9 +48,9 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	if(AIChar)
 	{
 		//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
-		if(AIChar->BehaviorTree->BlackboardAsset)
+		if(AIChar->MainBehaviorTree->BlackboardAsset)
 		{
-			BlackboardComp->InitializeBlackboard(*(AIChar->BehaviorTree->BlackboardAsset));
+			BlackboardComp->InitializeBlackboard(*(AIChar->MainBehaviorTree->BlackboardAsset));
 		}
 
 		//Populate the array of available FoodSpots
@@ -60,11 +58,10 @@ void AMyAIController::OnPossess(APawn* InPawn)
 
 		// Je passe par l'inspecteur de AIChar pour definir mes spots
 		FoodSpots = AIChar->FoodSpots;
-
 		EnemySpot = AIChar->EnemySpot;
 
 		//Start the behavior tree which corresponds to the specific character
-		BehaviorComp->StartTree(*AIChar->BehaviorTree);
+		BehaviorComp->StartTree(*AIChar->MainBehaviorTree);
 	}
 }
 
@@ -82,15 +79,10 @@ void AMyAIController::Interact()
 
 void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Yellow, TEXT("See Player"));
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
 	if(Player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Green, TEXT("Is Player"));
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		BlackboardComp->SetValueAsBool("CanSeePlayer", Stimuli.WasSuccessfullySensed());
-	} else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 2.f, FColor::Red, TEXT("Is not Player"));
+		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
 	}
 }

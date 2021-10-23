@@ -17,7 +17,10 @@ public:
 	AAICharacter();
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	class UBehaviorTree* BehaviorTree;
+	class UBehaviorTree* MainBehaviorTree;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	class UBehaviorTree* ChaseBehaviorTree;
 
 	UPROPERTY(EditAnywhere, Category="Spots")
 	TArray<AActor*> FoodSpots;
