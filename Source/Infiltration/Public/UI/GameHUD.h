@@ -19,10 +19,19 @@ class INFILTRATION_API AGameHUD : public AHUD
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
 	class UPlayerWidget* PlayerWidget;
+	
+	UPROPERTY()
 	class UVictoryWidget* VictoryWidget;
+	
+	UPROPERTY()
 	class UDefeatWidget* DefeatWidget;
+	
+	UPROPERTY()
 	class UPauseWidget* PauseWidget;
+	
+	UPROPERTY()
 	class UOptionsWidget* OptionsWidget;
 
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
