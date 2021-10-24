@@ -32,6 +32,14 @@ public:
 	UPROPERTY(EditAnywhere, Category="Animation boolean")
 		bool bIsCarrying;
 
+	UPROPERTY(VisibleAnywhere)
+		bool bHasWon = false;
+	UPROPERTY(VisibleAnywhere)
+		bool bHasLost = false;
+
+	UFUNCTION()
+		AFood* DropFood();
+	
 	private:
 	
 	bool bIsPickingUp;

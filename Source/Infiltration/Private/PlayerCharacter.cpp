@@ -39,8 +39,6 @@ APlayerCharacter::APlayerCharacter()
 	
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
-	GetMesh()->SetRelativeScale3D(FVector(0.5f, 0.5f, 0.5f));
-	GetCapsuleComponent()->SetRelativeScale3D(FVector(2.f, 2.f, 2.f));
 
 	bIsCarrying = false;
 	bIsPickingUp = false;
@@ -149,16 +147,21 @@ void APlayerCharacter::Zoom(float Value)
 	}
 }
 
+AFood* APlayerCharacter::DropFood()
+{
+	bIsCarrying = false;
+	CurrentSpeed = DefaultSpeed;
+	CarryFood->Drop();
+	return CarryFood;
+}
+
 void APlayerCharacter::Interact()
 {
 	if(bCanPickUp || bIsCarrying)
 	{
 		if(bIsCarrying)
 		{
-			bIsCarrying = false;
-			CurrentSpeed = DefaultSpeed;
-			
-			CarryFood->PickUp();
+			DropFood();
 		} else
 		{
 			bIsCarrying = true;
@@ -178,14 +181,14 @@ void APlayerCharacter::Interact()
 void APlayerCharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp();
+	CarryFood->PickUp(HoldingComponent);
 	bIsPickingUp = false;
 }
 
 void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		InCollisionFood = Cast<AFood>(OtherActor);
 		bCanPickUp = true;
 	}
@@ -194,7 +197,7 @@ void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+	if(OtherActor->IsA(AFood::StaticClass())){
 		bCanPickUp = false;
 		InCollisionFood = nullptr;
 	}
