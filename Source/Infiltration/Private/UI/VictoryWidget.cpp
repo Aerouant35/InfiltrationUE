@@ -3,7 +3,9 @@
 
 #include "UI/VictoryWidget.h"
 
+#include "Components/Button.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
+#include "Kismet/GameplayStatics.h"
 #include "Kismet/KismetSystemLibrary.h"
 
 UVictoryWidget::UVictoryWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
@@ -13,11 +15,14 @@ UVictoryWidget::UVictoryWidget(const FObjectInitializer& ObjectInitializer) : Su
 void UVictoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
+
+	RestartBtn->OnClicked.AddDynamic(this, &UVictoryWidget::RestartGame);
+	QuitBtn->OnClicked.AddDynamic(this, &UVictoryWidget::QuitGame);
 }
 
 void UVictoryWidget::RestartGame()
 {
-	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->ResetLevel();
+	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
 }
 
 void UVictoryWidget::QuitGame()

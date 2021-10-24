@@ -22,10 +22,6 @@ AFood::AFood()
 	SphereComponent->InitSphereRadius(SphereRadius);
 	SphereComponent->SetCollisionProfileName(TEXT("OverlapOnlyPawn"));
 	SphereComponent->SetupAttachment(StaticMeshComponent);
-
-	bIsGrab = false;
-	bHasGravity = true;
-
 }
 
 // Called when the game starts or when spawned
@@ -35,22 +31,7 @@ void AFood::BeginPlay()
 
 	SphereComponent->SetSphereRadius(SphereRadius);
 	// Ignore collision with the camera
-	ChangeCollisionPreset();
-
-	// -- Not sure if this is good --
-	MyCharacter = UGameplayStatics::GetPlayerCharacter(this, 0);
-	TArray<USceneComponent*> Components;
-	MyCharacter->GetComponents(Components);
-	if(Components.Num() > 0)
-	{
-		for(USceneComponent* Comp : Components)
-		{
-			if(Comp->GetName() == "HoldingComponent")
-			{
-				HoldingComp = Cast<USceneComponent>(Comp);
-			}
-		}
-	}	
+	SetCollision(false);
 }
 
 // Called every frame
@@ -59,32 +40,36 @@ void AFood::Tick(float DeltaTime)
 	Super::Tick(DeltaTime);
 }
 
-void AFood::PickUp()
+void AFood::PickUp(USceneComponent* HoldingCompSend)
 {
-	GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Blue, TEXT("PickUp"));
+	SetPhysics(true);
 
-	bIsGrab = !bIsGrab;
-	bHasGravity = !bHasGravity;
+	HoldingComp = HoldingCompSend;
 	
-	StaticMeshComponent->SetSimulatePhysics(bIsGrab ? false : true);
-	StaticMeshComponent->SetEnableGravity(bHasGravity);
-	ChangeCollisionPreset();
-
-	
-	if(HoldingComp && bIsGrab)
+	if(HoldingComp)
 	{
 		StaticMeshComponent->AttachToComponent(HoldingComp, FAttachmentTransformRules::KeepWorldTransform);
 		SetActorLocation(HoldingComp->GetComponentLocation());
 	}
-	if(!bIsGrab)
-	{
-		StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
-	}
 }
 
-void AFood::ChangeCollisionPreset()
+void AFood::Drop()
+{
+	SetPhysics(false);
+
+	StaticMeshComponent->DetachFromComponent(FDetachmentTransformRules::KeepWorldTransform);
+}
+
+void AFood::SetPhysics(bool bIsGrab)
+{
+	StaticMeshComponent->SetSimulatePhysics(!bIsGrab);
+	StaticMeshComponent->SetEnableGravity(!bIsGrab);
+
+	SetCollision(bIsGrab);
+}
+
+void AFood::SetCollision(bool bIsGrab)
 {
 	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
-	// Ignore collision with the camera
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 }
