@@ -21,6 +21,10 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Blackboard comp ref*/
 	UBlackboardComponent* BlackboardComp;
 
+	bool bHasAlreadyDetected;
+
+	FTimerHandle UnusedHandle;
+
 	UPROPERTY(EditAnywhere)
 		UAIPerceptionComponent* AIPerceptionComponent; 
 
@@ -44,6 +48,9 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	UFUNCTION()
 		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
+
+	UFUNCTION()
+		void TimerKeepFoodLocation();
 
 
 public:

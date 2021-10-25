@@ -36,6 +36,7 @@ AMyAIController::AMyAIController()
 	AIPerceptionComponent->ConfigureSense(*ConfigSight);
 	
 	LocationToGoKey = "LocationToGo";
+	bHasAlreadyDetected = false;
 }
 
 void AMyAIController::OnPossess(APawn* InPawn)
@@ -84,6 +85,7 @@ AAICharacter* AMyAIController::GetAICharacter()
 
 void AMyAIController::SetDefaultBehaviourTree()
 {
+	bHasAlreadyDetected = false;
 	BehaviorComp->StopTree();
 	BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
 }
@@ -94,9 +96,15 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 	if(Player)
 	{
 		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
+
+		if(!bHasAlreadyDetected)
+		{
+			bHasAlreadyDetected = true;
+			GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyAIController::TimerKeepFoodLocation, 3.0f, false);
+			BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetIsCarrying());
+		}
 		
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		BlackboardComp->SetValueAsRotator("PlayerDirection", Player->GetActorRotation());
 		
 		FRotator Rotation = Player->GetActorRotation();
 		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
@@ -109,3 +117,9 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
 	}
 }
+
+void AMyAIController::TimerKeepFoodLocation()
+{
+	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
+}
+

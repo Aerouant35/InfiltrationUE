@@ -77,7 +77,10 @@ public:
 		void Interact();
 
 	UFUNCTION()
-	void TimerPickUpAnim();
+		void TimerPickUpAnim();
+
+	UFUNCTION()
+		FVector GetCarryFoodLocation();
 
 	UFUNCTION()
 		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
