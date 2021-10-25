@@ -28,6 +28,9 @@ public:
 	UPROPERTY(EditAnywhere, Category="Spots")
 	AActor* EnemySpot;
 
+	UPROPERTY(EditAnywhere, Category="Spots")
+	AActor* ExitSpot;
+
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

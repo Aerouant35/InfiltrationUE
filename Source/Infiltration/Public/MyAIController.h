@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "AICharacter.h"
+#include "PlayerCharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
@@ -41,6 +42,8 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Enemyspot*/
 	AActor* EnemySpot;
 
+	AActor* ExitSpot;
+
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -51,6 +54,8 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	UFUNCTION()
 		void TimerKeepFoodLocation();
+
+	FVector GetSupposedPlayerPosition(APlayerCharacter* Player);
 
 
 public:

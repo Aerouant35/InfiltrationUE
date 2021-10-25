@@ -63,6 +63,8 @@ void AMyAIController::OnPossess(APawn* InPawn)
 
 		//Start the behavior tree which corresponds to the specific character
 		BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
+
+		BlackboardComp->SetValueAsObject("ExitSpot", AIChar->ExitSpot);
 	}
 }
 
@@ -76,6 +78,7 @@ void AMyAIController::BeginPlay()
 void AMyAIController::Interact()
 {
 	AIChar->Interact();
+	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetIsCarrying());
 }
 
 AAICharacter* AMyAIController::GetAICharacter()
@@ -95,7 +98,7 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
 	if(Player)
 	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
+		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
 
 		if(!bHasAlreadyDetected)
 		{
@@ -105,13 +108,7 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 		}
 		
 		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		
-		FRotator Rotation = Player->GetActorRotation();
-		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
-		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
-		// WARNING : This Location can be outside the GameZone or the NavMesh
-		FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
-		BlackboardComp->SetValueAsVector("SupposedPlayerLocation", SupposedPlayerLocation);
+		BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
 
 		BehaviorComp->StopTree();
 		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
@@ -121,5 +118,21 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 void AMyAIController::TimerKeepFoodLocation()
 {
 	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
+}
+
+FVector AMyAIController::GetSupposedPlayerPosition(APlayerCharacter* Player)
+{
+	FRotator Rotation = Player->GetActorRotation();
+	FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+	FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+	FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
+
+	// Avoid being outside of the playground
+	if(SupposedPlayerLocation.X > 2500.f) { SupposedPlayerLocation.X = 2500.f; }
+	if(SupposedPlayerLocation.X < -500.f) { SupposedPlayerLocation.X = -500.f; }
+	if(SupposedPlayerLocation.Y > 3500.f) { SupposedPlayerLocation.Y = 3500.f; }
+	if(SupposedPlayerLocation.Y < -500.f) { SupposedPlayerLocation.Y = -500.f; }
+
+	return SupposedPlayerLocation;
 }
 
