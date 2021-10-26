@@ -6,7 +6,7 @@
 #include "EngineUtils.h"
 #include "PlayerCharacter.h"
 #include "Camera/CameraActor.h"
-#include "UI/MainMenuHUD.h"
+#include "UI/Menu/MainMenuHUD.h"
 
 AMainMenuGameModeBase::AMainMenuGameModeBase()
 {

@@ -6,7 +6,7 @@
 #include "Food.h"
 #include "FoodSpot.h"
 #include "GameFramework/GameModeBase.h"
-#include "UI/GameHUD.h"
+#include "UI/Level/GameHUD.h"
 #include "InfiltrationGameModeBase.generated.h"
 
 /**

@@ -6,7 +6,7 @@
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
-#include "UI/GameHUD.h"
+#include "UI/Level/GameHUD.h"
 
 // Sets default values
 APlayerCharacter::APlayerCharacter()

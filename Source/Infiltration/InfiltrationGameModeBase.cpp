@@ -2,11 +2,9 @@
 
 
 #include "InfiltrationGameModeBase.h"
-
 #include "EngineUtils.h"
 #include "PlayerCharacter.h"
-#include "Kismet/GameplayStatics.h"
-#include "UI/GameHUD.h"
+
 
 AInfiltrationGameModeBase::AInfiltrationGameModeBase()
 {
@@ -24,6 +22,7 @@ void AInfiltrationGameModeBase::BeginPlay()
 		FoodSpots.Add(FoodSpot);
 	}
 
+	if (FoodSpots.Num() < 1) return;
 	GenerateStartFood();
 }
 
