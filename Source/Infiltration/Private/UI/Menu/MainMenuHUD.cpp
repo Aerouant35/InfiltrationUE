@@ -20,6 +20,10 @@ void AMainMenuHUD::BeginPlay()
 	MyController->bShowMouseCursor = true;
 	MyController->bEnableClickEvents = true;
 	MyController->bEnableMouseOverEvents = true;
+
+	FInputModeUIOnly InputModeUIOnly;
+	InputModeUIOnly.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
+	MyController->SetInputMode(InputModeUIOnly);
 	
 	MainMenuWidget->AddToViewport();
 }

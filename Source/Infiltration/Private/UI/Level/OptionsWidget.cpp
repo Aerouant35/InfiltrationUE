@@ -81,11 +81,12 @@ void UOptionsWidget::OnInteractKeySelected(const FInputChord InputChord)
 	if (IsAvailableKey(InputChord.Key))
 	{
 		ErrorKey(MappingName[0]);
-		return;
 	}
-	
-	InputSettings->RemoveActionMapping(GetActionMapping(MappingName[0]));
-	InputSettings->AddActionMapping(FInputActionKeyMapping(static_cast<FName>(MappingName[0]), InputChord.Key));
+	else
+	{
+		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], false));
+		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, NegativeScale));	
+	}
 }
 
 void UOptionsWidget::OnForwardKeySelected(const FInputChord InputChord)
@@ -93,11 +94,12 @@ void UOptionsWidget::OnForwardKeySelected(const FInputChord InputChord)
 	if (IsAvailableKey(InputChord.Key))
 	{
 		ErrorKey(MappingName[1], true);
-		return;
 	}
-
-	InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], true));
-	InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, PositiveScale));
+	else
+	{
+		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], true));
+		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, PositiveScale));	
+	}
 }
 
 void UOptionsWidget::OnBackwardKeySelected(const FInputChord InputChord)
@@ -105,11 +107,12 @@ void UOptionsWidget::OnBackwardKeySelected(const FInputChord InputChord)
 	if (IsAvailableKey(InputChord.Key))
 	{
 		ErrorKey(MappingName[1], false);
-		return;
 	}
-
-	InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], false));
-	InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, NegativeScale));
+	else
+	{
+		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], false));
+		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, NegativeScale));	
+	}
 }
 
 void UOptionsWidget::OnRightKeySelected(const FInputChord InputChord)
@@ -117,11 +120,12 @@ void UOptionsWidget::OnRightKeySelected(const FInputChord InputChord)
 	if (IsAvailableKey(InputChord.Key))
 	{
 		ErrorKey(MappingName[2], true);
-		return;
 	}
-
-	InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], true));
-	InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, PositiveScale));
+	else
+	{
+		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], true));
+		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, PositiveScale));	
+	}
 }
 
 void UOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
@@ -129,11 +133,12 @@ void UOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 	if (IsAvailableKey(InputChord.Key))
 	{
 		ErrorKey(MappingName[2], false);
-		return;
 	}
-
-	InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], false));
-	InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, NegativeScale));
+	else
+	{
+		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], false));
+		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, NegativeScale));	
+	}
 }
 
 bool UOptionsWidget::IsAvailableKey(const FKey Key)
