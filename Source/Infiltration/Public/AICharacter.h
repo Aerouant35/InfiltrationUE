@@ -17,13 +17,10 @@ public:
 	AAICharacter();
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	class UBehaviorTree* BehaviorTree;
+	class UBehaviorTree* DefaultBehaviorTree;
 
-	UPROPERTY(EditAnywhere, Category="Spots")
-	TArray<AActor*> FoodSpots;
-
-	UPROPERTY(EditAnywhere, Category="Spots")
-	AActor* EnemySpot;
+	UPROPERTY(EditAnywhere, Category="AI")
+	class UBehaviorTree* ChaseBehaviorTree;
 
 protected:
 	// Called when the game starts or when spawned
@@ -31,13 +28,8 @@ protected:
 
 private:
 
-	float Speed;
-
-	UPROPERTY(EditAnywhere)
-	bool IsCarrying;
-
 	UPROPERTY()
-	bool IsWalking;
+	bool HasFood;
 
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
@@ -51,10 +43,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Holding Component")
 		float HoldingComponentOffset = 50.f;
 
-	UPROPERTY(EditAnywhere, Category="Character Speed")
-	float DefaultSpeed = 1.f;
-
-	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float DefaultSpeed = 600;
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float CarrySpeed = DefaultSpeed / 2;
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimSequence* PickUpAnimationSequence;
 
 public:	
@@ -63,15 +57,28 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UFUNCTION()
+		void Interact();
 
 	UFUNCTION()
-	bool GetISCarrying();
+		void TimerPickUpAnim();
 
 	UFUNCTION()
-	void Interact();
+		FVector GetCarryFoodLocation();
 
 	UFUNCTION()
-	void TimerPickUpAnim();
+	void SetSpeed(float NewSpeed);
+
+	UFUNCTION()
+	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim);
+
+	UFUNCTION()
+	void SetHasFood(bool Value, AFood* NewFood);
+
+	FORCEINLINE bool GetHasFood() const { return HasFood; }
+
+	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
 
 	UFUNCTION()
 		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

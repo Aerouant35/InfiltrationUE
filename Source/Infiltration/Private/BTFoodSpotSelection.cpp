@@ -19,15 +19,11 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 		BlackboardComp = AICon->GetBlackboardComp();
 		BlackboardLocation = BlackboardComp->GetValueAsObject("LocationToGo");
 
-		if(BlackboardLocation == nullptr)
-		{
-			Begin();
-		}
-		else if(BlackboardLocation->IsA(AEnemySpot::StaticClass()))
+		if(BlackboardLocation == nullptr || AICon->GetAICharacter()->GetHasFood())
 		{
 			GoToFoodSpot();
 		}
-		else if(BlackboardLocation->IsA(AFoodSpot::StaticClass()))
+		else
 		{
 			GoToEnemySpot();
 		}
@@ -38,15 +34,6 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 	return EBTNodeResult::Failed;
 }
 
-// Methode appeler lors de la premiere selection de location
-void UBTFoodSpotSelection::Begin()
-{
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Start"));
-
-	GoToEnemySpot();
-}
-
-// Methode appeler si l'on se trouve au spot Enemy
 void UBTFoodSpotSelection::GoToFoodSpot()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FoodSpotLocation"));
@@ -68,20 +55,22 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 
 		//Cast because Array contains AActor*
 		NextSpot = Cast<AFoodSpot>(AvailableFoodSpots[RandomIndex]);
-	} while(CurrentSpot == NextSpot);
+	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Ne choisit pas un spot qui a déjà de la nourriture ou qui correspond au précédent
 
 	//Update next location in blackboard
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
 }
 
-// Methode appeler si l'on se trouve au spot Food
 void UBTFoodSpotSelection::GoToEnemySpot()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("EnemySpotLocation"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("EnemySpotLocation"));
 
 	AEnemySpot* NextSpot = Cast<AEnemySpot>(AICon->GetEnemySpot());
 
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, BlackboardComp->GetValueAsObject("LocationToGo")->GetName());
+	
 }
 
 

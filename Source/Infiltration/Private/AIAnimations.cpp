@@ -23,7 +23,7 @@ void UAIAnimations::NativeUpdateAnimation(float DeltaSeconds)
 		if(AIChar)
 		{
 			IsWalking = !AIChar->GetVelocity().IsZero();
-			IsCarrying = AIChar->GetISCarrying();
+			IsCarrying = AIChar->GetHasFood();
 		}
 	}
 }

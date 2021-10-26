@@ -33,14 +33,16 @@ public:
 	UFUNCTION()
 		void SetPhysics(bool bIsGrab);
 	UFUNCTION()
-		void SetCollision(bool bIsGrab);
+		void SetDynamicCollision(bool bIsGrab);
+
+	FORCEINLINE UStaticMeshComponent* GetStaticMeshComp() const { return StaticMeshComponent; }
 
 protected:
 
 	UPROPERTY(EditAnywhere)
-		USceneComponent* HoldingComp;
+	USceneComponent* HoldingComp;
 	UPROPERTY(EditAnywhere)
-		ACharacter* MyCharacter;
+	ACharacter* MyCharacter;
 	
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;

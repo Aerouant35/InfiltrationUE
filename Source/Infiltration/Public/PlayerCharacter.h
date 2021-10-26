@@ -7,6 +7,7 @@
 #include "Camera/CameraComponent.h"
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
+#include "Perception/AIPerceptionStimuliSourceComponent.h"
 #include "PlayerCharacter.generated.h"
 
 UCLASS()
@@ -84,6 +85,9 @@ public:
 		USceneComponent* HoldingComponent;
 	UPROPERTY(EditAnywhere, Category="Holding Component")
 		float HoldingComponentOffset = 50.f;
+
+	UPROPERTY(EditDefaultsOnly)
+		UAIPerceptionStimuliSourceComponent* StimuliSource;
 
 	// Speed in which the mesh rotate to be in the same direction as the movement
 	UPROPERTY(EditAnywhere, Category="Rotation")
