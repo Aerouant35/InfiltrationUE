@@ -55,6 +55,7 @@ class INFILTRATION_API AMyAIController : public AAIController
 	UFUNCTION()
 		void TimerKeepFoodLocation();
 
+	UFUNCTION()
 	FVector GetSupposedPlayerPosition(APlayerCharacter* Player);
 
 
