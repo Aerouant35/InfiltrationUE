@@ -138,15 +138,7 @@ FVector AMyAIController::GetSupposedPlayerPosition(APlayerCharacter* Player)
 	// Avoid being outside of the playground
 	FNavLocation NavLocation;
 	UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	bool Test = NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
-	if(Test)
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("true"));
-	} else
-	{
-		GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("false"));
-	}
-	
+	NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
 	return NavLocation.Location;
 }
 
