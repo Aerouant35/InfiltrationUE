@@ -3,6 +3,9 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "AIAnimations.h"
+#include "AICharacter.h"
+#include "EnemySpot.h"
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 
@@ -19,8 +22,37 @@ protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
+private:
+
+	// Pour crée un delais d'appel de fonction
+	FTimerHandle TimerHandle;
+	FTimerHandle SecondTimerHandle;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
+	UPROPERTY(EditAnywhere, Category="Spots")
+	AEnemySpot* EnemySpot;
+
+	UPROPERTY(EditAnywhere, Category="Spots")
+	TArray<AActor*> FoodSpots;
+	
+	UPROPERTY(EditAnywhere, Category="ObjectToSpawn")
+	TSubclassOf<AAICharacter> EnemyToSpawn;
+
+	UPROPERTY(EditAnywhere, Category="ObjectToSpawn")
+	TSubclassOf<AFood> FoodToSpawn;
+
+	UPROPERTY(EditAnywhere, Category="Animation Enemy")
+	TSubclassOf<UAnimInstance> BP_Anim;
+
+	UFUNCTION()
+	void SpawnEnemy();
+
+	UFUNCTION()
+	void GiveFood(AAICharacter* AICharRef);
+
+	UFUNCTION()
+	void RecreateAnEnemy();
 };

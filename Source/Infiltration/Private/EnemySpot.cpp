@@ -3,6 +3,7 @@
 
 #include "EnemySpot.h"
 
+#include "AICharacter.h"
 #include "Food.h"
 
 // Sets default values
@@ -34,12 +35,19 @@ void AEnemySpot::Tick(float DeltaTime)
 void AEnemySpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->IsA(AFood::StaticClass()))
+	if(OtherActor->IsA(AAICharacter::StaticClass()))
 	{
-		HasAFood = true;
+		HasAEnemy = true;
+		EnemyRef = Cast<AAICharacter>(OtherActor);
 	}
-	else
+}
+
+void AEnemySpot::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->IsA(AAICharacter::StaticClass()))
 	{
-		HasAFood = false;
+		HasAEnemy = false;
+		EnemyRef = nullptr;
 	}
 }

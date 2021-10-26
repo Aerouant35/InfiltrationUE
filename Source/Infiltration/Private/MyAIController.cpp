@@ -34,19 +34,25 @@ void AMyAIController::OnPossess(APawn* InPawn)
 		if(AIChar->BehaviorTree->BlackboardAsset)
 		{
 			BlackboardComp->InitializeBlackboard(*(AIChar->BehaviorTree->BlackboardAsset));
+
+			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, AIChar->GetName());
 		}
 
-		//Populate the array of available FoodSpots
-		//UGameplayStatics::GetAllActorsOfClass(GetWorld(), AFoodSpot::StaticClass(), FoodSpots);
-
-		// Je passe par l'inspecteur de AIChar pour definir mes spots
-		FoodSpots = AIChar->FoodSpots;
-
-		EnemySpot = AIChar->EnemySpot;
+		// Les spots sont définie par le spawner
 
 		//Start the behavior tree which corresponds to the specific character
 		BehaviorComp->StartTree(*AIChar->BehaviorTree);
 	}
+}
+
+void AMyAIController::SetEnemySpot(AActor* newEnemySpot)
+{
+	EnemySpot = newEnemySpot;
+}
+
+void AMyAIController::SetFoodSpots(TArray<AActor*> newFoodSpots)
+{
+	FoodSpots = newFoodSpots;
 }
 
 void AMyAIController::Interact()

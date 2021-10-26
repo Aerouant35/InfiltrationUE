@@ -28,9 +28,7 @@ void AAICharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAICharacter::OnComponentEndOverlap);
 
 	// Ne possède pas de nourriture de base
-	IsCarrying = false;
-
-	IsWalking = false;
+	SetHasFood(false, nullptr);
 }
 
 // Called every frame
@@ -40,42 +38,45 @@ void AAICharacter::Tick(float DeltaTime)
 
 }
 
-bool AAICharacter::GetISCarrying()
-{
-	return IsCarrying;
-}
-
 // Prend ou dépose la nourriture à proximité
 void AAICharacter::Interact()
 {
-	if(IsCarrying)
+	if(HasFood)
 	{
-		IsCarrying = false;
-		SetSpeed(DefaultSpeed);
-
-		// Dépose la nourritre
-		CarryFood->PickUp(HoldingComponent);
+		SetHasFood(false, nullptr);
 	}
 	else if(InCollisionFood != nullptr)
 	{
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Pickup"));
-
-		IsCarrying = true;
-		SetSpeed(DefaultSpeed * 0.5f);
-		// Va prendre la nourriture avec laquel je collisionne
-		CarryFood = InCollisionFood;
+		SetHasFood(true, InCollisionFood);
 
 		GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
 		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 	}
 }
 
+void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
+{
+	HasFood = Value;
+	if(Value)
+	{
+		CarryFood = NewFood;
+		SetSpeed(DefaultSpeed * 0.5f);
+	}
+	else
+	{
+		SetSpeed(DefaultSpeed);
+
+		if(CarryFood != nullptr)
+		{
+			CarryFood->Drop();
+		}
+	}
+}
+
 void AAICharacter::TimerPickUpAnim()
 {
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	//GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	CarryFood->PickUp(HoldingComponent);
-
-	//bIsPickingUp = false;
 }
 
 // Called to bind functionality to input
@@ -89,13 +90,19 @@ void AAICharacter::SetSpeed(float NewSpeed)
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
+void AAICharacter::SetAnimation(TSubclassOf<UAnimInstance> BP_Anim)
+{
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->SetAnimClass(BP_Anim);
+}
+
 // Collisions
 void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
 		InCollisionFood = Cast<AFood>(OtherActor);
-		GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
+		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
 	}
 
 	// Si touche joueur : défaite

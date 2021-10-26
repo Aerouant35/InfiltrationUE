@@ -38,7 +38,12 @@ void AFoodSpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent
 	{
 		HasAFood = true;
 	}
-	else
+}
+
+void AFoodSpot::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->IsA(AFood::StaticClass()))
 	{
 		HasAFood = false;
 	}

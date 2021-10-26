@@ -41,12 +41,11 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 // Methode appeler lors de la premiere selection de location
 void UBTFoodSpotSelection::Begin()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Start"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Start"));
 
-	GoToEnemySpot();
+	GoToFoodSpot();
 }
 
-// Methode appeler si l'on se trouve au spot Enemy
 void UBTFoodSpotSelection::GoToFoodSpot()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, TEXT("FoodSpotLocation"));
@@ -74,14 +73,16 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
 }
 
-// Methode appeler si l'on se trouve au spot Food
 void UBTFoodSpotSelection::GoToEnemySpot()
 {
-	GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("EnemySpotLocation"));
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("EnemySpotLocation"));
 
 	AEnemySpot* NextSpot = Cast<AEnemySpot>(AICon->GetEnemySpot());
 
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
+
+	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, BlackboardComp->GetValueAsObject("LocationToGo")->GetName());
+	
 }
 
 

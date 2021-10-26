@@ -49,5 +49,11 @@ public:
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
 	UFUNCTION()
+	void SetEnemySpot(AActor* newEnemySpot);
+	
+	UFUNCTION()
+	void SetFoodSpots(TArray<AActor*> newFoodSpots);
+	
+	UFUNCTION()
 	void Interact();
 };
