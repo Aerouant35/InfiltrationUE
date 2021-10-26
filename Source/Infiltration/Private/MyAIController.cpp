@@ -5,10 +5,12 @@
 
 #include "AICharacter.h"
 #include "EnemySpot.h"
+#include "NavigationSystem.h"
 #include "PlayerCharacter.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
+#include "NavigationSystem.h"
 
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -134,11 +136,9 @@ FVector AMyAIController::GetSupposedPlayerPosition(APlayerCharacter* Player)
 	FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
 
 	// Avoid being outside of the playground
-	if(SupposedPlayerLocation.X > 2500.f) { SupposedPlayerLocation.X = 2500.f; }
-	if(SupposedPlayerLocation.X < -500.f) { SupposedPlayerLocation.X = -500.f; }
-	if(SupposedPlayerLocation.Y > 3500.f) { SupposedPlayerLocation.Y = 3500.f; }
-	if(SupposedPlayerLocation.Y < -500.f) { SupposedPlayerLocation.Y = -500.f; }
-
-	return SupposedPlayerLocation;
+	FNavLocation NavLocation;
+	UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+	NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
+	return NavLocation.Location;
 }
 
