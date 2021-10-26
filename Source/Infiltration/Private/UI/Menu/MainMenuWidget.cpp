@@ -22,7 +22,7 @@ void UMainMenuWidget::NativeConstruct()
 
 void UMainMenuWidget::PlayGame()
 {
-	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("Dungeon")));
+	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("Level1")));
 }
 
 void UMainMenuWidget::HowToPlayDisplay()
