@@ -31,9 +31,6 @@ protected:
 public:
 
 	UFUNCTION()
-	void Begin();
-
-	UFUNCTION()
 	void GoToFoodSpot();
 
 	UFUNCTION()

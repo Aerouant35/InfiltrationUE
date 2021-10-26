@@ -81,7 +81,7 @@ void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
 
 void AAICharacter::TimerPickUpAnim()
 {
-	//GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	CarryFood->PickUp(HoldingComponent);
 }
 

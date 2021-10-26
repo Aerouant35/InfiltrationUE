@@ -19,15 +19,11 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 		BlackboardComp = AICon->GetBlackboardComp();
 		BlackboardLocation = BlackboardComp->GetValueAsObject("LocationToGo");
 
-		if(BlackboardLocation == nullptr)
-		{
-			Begin();
-		}
-		else if(BlackboardLocation->IsA(AEnemySpot::StaticClass()))
+		if(BlackboardLocation == nullptr || AICon->GetAICharacter()->GetHasFood())
 		{
 			GoToFoodSpot();
 		}
-		else if(BlackboardLocation->IsA(AFoodSpot::StaticClass()))
+		else
 		{
 			GoToEnemySpot();
 		}
@@ -36,14 +32,6 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 	}
 
 	return EBTNodeResult::Failed;
-}
-
-// Methode appeler lors de la premiere selection de location
-void UBTFoodSpotSelection::Begin()
-{
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Yellow, TEXT("Start"));
-
-	GoToFoodSpot();
 }
 
 void UBTFoodSpotSelection::GoToFoodSpot()
