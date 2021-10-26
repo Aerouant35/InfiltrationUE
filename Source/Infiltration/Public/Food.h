@@ -33,7 +33,7 @@ public:
 	UFUNCTION()
 		void SetPhysics(bool bIsGrab);
 	UFUNCTION()
-		void SetCollision(bool bIsGrab);
+		void SetDynamicCollision(bool bIsGrab);
 
 	FORCEINLINE UStaticMeshComponent* GetStaticMeshComp() const { return StaticMeshComponent; }
 

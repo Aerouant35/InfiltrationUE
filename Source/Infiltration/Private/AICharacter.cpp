@@ -27,6 +27,12 @@ void AAICharacter::BeginPlay()
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAICharacter::OnComponentBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAICharacter::OnComponentEndOverlap);
 
+	// Avoid the camera to stop before the enemy
+	GetCapsuleComponent()->SetCollisionProfileName(TEXT("CharacterMesh"));
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
+	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+
 	// Ne possède pas de nourriture de base
 	SetHasFood(false, nullptr);
 }
