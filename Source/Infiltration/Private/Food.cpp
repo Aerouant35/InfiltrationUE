@@ -75,4 +75,5 @@ void AFood::SetDynamicCollision(bool bIsGrab)
 	StaticMeshComponent->SetCollisionProfileName(bIsGrab ? TEXT("NoCollision") : TEXT("BlockAllDynamic"));
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Visibility, ECR_Ignore);
+	StaticMeshComponent->SetCollisionResponseToChannel(ECC_Pawn, ECR_Ignore);
 }
