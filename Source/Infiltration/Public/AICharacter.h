@@ -17,7 +17,10 @@ public:
 	AAICharacter();
 
 	UPROPERTY(EditAnywhere, Category="AI")
-	class UBehaviorTree* BehaviorTree;
+	class UBehaviorTree* DefaultBehaviorTree;
+
+	UPROPERTY(EditAnywhere, Category="AI")
+	class UBehaviorTree* ChaseBehaviorTree;
 
 protected:
 	// Called when the game starts or when spawned
@@ -54,12 +57,15 @@ public:
 
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+	
+	UFUNCTION()
+		void Interact();
 
 	UFUNCTION()
-	void Interact();
+		void TimerPickUpAnim();
 
 	UFUNCTION()
-	void TimerPickUpAnim();
+		FVector GetCarryFoodLocation();
 
 	UFUNCTION()
 	void SetSpeed(float NewSpeed);

@@ -79,6 +79,11 @@ void AAICharacter::TimerPickUpAnim()
 	CarryFood->PickUp(HoldingComponent);
 }
 
+FVector AAICharacter::GetCarryFoodLocation()
+{
+	return CarryFood->GetActorLocation();
+}
+
 // Called to bind functionality to input
 void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {

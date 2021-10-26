@@ -5,7 +5,10 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "AICharacter.h"
+#include "PlayerCharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
+#include "Perception/AIPerceptionComponent.h"
+#include "Perception/AIPerceptionTypes.h"
 #include "MyAIController.generated.h"
 
 UCLASS()
@@ -19,7 +22,12 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Blackboard comp ref*/
 	UBlackboardComponent* BlackboardComp;
 
-	UBehaviorTreeComponent* BehaviorComp2;
+	bool bHasAlreadyDetected;
+
+	FTimerHandle UnusedHandle;
+
+	UPROPERTY(EditAnywhere)
+		UAIPerceptionComponent* AIPerceptionComponent; 
 
 	/*Blackboard keys*/
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
@@ -34,8 +42,21 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Enemyspot*/
 	AActor* EnemySpot;
 
+	AActor* ExitSpot;
+
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
+
+	virtual void BeginPlay() override;
+
+	UFUNCTION()
+		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
+
+	UFUNCTION()
+		void TimerKeepFoodLocation();
+
+	FVector GetSupposedPlayerPosition(APlayerCharacter* Player);
+
 
 public:
 
@@ -49,11 +70,15 @@ public:
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
 	UFUNCTION()
+		void Interact();
+
+	UFUNCTION()
+		AAICharacter* GetAICharacter();
+
+	UFUNCTION()
+		void SetDefaultBehaviourTree();
 	void SetEnemySpot(AActor* newEnemySpot);
 	
 	UFUNCTION()
 	void SetFoodSpots(TArray<AActor*> newFoodSpots);
-	
-	UFUNCTION()
-	void Interact();
 };

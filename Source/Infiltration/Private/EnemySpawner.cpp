@@ -4,6 +4,7 @@
 #include "EnemySpawner.h"
 
 #include "MyAIController.h"
+#include "BehaviorTree/BlackboardComponent.h"
 
 
 // Sets default values
