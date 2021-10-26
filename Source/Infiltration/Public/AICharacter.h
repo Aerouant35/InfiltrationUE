@@ -19,25 +19,14 @@ public:
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* BehaviorTree;
 
-	UPROPERTY(EditAnywhere, Category="Spots")
-	TArray<AActor*> FoodSpots;
-
-	UPROPERTY(EditAnywhere, Category="Spots")
-	AActor* EnemySpot;
-
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
 private:
 
-	float Speed;
-
-	UPROPERTY(EditAnywhere)
-	bool IsCarrying;
-
 	UPROPERTY()
-	bool IsWalking;
+	bool HasFood;
 
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
@@ -51,10 +40,12 @@ private:
 	UPROPERTY(EditAnywhere, Category="Holding Component")
 		float HoldingComponentOffset = 50.f;
 
-	UPROPERTY(EditAnywhere, Category="Character Speed")
-	float DefaultSpeed = 1.f;
-
-	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float DefaultSpeed = 600;
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float CarrySpeed = DefaultSpeed / 2;
+	
+	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimSequence* PickUpAnimationSequence;
 
 public:	
@@ -65,13 +56,23 @@ public:
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-	bool GetISCarrying();
-
-	UFUNCTION()
 	void Interact();
 
 	UFUNCTION()
 	void TimerPickUpAnim();
+
+	UFUNCTION()
+	void SetSpeed(float NewSpeed);
+
+	UFUNCTION()
+	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim);
+
+	UFUNCTION()
+	void SetHasFood(bool Value, AFood* NewFood);
+
+	FORCEINLINE bool GetHasFood() const { return HasFood; }
+
+	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
 
 	UFUNCTION()
 		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

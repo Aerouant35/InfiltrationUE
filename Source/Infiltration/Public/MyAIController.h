@@ -19,6 +19,8 @@ class INFILTRATION_API AMyAIController : public AAIController
 	/*Blackboard comp ref*/
 	UBlackboardComponent* BlackboardComp;
 
+	UBehaviorTreeComponent* BehaviorComp2;
+
 	/*Blackboard keys*/
 	UPROPERTY(EditDefaultsOnly, Category = "AI")
 	FName LocationToGoKey;
@@ -46,6 +48,12 @@ public:
 
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
+	UFUNCTION()
+	void SetEnemySpot(AActor* newEnemySpot);
+	
+	UFUNCTION()
+	void SetFoodSpots(TArray<AActor*> newFoodSpots);
+	
 	UFUNCTION()
 	void Interact();
 };
