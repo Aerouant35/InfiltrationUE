@@ -23,6 +23,11 @@ EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & O
 		{
 			GoToFoodSpot();
 		}
+		else if(AICon->GetAICharacter()->GetPatrolState())
+		{
+			GoToFoodSpot();
+			AICon->GetAICharacter()->DecrementNumberOfPatrols();
+		}
 		else
 		{
 			GoToEnemySpot();
@@ -55,10 +60,15 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 
 		//Cast because Array contains AActor*
 		NextSpot = Cast<AFoodSpot>(AvailableFoodSpots[RandomIndex]);
-	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Ne choisit pas un spot qui a déjà de la nourriture ou qui correspond au précédent
+	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Choisit un spot qui n'a pas de la nourriture ou et qui ne correspond pas au précédent
+
+	// /!\ Si le nombre de spot est égale ou inférieur au nombre de nourriture max d'un level alors le jeu peu crash /!\
 
 	//Update next location in blackboard
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
+
+	//Update AICon's destination
+	AICon->SetCurrentSpot(NextSpot);
 }
 
 void UBTFoodSpotSelection::GoToEnemySpot()
@@ -68,7 +78,7 @@ void UBTFoodSpotSelection::GoToEnemySpot()
 	AEnemySpot* NextSpot = Cast<AEnemySpot>(AICon->GetEnemySpot());
 
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
-
+	
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, BlackboardComp->GetValueAsObject("LocationToGo")->GetName());
 	
 }

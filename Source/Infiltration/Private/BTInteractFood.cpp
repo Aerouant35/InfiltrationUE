@@ -7,7 +7,8 @@ EBTNodeResult::Type UBTInteractFood::ExecuteTask(UBehaviorTreeComponent & OwnerC
 {
 	AICon = Cast<AMyAIController>(OwnerComp.GetAIOwner());
 
-	if(AICon)
+	// Dépose la nourriture si l'IA en possède et si le spot n'en possède pas
+	if(AICon->GetAICharacter()->GetHasFood()) // && !AICon->GetCurrentSpot()->HasAFood
 	{
 		//BlackboardComp = AICon->GetBlackboardComp();
 

@@ -31,6 +31,13 @@ private:
 	UPROPERTY()
 	bool HasFood;
 
+	// Bool qui defini si l'IA doit aller dans les spots sans nourriture
+	UPROPERTY()
+	bool PatrolState;
+
+	UPROPERTY()
+	int NumberOfPatrols;
+
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
 	// Actual food AI is carrying
@@ -74,9 +81,19 @@ public:
 	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim);
 
 	UFUNCTION()
-	void SetHasFood(bool Value, AFood* NewFood);
+	void SetHasFood(bool NewValue, AFood* NewFood);
+
+	UFUNCTION()
+	void SetPatrolState(bool Activate, int NewNumberOfPatrols);
+
+	UFUNCTION()
+	void DecrementNumberOfPatrols() { NumberOfPatrols--; if(NumberOfPatrols <= 0) { PatrolState = false; }};
 
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
+
+	FORCEINLINE bool GetPatrolState() const { return PatrolState; }
+
+	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
 
 	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
 

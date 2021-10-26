@@ -5,6 +5,7 @@
 #include "CoreMinimal.h"
 #include "AIController.h"
 #include "AICharacter.h"
+#include "FoodSpot.h"
 #include "PlayerCharacter.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "Perception/AIPerceptionComponent.h"
@@ -34,14 +35,22 @@ class INFILTRATION_API AMyAIController : public AAIController
 	FName LocationToGoKey;
 
 	/*AIChar*/
+	UPROPERTY()
 	AAICharacter* AIChar;
 
 	/*Foodspot storage*/
+	UPROPERTY()
 	TArray<AActor*> FoodSpots;
 
+	/*Enregistre le spot de ma destination*/
+	UPROPERTY()
+	AFoodSpot* CurrentSpot;
+
 	/*Enemyspot*/
+	UPROPERTY()
 	AActor* EnemySpot;
 
+	UPROPERTY()
 	AActor* ExitSpot;
 
 	/*Blackboard Initialize and start behavior tree*/
@@ -69,6 +78,8 @@ public:
 
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
+	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentSpot; }
+
 	UFUNCTION()
 		void Interact();
 
@@ -76,9 +87,12 @@ public:
 		AAICharacter* GetAICharacter();
 
 	UFUNCTION()
+		void SetCurrentSpot(AFoodSpot* NewCurrentSpot) { CurrentSpot = NewCurrentSpot; };
+
+	UFUNCTION()
 		void SetDefaultBehaviourTree();
-	void SetEnemySpot(AActor* newEnemySpot);
+	void SetEnemySpot(AActor* NewEnemySpot);
 	
 	UFUNCTION()
-	void SetFoodSpots(TArray<AActor*> newFoodSpots);
+	void SetFoodSpots(TArray<AActor*> NewFoodSpots);
 };

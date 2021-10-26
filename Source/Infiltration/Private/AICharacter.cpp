@@ -60,10 +60,10 @@ void AAICharacter::Interact()
 	}
 }
 
-void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
+void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
 {
-	HasFood = Value;
-	if(Value)
+	HasFood = NewValue;
+	if(NewValue)
 	{
 		CarryFood = NewFood;
 		SetSpeed(DefaultSpeed * 0.5f);
@@ -77,6 +77,12 @@ void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
 			CarryFood->Drop();
 		}
 	}
+}
+
+void AAICharacter::SetPatrolState(bool Activate, int NewNumberOfPatrols)
+{
+	PatrolState = Activate;
+	NumberOfPatrols = NewNumberOfPatrols;
 }
 
 void AAICharacter::TimerPickUpAnim()
