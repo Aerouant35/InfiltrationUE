@@ -42,40 +42,7 @@ void UMenuOptionsWidget::Return()
 	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->OptionsToMainMenu();
 }
 
-FInputActionKeyMapping UMenuOptionsWidget::GetActionMapping(FString KeyName) const
-{
-	TArray<FInputActionKeyMapping> OutMappings;
-	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
-
-	//check(OutMappings.Num() < 1);
-	return OutMappings[0];
-}
-
-FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMapping(FString KeyName, const bool bPositiveScale) const
-{
-	TArray<FInputAxisKeyMapping> OutMappings;
-	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
-
-	FInputAxisKeyMapping KeyMapping;
-	
-	for (const auto Mapping : OutMappings)
-	{
-		if (bPositiveScale)
-		{
-			if (Mapping.Scale > 0)
-			{
-				KeyMapping = Mapping;
-			}
-		}
-		else
-		{
-			KeyMapping = Mapping;
-		}
-	}
-
-	return KeyMapping;
-}
-
+#pragma region KeyRebindButton
 void UMenuOptionsWidget::OnInteractKeySelected(const FInputChord InputChord)
 {
 	if (IsAvailableKey(InputChord.Key))
@@ -140,7 +107,45 @@ void UMenuOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, NegativeScale));	
 	}
 }
+#pragma endregion 
 
+#pragma region GetAction/AxisMapping=
+FInputActionKeyMapping UMenuOptionsWidget::GetActionMapping(FString KeyName) const
+{
+	TArray<FInputActionKeyMapping> OutMappings;
+	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
+
+	//check(OutMappings.Num() < 1);
+	return OutMappings[0];
+}
+
+FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMapping(FString KeyName, const bool bPositiveScale) const
+{
+	TArray<FInputAxisKeyMapping> OutMappings;
+	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
+
+	FInputAxisKeyMapping KeyMapping;
+	
+	for (const auto Mapping : OutMappings)
+	{
+		if (bPositiveScale)
+		{
+			if (Mapping.Scale > 0)
+			{
+				KeyMapping = Mapping;
+			}
+		}
+		else
+		{
+			KeyMapping = Mapping;
+		}
+	}
+
+	return KeyMapping;
+}
+#pragma endregion 
+
+#pragma region ErrorKey
 bool UMenuOptionsWidget::IsAvailableKey(const FKey Key)
 {
 	InputSettings = UInputSettings::GetInputSettings();
@@ -181,3 +186,4 @@ void UMenuOptionsWidget::ErrorKey(const FString NameMapping, const bool bPositiv
 			LeftKeySelector->SetSelectedKey(GetAxisMapping(NameMapping, bPositiveScale).Key);
 	}
 }
+#pragma endregion 

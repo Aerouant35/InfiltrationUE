@@ -15,12 +15,15 @@ UCLASS()
 class INFILTRATION_API UMenuOptionsWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+	#pragma region ConstVariables
 	const FString MappingName[3] {TEXT("Interact"), TEXT("MoveForward"), TEXT("MoveRight")};
     	
     const short PositiveScale = 1;
     const short NegativeScale = -1;
+	#pragma endregion 
 
+	#pragma region Variables
     UPROPERTY()
     UInputSettings* InputSettings;
 
@@ -47,6 +50,7 @@ class INFILTRATION_API UMenuOptionsWidget : public UUserWidget
 
     UPROPERTY(EditAnywhere, meta = (BindWidget))
     class UButton* ErrorKeyBtn;
+	#pragma endregion 
 
 public:
 	UMenuOptionsWidget(const FObjectInitializer& ObjectInitializer);
@@ -56,13 +60,8 @@ private:
 
 	UFUNCTION()
 	void Return();
-	
-	UFUNCTION()
-	FInputActionKeyMapping GetActionMapping(FString KeyName) const;
 
-	UFUNCTION()
-	FInputAxisKeyMapping GetAxisMapping(FString KeyName, bool bPositiveScale) const;
-
+	#pragma region KeyRebindButton
 	UFUNCTION()
 	void OnInteractKeySelected(FInputChord InputChord);
 	
@@ -77,7 +76,17 @@ private:
 	
 	UFUNCTION()
 	void OnLeftKeySelected(FInputChord InputChord);
-	
+	#pragma endregion 
+
+	#pragma region GetAction/AxisMapping
+	UFUNCTION()
+	FInputActionKeyMapping GetActionMapping(FString KeyName) const;
+
+	UFUNCTION()
+	FInputAxisKeyMapping GetAxisMapping(FString KeyName, bool bPositiveScale) const;
+	#pragma endregion 
+
+	#pragma region ErrorKey
 	UFUNCTION()
 	bool IsAvailableKey(FKey Key);
 
@@ -89,4 +98,5 @@ private:
 	{
 		CanvasPanelErrorKey->SetVisibility(ESlateVisibility::Hidden);
 	}
+	#pragma endregion 
 };

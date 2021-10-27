@@ -51,8 +51,8 @@ void UOptionsWidget::OnInteractKeySelected(const FInputChord InputChord)
 	}
 	else
 	{
-		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[0], false));
-		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[0]), InputChord.Key, NegativeScale));	
+		InputSettings->RemoveActionMapping(GetActionMapping(MappingName[0]));
+		InputSettings->AddActionMapping(FInputActionKeyMapping(static_cast<FName>(MappingName[0]), InputChord.Key));	
 	}
 }
 
