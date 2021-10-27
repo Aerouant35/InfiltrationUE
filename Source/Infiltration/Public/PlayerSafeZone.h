@@ -7,11 +7,23 @@
 #include "GameFramework/Actor.h"
 #include "PlayerSafeZone.generated.h"
 
+USTRUCT()
+struct FFoodShelf
+{
+	GENERATED_BODY()
+
+	UPROPERTY(EditAnywhere)
+	TArray<AActor*> FoodMeshes;
+};
+
 UCLASS()
 class INFILTRATION_API APlayerSafeZone : public AActor
 {
 	GENERATED_BODY()
 
+	UPROPERTY(EditAnywhere)
+	TArray<FFoodShelf> FoodShelves;
+	
 	UPROPERTY(EditDefaultsOnly)
 		UBoxComponent* BoxComponent;
 		
@@ -34,5 +46,6 @@ public:
 		void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
-
+	UFUNCTION()
+	void FillShelf(uint8 CurrentFood);
 };

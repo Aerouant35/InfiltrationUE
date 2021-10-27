@@ -40,6 +40,11 @@ public:
 		return NbFoodWin;
 	}
 
+	float GetCurrentNbFood() const
+	{
+		return CurrentScore;
+	}
+
 	TArray<AFoodSpot*> GetFoodSpots() const
 	{
 		return FoodSpots;
