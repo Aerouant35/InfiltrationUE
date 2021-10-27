@@ -22,6 +22,7 @@ void AEnemySpot::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AEnemySpot::OnComponentBeginOverlap);
+	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AEnemySpot::OnComponentEndOverlap);
 }
 
 // Called every frame
@@ -31,23 +32,59 @@ void AEnemySpot::Tick(float DeltaTime)
 
 }
 
+void AEnemySpot::DestroyEnemy()
+{
+	if(EnemyRef1 != nullptr)
+	{
+		EnemyRef1->Destroy();
+	}
+	else if(EnemyRef2 != nullptr)
+	{
+		EnemyRef2->Destroy();
+	}
+	else if(EnemyRef3 != nullptr)
+	{
+		EnemyRef3->Destroy();
+	}
+}
+
 /// Regarde si une nourriture est présent dans sa zone de collision
 void AEnemySpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->IsA(AAICharacter::StaticClass()))
+	if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef1 == nullptr)
 	{
-		HasAEnemy = true;
-		EnemyRef = Cast<AAICharacter>(OtherActor);
+		NumberOfEnemys++;
+		EnemyRef1 = Cast<AAICharacter>(OtherActor);
+	}
+	else if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef2 == nullptr)
+	{
+		NumberOfEnemys++;
+		EnemyRef2 = Cast<AAICharacter>(OtherActor);
+	}
+	else if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef3 == nullptr)
+	{
+		NumberOfEnemys++;
+		EnemyRef3 = Cast<AAICharacter>(OtherActor);
 	}
 }
 
 void AEnemySpot::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
-	if(OtherActor->IsA(AAICharacter::StaticClass()))
+	if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef1 == OtherActor)
 	{
-		HasAEnemy = false;
-		EnemyRef = nullptr;
+		NumberOfEnemys--;
+		EnemyRef1 = nullptr;
+	}
+	else if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef2 == OtherActor)
+	{
+		NumberOfEnemys--;
+		EnemyRef2 = nullptr;
+	}
+	else if(OtherActor->IsA(AAICharacter::StaticClass()) && EnemyRef3 == OtherActor)
+	{
+		NumberOfEnemys--;
+		EnemyRef3 = nullptr;
 	}
 }

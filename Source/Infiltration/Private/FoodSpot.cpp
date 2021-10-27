@@ -21,6 +21,7 @@ void AFoodSpot::BeginPlay()
 	Super::BeginPlay();
 
 	SphereComponent->OnComponentBeginOverlap.AddDynamic(this, &AFoodSpot::OnComponentBeginOverlap);
+	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AFoodSpot::OnComponentEndOverlap);
 }
 
 // Called every frame
@@ -36,7 +37,11 @@ void AFoodSpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent
 {
 	if(OtherActor->IsA(AFood::StaticClass()))
 	{
+		NumberOfFoods+=1;
 		HasAFood = true;
+		//FirstFood = Cast<AFood>(OtherActor);
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("ADD"));
 	}
 }
 
@@ -46,5 +51,8 @@ void AFoodSpot::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, 
 	if(OtherActor->IsA(AFood::StaticClass()))
 	{
 		HasAFood = false;
+		NumberOfFoods--;
+
+		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("REMOVE"));
 	}
 }
