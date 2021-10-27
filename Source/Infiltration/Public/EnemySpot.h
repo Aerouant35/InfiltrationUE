@@ -42,7 +42,7 @@ public:
 	FORCEINLINE int GetNumberOfEnemys() const { return NumberOfEnemys; };
 
 	UFUNCTION()
-	void DestroyEnemy();
+	AAICharacter* DestroyEnemy();
 
 private:
 

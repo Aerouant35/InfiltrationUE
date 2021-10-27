@@ -3,6 +3,8 @@
 
 #include "EnemySpawner.h"
 
+#include "Infiltration/InfiltrationGameModeBase.h"
+
 
 // Sets default values
 AEnemySpawner::AEnemySpawner()
@@ -15,6 +17,8 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->RegisterSpawner(this);
 
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
@@ -29,6 +33,8 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
+	// SpawnedEnemy = RemoveDestroyedEnemy();
+
 	// Si l'ennemi reviens alors je le détruit pour en recrée un autre
 	if(EnemySpot->GetNumberOfEnemys() > 0)
 	{
@@ -40,7 +46,7 @@ void AEnemySpawner::SpawnEnemy()
 {
 	if(EnemyToSpawn)
 	{
-		FVector Location = FVector(EnemySpot->GetActorLocation().X, EnemySpot->GetActorLocation().Y + 300, EnemySpot->GetActorLocation().Z);
+		FVector Location = FVector(EnemySpot->GetActorLocation().X + 300, EnemySpot->GetActorLocation().Y, EnemySpot->GetActorLocation().Z);
 		FRotator Rotation = FRotator (0,0,0);
 	
 		AAICharacter* AICharRef = GetWorld()->SpawnActor<AAICharacter>(EnemyToSpawn, Location, Rotation);
@@ -52,9 +58,11 @@ void AEnemySpawner::SpawnEnemy()
 		// Attribut le BP_anim au personnage
 		AICharRef->SetAnimation(BP_Anim);
 
+		SpawnedEnemy.Add(AICharRef);
+
 		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
 		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		if(false)
+		if(true)
 		{
 			GiveFood(AICharRef);
 		}
@@ -85,7 +93,11 @@ void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
 // Detruit l'enemy dans le spot enemy et en recrée un nouveau
 void AEnemySpawner::RecreateAnEnemy()
 {
-	EnemySpot->DestroyEnemy();
+	AAICharacter* AICharToDestroy = EnemySpot->DestroyEnemy();
+	if(AICharToDestroy)
+	{
+		SpawnedEnemy.Remove(AICharToDestroy);
+	}
 	
 	// Spawn un ennemi entre 0 et 5s après
 	switch (SpawnIndice)
@@ -103,5 +115,28 @@ void AEnemySpawner::RecreateAnEnemy()
 			SpawnIndice = 0;
 			break;
 	}
+}
+
+void AEnemySpawner::StopSpawner()
+{
+	// Stop all the timer that can spawn enemy
+	FirstTimerHandle.Invalidate();
+	SecondTimerHandle.Invalidate();
+	ThirdTimerHandle.Invalidate();
+	FourthTimerHandle.Invalidate();
+	FifthTimerHandle.Invalidate();
+}
+
+TArray<AAICharacter*> AEnemySpawner::RemoveDestroyedEnemy()
+{
+	TArray<AAICharacter*> NewArray;
+	for (int32 i = 0; i < SpawnedEnemy.Num(); ++i)
+	{
+		if (SpawnedEnemy[i] != nullptr)
+		{
+			NewArray.Add(SpawnedEnemy[i]);
+		}
+	}
+	return NewArray;
 }
 

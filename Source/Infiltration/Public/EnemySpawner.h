@@ -58,7 +58,7 @@ public:
 	TSubclassOf<UAnimInstance> BP_Anim;
 
 	UFUNCTION()
-	TArray<AAICharacter*> GetSpawnedEnemy();
+		FORCEINLINE TArray<AAICharacter*> GetSpawnedEnemy() const { return SpawnedEnemy; }
 		
 	UFUNCTION()
 	void SpawnEnemy();
@@ -71,4 +71,7 @@ public:
 
 	UFUNCTION()
 	void StopSpawner();
+
+	UFUNCTION()
+	TArray<AAICharacter*> RemoveDestroyedEnemy();
 };

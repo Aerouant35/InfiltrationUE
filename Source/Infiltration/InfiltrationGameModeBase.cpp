@@ -103,7 +103,10 @@ void AInfiltrationGameModeBase::IncrementReturnedFood()
 				{
 					for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
 					{
-						AICharacter->HasLost();
+						if(AICharacter != nullptr)
+						{
+							AICharacter->HasLost();
+						}
 					}
 					EnemySpawner->StopSpawner();
 				}

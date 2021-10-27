@@ -31,6 +31,9 @@ private:
 	UPROPERTY()
 	bool HasFood;
 
+	bool bHasWon = false;
+	bool bHasLost = false;
+
 	// Bool qui defini si l'IA doit aller dans les spots sans nourriture
 	UPROPERTY()
 	bool PatrolState;
@@ -92,6 +95,17 @@ public:
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
 
 	bool GetPatrolState();
+
+	UFUNCTION()
+		void HasLost();
+	UFUNCTION()
+		void HasWon();
+
+	void StopController();
+
+	FORCEINLINE bool GetHasWon() const { return bHasWon; }
+
+	FORCEINLINE bool GetHasLost() const { return bHasLost; }
 
 	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
 
