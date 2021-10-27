@@ -38,6 +38,7 @@ class INFILTRATION_API UMainMenuWidget : public UUserWidget
 public:
 	UMainMenuWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 

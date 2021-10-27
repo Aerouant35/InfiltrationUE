@@ -9,7 +9,6 @@
 
 UOptionsWidget::UOptionsWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
-
 }
 
 void UOptionsWidget::NativeConstruct()
@@ -19,11 +18,16 @@ void UOptionsWidget::NativeConstruct()
 	InputSettings = UInputSettings::GetInputSettings();
 	
 	InteractionKeySelector->SetSelectedKey(GetActionMapping(MappingName[0]).Key);
-	ForwardKeySelector->SetSelectedKey(GetAxisMapping(MappingName[1], true).Key);
-	BackwardKeySelector->SetSelectedKey(GetAxisMapping(MappingName[1], false).Key);
-	RightKeySelector->SetSelectedKey(GetAxisMapping(MappingName[2], true).Key);
-	LeftKeySelector->SetSelectedKey(GetAxisMapping(MappingName[2], false).Key);
+	ForwardKeySelector->SetSelectedKey(GetAxisMappingPositive(MappingName[1]).Key);
+	BackwardKeySelector->SetSelectedKey(GetAxisMappingNegative(MappingName[1]).Key);
+	RightKeySelector->SetSelectedKey(GetAxisMappingPositive(MappingName[2]).Key);
+	LeftKeySelector->SetSelectedKey(GetAxisMappingNegative(MappingName[2]).Key);
+	
+	DisableErrorCanvas();
+}
 
+void UOptionsWidget::InitDelegate()
+{
 	InteractionKeySelector->OnKeySelected.AddDynamic(this, &UOptionsWidget::OnInteractKeySelected);
 	ForwardKeySelector->OnKeySelected.AddDynamic(this, &UOptionsWidget::OnForwardKeySelected);
 	BackwardKeySelector->OnKeySelected.AddDynamic(this, &UOptionsWidget::OnBackwardKeySelected);
@@ -31,8 +35,6 @@ void UOptionsWidget::NativeConstruct()
 	LeftKeySelector->OnKeySelected.AddDynamic(this, &UOptionsWidget::OnLeftKeySelected);
 
 	ReturnBtn->OnClicked.AddDynamic(this, &UOptionsWidget::Return);
-
-	DisableErrorCanvas();
 	ErrorKeyBtn->OnClicked.AddDynamic(this, &UOptionsWidget::DisableErrorCanvas);
 }
 
@@ -64,7 +66,7 @@ void UOptionsWidget::OnForwardKeySelected(const FInputChord InputChord)
 	}
 	else
 	{
-		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], true));
+		InputSettings->RemoveAxisMapping(GetAxisMappingPositive(MappingName[1]));
 		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, PositiveScale));	
 	}
 }
@@ -77,7 +79,7 @@ void UOptionsWidget::OnBackwardKeySelected(const FInputChord InputChord)
 	}
 	else
 	{
-		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[1], false));
+		InputSettings->RemoveAxisMapping(GetAxisMappingNegative(MappingName[1]));
 		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[1]), InputChord.Key, NegativeScale));	
 	}
 }
@@ -90,7 +92,7 @@ void UOptionsWidget::OnRightKeySelected(const FInputChord InputChord)
 	}
 	else
 	{
-		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], true));
+		InputSettings->RemoveAxisMapping(GetAxisMappingPositive(MappingName[2]));
 		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, PositiveScale));	
 	}
 }
@@ -103,41 +105,53 @@ void UOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 	}
 	else
 	{
-		InputSettings->RemoveAxisMapping(GetAxisMapping(MappingName[2], false));
+		InputSettings->RemoveAxisMapping(GetAxisMappingNegative(MappingName[2]));
 		InputSettings->AddAxisMapping(FInputAxisKeyMapping(static_cast<FName>(MappingName[2]), InputChord.Key, NegativeScale));	
 	}
 }
 #pragma endregion 
 
 #pragma region GetAction/AxisMapping
-FInputActionKeyMapping UOptionsWidget::GetActionMapping(FString KeyName) const
+FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName) 
 {
 	TArray<FInputActionKeyMapping> OutMappings;
 	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
 
-	//check(OutMappings.Num() < 1);
 	return OutMappings[0];
 }
 
-FInputAxisKeyMapping UOptionsWidget::GetAxisMapping(FString KeyName, const bool bPositiveScale) const
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyName)
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (const auto Mapping : OutMappings)
+	for (auto Mapping : OutMappings)
 	{
-		if (bPositiveScale)
-		{
-			if (Mapping.Scale > 0)
-			{
-				KeyMapping = Mapping;
-			}
-		}
-		else
+		if (Mapping.Scale > 0)
 		{
 			KeyMapping = Mapping;
+			break;
+		}
+	}
+
+	return KeyMapping;
+}
+
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingNegative(const FString& KeyName)
+{
+	TArray<FInputAxisKeyMapping> OutMappings;
+	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
+
+	FInputAxisKeyMapping KeyMapping;
+	
+	for (auto Mapping : OutMappings)
+	{
+		if (Mapping.Scale < 0)
+		{
+			KeyMapping = Mapping;
+			break;
 		}
 	}
 
@@ -146,24 +160,33 @@ FInputAxisKeyMapping UOptionsWidget::GetAxisMapping(FString KeyName, const bool 
 #pragma endregion
 
 #pragma region ErrorKey
-bool UOptionsWidget::IsAvailableKey(const FKey Key)
+bool UOptionsWidget::IsAvailableKey(const FKey &Key)
 {
 	InputSettings = UInputSettings::GetInputSettings();
-
+	bool bFind = false;
+	
 	for (auto ActionKeyMapping : InputSettings->GetActionMappings())
 	{
-		if (ActionKeyMapping.Key == Key) return true;	
+		if (ActionKeyMapping.Key.GetFName() == Key.GetFName())
+		{
+			bFind = true;
+			break;
+		}	
 	}
 
 	for (auto AxisKeyMapping : InputSettings->GetAxisMappings())
 	{
-		if (AxisKeyMapping.Key == Key) return true;
+		if (AxisKeyMapping.Key.GetFName() == Key.GetFName())
+		{
+			bFind = true;
+			break;
+		}
 	}
 
-	return false;
+	return bFind;
 }
 
-void UOptionsWidget::ErrorKey(const FString NameMapping, const bool bPositiveScale) const
+void UOptionsWidget::ErrorKey(const FString NameMapping, const bool bPositiveScale)
 {
 	CanvasPanelErrorKey->SetVisibility(ESlateVisibility::SelfHitTestInvisible);
 
@@ -174,16 +197,16 @@ void UOptionsWidget::ErrorKey(const FString NameMapping, const bool bPositiveSca
 	else if (NameMapping == MappingName[1])
 	{
 		if (bPositiveScale)
-			ForwardKeySelector->SetSelectedKey(GetAxisMapping(NameMapping, bPositiveScale).Key);
+			ForwardKeySelector->SetSelectedKey(GetAxisMappingPositive(NameMapping).Key);
 		else
-			BackwardKeySelector->SetSelectedKey(GetAxisMapping(NameMapping, bPositiveScale).Key);
+			BackwardKeySelector->SetSelectedKey(GetAxisMappingNegative(NameMapping).Key);
 	}
 	else if (NameMapping == MappingName[2])
 	{
 		if (bPositiveScale)
-			RightKeySelector->SetSelectedKey(GetAxisMapping(NameMapping, bPositiveScale).Key);
+			RightKeySelector->SetSelectedKey(GetAxisMappingPositive(NameMapping).Key);
 		else
-			LeftKeySelector->SetSelectedKey(GetAxisMapping(NameMapping, bPositiveScale).Key);
+			LeftKeySelector->SetSelectedKey(GetAxisMappingNegative(NameMapping).Key);
 	}
 }
 #pragma endregion
