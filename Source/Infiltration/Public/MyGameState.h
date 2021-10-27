@@ -5,14 +5,14 @@
 #include "CoreMinimal.h"
 #include "EnemySpot.h"
 #include "FoodSpot.h"
-#include "GameFramework/GameState.h"
+#include "GameFramework/GameStateBase.h"
 #include "MyGameState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INFILTRATION_API AMyGameState : public AGameState
+class INFILTRATION_API AMyGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
@@ -23,6 +23,8 @@ class INFILTRATION_API AMyGameState : public AGameState
 	TArray<AFoodSpot*> FoodSpots;
 
 public:
+
+	AMyGameState();
 
 	UFUNCTION()
 	bool ThereIsAFreeFoodSpot();

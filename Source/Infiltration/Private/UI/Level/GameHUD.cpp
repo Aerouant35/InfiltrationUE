@@ -32,21 +32,25 @@ void AGameHUD::InitWidget()
 	if (VictoryWidgetClass)
 	{
 		VictoryWidget = CreateWidget<UVictoryWidget>(GetWorld(), VictoryWidgetClass);
+		VictoryWidget->InitDelegate();
 	}
 
 	if (DefeatWidgetClass)
 	{
 		DefeatWidget = CreateWidget<UDefeatWidget>(GetWorld(), DefeatWidgetClass);
+		DefeatWidget->InitDelegate();
 	}
 
 	if (PauseWidgetClass)
 	{
 		PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+		PauseWidget->InitDelegate();
 	}
 
 	if (OptionsWidgetClass)
 	{
 		OptionsWidget = CreateWidget<UOptionsWidget>(GetWorld(), OptionsWidgetClass);
+		OptionsWidget->InitDelegate();
 	}
 }
 

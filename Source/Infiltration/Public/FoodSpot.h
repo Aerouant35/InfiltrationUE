@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "Food.h"
 #include "Components/SphereComponent.h"
 #include "Engine/TargetPoint.h"
 #include "FoodSpot.generated.h"
@@ -34,8 +35,19 @@ public:
 	UPROPERTY(VisibleAnywhere)
 	bool HasAFood;
 
+	UPROPERTY()
+	AFood* FirstFood;
+
+	UPROPERTY()
+	AFood* SecondFood;
+
+	FORCEINLINE int GetNumberOfFoods() const { return NumberOfFoods; };
+
 private:
 
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfFoods = 0;
+	
 	UFUNCTION()
 		void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
 			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);

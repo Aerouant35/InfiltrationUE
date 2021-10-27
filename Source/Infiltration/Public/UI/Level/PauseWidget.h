@@ -30,6 +30,7 @@ class INFILTRATION_API UPauseWidget : public UUserWidget
 public:
 	UPauseWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 

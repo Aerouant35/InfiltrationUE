@@ -23,6 +23,7 @@ class INFILTRATION_API UVictoryWidget : public UUserWidget
 public:
 	UVictoryWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 

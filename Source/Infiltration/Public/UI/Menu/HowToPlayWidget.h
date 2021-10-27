@@ -20,6 +20,7 @@ class INFILTRATION_API UHowToPlayWidget : public UUserWidget
 public:
 	UHowToPlayWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 	

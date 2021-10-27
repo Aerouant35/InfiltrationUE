@@ -30,16 +30,21 @@ public:
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
-	UPROPERTY(EditAnywhere, Category="Animation boolean")
-		bool bIsCarrying;
-
-	UPROPERTY(VisibleAnywhere)
-		bool bHasWon = false;
-	UPROPERTY(VisibleAnywhere)
-		bool bHasLost = false;
-
 	UFUNCTION()
 		AFood* DropFood();
+
+	UFUNCTION()
+		void HasWon();
+	UFUNCTION()
+		void HasLost();
+	UFUNCTION()
+		bool GetHasWon();
+	UFUNCTION()
+		bool GetHasLost();
+	UFUNCTION()
+		bool GetIsCarrying();
+	UFUNCTION()
+		void StopMovement();
 	
 	private:
 	
@@ -65,6 +70,14 @@ public:
 	float CurrentSpeed;
 	float DefaultSpeed = 1.f;
 
+	UPROPERTY(EditAnywhere, Category="Animation boolean")
+		bool bIsCarrying;
+
+	UPROPERTY(VisibleAnywhere)
+		bool bHasWon = false;
+	UPROPERTY(VisibleAnywhere)
+		bool bHasLost = false;
+
 	UPROPERTY(EditAnywhere, Category="Character Speed")
 		float WalkSpeed = 500.f;
 	
@@ -74,9 +87,9 @@ public:
 		float LookUpRate = 45.f;
 
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomInMax = 600.f;
+		float ZoomInMax = 200.f;
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomOutMax = 1000.f;
+		float ZoomOutMax = 600.f;
 
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
 		UAnimSequence* PickUpAnimationSequence;

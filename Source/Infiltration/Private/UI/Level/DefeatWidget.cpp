@@ -12,12 +12,15 @@ UDefeatWidget::UDefeatWidget(const FObjectInitializer& ObjectInitializer) : Supe
 {
 }
 
+void UDefeatWidget::InitDelegate()
+{
+	RestartBtn->OnClicked.AddDynamic(this, &UDefeatWidget::RestartGame);
+	QuitBtn->OnClicked.AddDynamic(this, &UDefeatWidget::QuitGame);
+}
+
 void UDefeatWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	RestartBtn->OnClicked.AddDynamic(this, &UDefeatWidget::RestartGame);
-	QuitBtn->OnClicked.AddDynamic(this, &UDefeatWidget::QuitGame);
 }
 
 void UDefeatWidget::RestartGame()

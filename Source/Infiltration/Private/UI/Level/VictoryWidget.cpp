@@ -12,12 +12,15 @@ UVictoryWidget::UVictoryWidget(const FObjectInitializer& ObjectInitializer) : Su
 {
 }
 
+void UVictoryWidget::InitDelegate()
+{
+	RestartBtn->OnClicked.AddDynamic(this, &UVictoryWidget::RestartGame);
+	QuitBtn->OnClicked.AddDynamic(this, &UVictoryWidget::QuitGame);
+}
+
 void UVictoryWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
-
-	RestartBtn->OnClicked.AddDynamic(this, &UVictoryWidget::RestartGame);
-	QuitBtn->OnClicked.AddDynamic(this, &UVictoryWidget::QuitGame);
 }
 
 void UVictoryWidget::RestartGame()

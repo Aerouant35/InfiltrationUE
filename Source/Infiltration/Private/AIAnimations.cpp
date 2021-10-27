@@ -24,6 +24,8 @@ void UAIAnimations::NativeUpdateAnimation(float DeltaSeconds)
 		{
 			IsWalking = !AIChar->GetVelocity().IsZero();
 			IsCarrying = AIChar->GetHasFood();
+			HasWon = AIChar->GetHasWon();
+			HasLost = AIChar->GetHasLost();
 		}
 	}
 }

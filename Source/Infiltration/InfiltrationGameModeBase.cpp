@@ -44,3 +44,75 @@ void AInfiltrationGameModeBase::Defeat()
 {
 	Cast<AGameHUD>(HUDClass)->ShowDefeatScreen();
 }
+
+void AInfiltrationGameModeBase::PlayerTouched()
+{
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if(PlayerController)
+	{
+		AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
+		if(GameHUD)
+		{
+			GameHUD->ShowDefeatScreen();
+
+			// Player : Lost
+			APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerController->GetPawn());
+			if(Player)
+			{
+				Player->HasLost();
+			}
+			
+			// AI : Won
+			if(EnemySpawner)
+			{
+				for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+				{
+					AICharacter->HasWon();
+				}
+				EnemySpawner->StopSpawner();
+			}
+		}
+	}
+}
+
+void AInfiltrationGameModeBase::IncrementReturnedFood()
+{
+	CurrentScore += 1;
+	
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	if(PlayerController)
+	{
+		AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
+		if(GameHUD)
+		{
+			GameHUD->UpdateProgressBarPercent(CurrentScore);
+			
+			if(CurrentScore == NbFoodWin)
+			{
+				GameHUD->ShowVictoryScreen();
+				
+				// Player : Won
+				APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerController->GetPawn());
+				if(Player)
+				{
+					Player->HasWon();
+				}
+				
+				// AI : Lose
+				if(EnemySpawner)
+				{
+					for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+					{
+						AICharacter->HasLost();
+					}
+					EnemySpawner->StopSpawner();
+				}
+			}
+		}
+	}
+}
+
+void AInfiltrationGameModeBase::RegisterSpawner(AEnemySpawner* Spawner)
+{
+	EnemySpawner = Spawner;
+}

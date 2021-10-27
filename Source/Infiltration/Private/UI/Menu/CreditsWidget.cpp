@@ -10,11 +10,15 @@ UCreditsWidget::UCreditsWidget(const FObjectInitializer& ObjectInitializer) : Su
 {
 }
 
+void UCreditsWidget::InitDelegate()
+{
+	ReturnBtn->OnClicked.AddDynamic(this, &UCreditsWidget::Return);
+}
+
 void UCreditsWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 
-	ReturnBtn->OnClicked.AddDynamic(this, &UCreditsWidget::Return);
 }
 
 void UCreditsWidget::Return()
