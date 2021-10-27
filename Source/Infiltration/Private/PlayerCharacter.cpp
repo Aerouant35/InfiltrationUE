@@ -161,6 +161,42 @@ AFood* APlayerCharacter::DropFood()
 	return CarryFood;
 }
 
+void APlayerCharacter::HasWon()
+{
+	bHasWon = true;
+	StopMovement();
+}
+
+void APlayerCharacter::HasLost()
+{
+	bHasLost = true;
+	StopMovement();
+}
+
+bool APlayerCharacter::GetHasWon()
+{
+	return bHasWon;
+}
+
+bool APlayerCharacter::GetHasLost()
+{
+	return bHasLost;
+}
+
+bool APlayerCharacter::GetIsCarrying()
+{
+	return bIsCarrying;
+}
+
+void APlayerCharacter::StopMovement()
+{
+	if(bIsCarrying)
+	{
+		DropFood();
+	}
+	DisableInput(GetWorld()->GetFirstPlayerController());
+}
+
 void APlayerCharacter::Interact()
 {
 	if(bCanPickUp || bIsCarrying)

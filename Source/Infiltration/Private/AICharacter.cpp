@@ -6,6 +6,7 @@
 #include "PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
+#include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
@@ -30,6 +31,7 @@ void AAICharacter::BeginPlay()
 	// Avoid the camera to stop before the enemy
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
+	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
@@ -79,6 +81,35 @@ void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
 	}
 }
 
+bool AAICharacter::GetHasLost()
+{
+	return bHasLost;
+}
+
+bool AAICharacter::GetHasWon()
+{
+	return bHasWon;
+}
+
+void AAICharacter::HasLost()
+{
+	bHasLost = true;
+	SetHasFood(false, nullptr);
+	StopController();
+}
+
+void AAICharacter::HasWon()
+{
+	bHasWon = true;
+	SetHasFood(false, nullptr);
+	StopController();
+}
+
+void AAICharacter::StopController()
+{
+	GetController()->UnPossess();	
+}
+
 void AAICharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
@@ -116,10 +147,11 @@ void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
 	}
 
-	// Si touche joueur : défaite
+	// If touch player
 	if(OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		// Game Over
+		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->PlayerTouched();
 	}
 }
 

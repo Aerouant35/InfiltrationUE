@@ -31,6 +31,11 @@ private:
 	UPROPERTY()
 	bool HasFood;
 
+	UPROPERTY()
+		bool bHasWon = false;
+	UPROPERTY()
+		bool bHasLost = false;
+
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
 	// Actual food AI is carrying
@@ -51,6 +56,9 @@ private:
 	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimSequence* PickUpAnimationSequence;
 
+	UFUNCTION()
+	void StopController();
+	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -75,6 +83,17 @@ public:
 
 	UFUNCTION()
 	void SetHasFood(bool Value, AFood* NewFood);
+
+	UFUNCTION()
+		bool GetHasLost();
+	UFUNCTION()
+		bool GetHasWon();
+
+	UFUNCTION()
+		void HasLost();
+	UFUNCTION()
+		void HasWon();
+
 
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
 
