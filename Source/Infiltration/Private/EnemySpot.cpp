@@ -32,20 +32,25 @@ void AEnemySpot::Tick(float DeltaTime)
 
 }
 
-void AEnemySpot::DestroyEnemy()
+AAICharacter* AEnemySpot::DestroyEnemy()
 {
+	AAICharacter* EnemyRef = nullptr;
 	if(EnemyRef1 != nullptr)
 	{
+		EnemyRef = EnemyRef1;
 		EnemyRef1->Destroy();
 	}
 	else if(EnemyRef2 != nullptr)
 	{
+		EnemyRef = EnemyRef2;
 		EnemyRef2->Destroy();
 	}
 	else if(EnemyRef3 != nullptr)
 	{
+		EnemyRef = EnemyRef3;
 		EnemyRef3->Destroy();
 	}
+	return EnemyRef;
 }
 
 /// Regarde si une nourriture est présent dans sa zone de collision
