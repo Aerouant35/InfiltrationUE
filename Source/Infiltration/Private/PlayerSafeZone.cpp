@@ -14,9 +14,7 @@ APlayerSafeZone::APlayerSafeZone()
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	BoxComponent->SetupAttachment(RootComponent);
-
-	CurrentScore = 0.0;
-
+	
 }
 
 // Called when the game starts or when spawned
@@ -40,26 +38,12 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 {
 	if(OtherActor->IsA(APlayerCharacter::StaticClass())) {
 		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
-		if(Player->bIsCarrying)
+		if(Player->GetIsCarrying())
 		{
 			AFood* Food = Player->DropFood();
 			Food->Destroy();
-			// Update score and progress bar
-			CurrentScore += 1;
-			APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-			AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
-			if(GameHUD)
-			{
-				GameHUD->UpdateProgressBarPercent(CurrentScore);
-			}
-			
-			if(CurrentScore == Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetNbFoodWin())
-			{
-				GameHUD->ShowVictoryScreen();
-				Player->bHasWon = true;
-				// Disable user input
-				Player->DisableInput(PlayerController);
-			}
+
+			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementReturnedFood();
 		}
 	}
 }

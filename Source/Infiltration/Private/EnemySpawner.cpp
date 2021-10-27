@@ -5,6 +5,7 @@
 
 #include "MyAIController.h"
 #include "BehaviorTree/BlackboardComponent.h"
+#include "Infiltration/InfiltrationGameModeBase.h"
 
 
 // Sets default values
@@ -19,6 +20,8 @@ AEnemySpawner::AEnemySpawner()
 void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
+
+	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->RegisterSpawner(this);
 
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
@@ -40,11 +43,16 @@ void AEnemySpawner::Tick(float DeltaTime)
 	}
 }
 
+TArray<AAICharacter*> AEnemySpawner::GetSpawnedEnemy()
+{
+	return SpawnedEnemy;
+}
+
 void AEnemySpawner::SpawnEnemy()
 {
 	if(EnemyToSpawn)
 	{
-		FVector Location = FVector(EnemySpot->GetActorLocation().X, EnemySpot->GetActorLocation().Y + 300, EnemySpot->GetActorLocation().Z);
+		FVector Location = FVector(EnemySpot->GetActorLocation().X + 300, EnemySpot->GetActorLocation().Y, EnemySpot->GetActorLocation().Z);
 		FRotator Rotation = FRotator (0,0,0);
 	
 		AAICharacter* AICharRef = GetWorld()->SpawnActor<AAICharacter>(EnemyToSpawn, Location, Rotation);
@@ -57,6 +65,8 @@ void AEnemySpawner::SpawnEnemy()
 		AICharRef->SetAnimation(BP_Anim);
 
 		GiveFood(AICharRef);
+
+		SpawnedEnemy.Add(AICharRef);
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("spawn"));
 	}
@@ -80,6 +90,7 @@ void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
 // Detruit l'enemy dans le spot enemy et en recrée un nouveau
 void AEnemySpawner::RecreateAnEnemy()
 {
+	SpawnedEnemy.Remove(EnemySpot->EnemyRef);
 	EnemySpot->EnemyRef->Destroy();
 	EnemySpot->HasAEnemy = false;
 
@@ -87,5 +98,11 @@ void AEnemySpawner::RecreateAnEnemy()
 	
 	// Spawn un ennemi entre 0 et 5s après
 	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
+}
+
+void AEnemySpawner::StopSpawner()
+{
+	TimerHandle.Invalidate();
+	SecondTimerHandle.Invalidate();
 }
 

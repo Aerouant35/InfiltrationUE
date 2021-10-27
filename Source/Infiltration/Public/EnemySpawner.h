@@ -28,6 +28,9 @@ private:
 	FTimerHandle TimerHandle;
 	FTimerHandle SecondTimerHandle;
 
+	UPROPERTY(VisibleAnywhere)
+	TArray<AAICharacter*> SpawnedEnemy;
+
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -48,6 +51,9 @@ public:
 	TSubclassOf<UAnimInstance> BP_Anim;
 
 	UFUNCTION()
+	TArray<AAICharacter*> GetSpawnedEnemy();
+		
+	UFUNCTION()
 	void SpawnEnemy();
 
 	UFUNCTION()
@@ -55,4 +61,7 @@ public:
 
 	UFUNCTION()
 	void RecreateAnEnemy();
+
+	UFUNCTION()
+	void StopSpawner();
 };

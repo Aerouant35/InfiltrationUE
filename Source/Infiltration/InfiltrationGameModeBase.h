@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "EnemySpawner.h"
 #include "Food.h"
 #include "FoodSpot.h"
 #include "GameFramework/GameModeBase.h"
@@ -26,6 +27,11 @@ class INFILTRATION_API AInfiltrationGameModeBase : public AGameModeBase
 	UPROPERTY(VisibleAnywhere, Category="Food")
 	TArray<AFoodSpot*> FoodSpots;
 
+	UPROPERTY(VisibleAnywhere)
+	float CurrentScore;
+
+	AEnemySpawner* EnemySpawner;
+
 public:
 	AInfiltrationGameModeBase();
 
@@ -46,5 +52,13 @@ public:
 	void Victory();
 
 	void Defeat();
+
+	UFUNCTION()
+		void PlayerTouched();
+
+	UFUNCTION()
+		void IncrementReturnedFood();
+	UFUNCTION()
+		void RegisterSpawner(AEnemySpawner* Spawner);
 	
 };
