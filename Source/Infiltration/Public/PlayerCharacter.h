@@ -87,9 +87,9 @@ public:
 		float LookUpRate = 45.f;
 
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomInMax = 600.f;
+		float ZoomInMax = 200.f;
 	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomOutMax = 1000.f;
+		float ZoomOutMax = 600.f;
 
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
 		UAnimSequence* PickUpAnimationSequence;
