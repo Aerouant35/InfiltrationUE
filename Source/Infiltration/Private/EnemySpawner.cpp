@@ -46,7 +46,7 @@ void AEnemySpawner::SpawnEnemy()
 {
 	if(EnemyToSpawn)
 	{
-		FVector Location = FVector(EnemySpot->GetActorLocation().X + 300, EnemySpot->GetActorLocation().Y, EnemySpot->GetActorLocation().Z);
+		FVector Location = GetActorLocation();
 		FRotator Rotation = FRotator (0,0,0);
 	
 		AAICharacter* AICharRef = GetWorld()->SpawnActor<AAICharacter>(EnemyToSpawn, Location, Rotation);
@@ -79,7 +79,7 @@ void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
 {
 	if(FoodToSpawn)
 	{
-		FVector Location = FVector(EnemySpot->GetActorLocation().X, EnemySpot->GetActorLocation().Y, EnemySpot->GetActorLocation().Z + 100);
+		FVector Location = GetActorLocation();
 		FRotator Rotation = FRotator (0,0,0);
 	
 		AFood* FoodRef = GetWorld()->SpawnActor<AFood>(FoodToSpawn, Location, Rotation);

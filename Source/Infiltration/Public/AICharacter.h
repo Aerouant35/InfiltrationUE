@@ -54,7 +54,7 @@ private:
 		float HoldingComponentOffset = 50.f;
 
 	UPROPERTY(VisibleAnywhere, Category="Character Speed")
-	float DefaultSpeed = 600;
+	float DefaultSpeed = 400;
 	UPROPERTY(VisibleAnywhere, Category="Character Speed")
 	float CarrySpeed = DefaultSpeed / 2;
 	
