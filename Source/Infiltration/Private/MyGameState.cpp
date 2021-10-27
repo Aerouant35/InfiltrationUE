@@ -3,6 +3,11 @@
 
 #include "MyGameState.h"
 
+AMyGameState::AMyGameState()
+{
+	
+}
+
 bool AMyGameState::ThereIsAFreeFoodSpot()
 {
 	for (AFoodSpot* FoodSpot : FoodSpots)

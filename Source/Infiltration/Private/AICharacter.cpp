@@ -6,7 +6,6 @@
 #include "PlayerCharacter.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
-#include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values
 AAICharacter::AAICharacter()
@@ -31,7 +30,6 @@ void AAICharacter::BeginPlay()
 	// Avoid the camera to stop before the enemy
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
-	GetCapsuleComponent()->SetCollisionResponseToChannel(ECC_Pawn, ECR_Overlap);
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
@@ -62,10 +60,10 @@ void AAICharacter::Interact()
 	}
 }
 
-void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
+void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
 {
-	HasFood = Value;
-	if(Value)
+	HasFood = NewValue;
+	if(NewValue)
 	{
 		CarryFood = NewFood;
 		SetSpeed(DefaultSpeed * 0.5f);
@@ -81,33 +79,28 @@ void AAICharacter::SetHasFood(bool Value, AFood* NewFood)
 	}
 }
 
-bool AAICharacter::GetHasLost()
+void AAICharacter::SetPatrolState(bool Activate, int NewNumberOfPatrols)
 {
-	return bHasLost;
+	PatrolState = Activate;
+	NumberOfPatrols = NewNumberOfPatrols;
 }
 
-bool AAICharacter::GetHasWon()
+void AAICharacter::DecrementNumberOfPatrols()
 {
-	return bHasWon;
+	NumberOfPatrols--;
+	if(NumberOfPatrols <= 0)
+	{
+		PatrolState = false;
+	}
 }
 
-void AAICharacter::HasLost()
+bool AAICharacter::GetPatrolState()
 {
-	bHasLost = true;
-	SetHasFood(false, nullptr);
-	StopController();
-}
-
-void AAICharacter::HasWon()
-{
-	bHasWon = true;
-	SetHasFood(false, nullptr);
-	StopController();
-}
-
-void AAICharacter::StopController()
-{
-	GetController()->UnPossess();	
+	if(NumberOfPatrols > 1)
+	{
+		return true;
+	}
+	return false;
 }
 
 void AAICharacter::TimerPickUpAnim()
@@ -147,11 +140,10 @@ void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
 	}
 
-	// If touch player
+	// Si touche joueur : défaite
 	if(OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		// Game Over
-		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->PlayerTouched();
 	}
 }
 

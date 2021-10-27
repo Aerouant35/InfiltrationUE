@@ -6,6 +6,7 @@
 #include "AIAnimations.h"
 #include "AICharacter.h"
 #include "EnemySpot.h"
+#include "MyAIController.h"
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 
@@ -25,8 +26,14 @@ protected:
 private:
 
 	// Pour crée un delais d'appel de fonction
-	FTimerHandle TimerHandle;
+	FTimerHandle FirstTimerHandle;
 	FTimerHandle SecondTimerHandle;
+	
+	FTimerHandle ThirdTimerHandle;
+	FTimerHandle FourthTimerHandle;
+	FTimerHandle FifthTimerHandle;
+
+	int SpawnIndice = 0;
 
 	UPROPERTY(VisibleAnywhere)
 	TArray<AAICharacter*> SpawnedEnemy;

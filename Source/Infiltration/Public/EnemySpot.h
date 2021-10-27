@@ -30,13 +30,24 @@ public:
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
-	UPROPERTY(VisibleAnywhere)
-	bool HasAEnemy;
+	UPROPERTY()
+	AAICharacter* EnemyRef1;
 
 	UPROPERTY()
-	AAICharacter* EnemyRef;
+	AAICharacter* EnemyRef2;
+
+	UPROPERTY()
+	AAICharacter* EnemyRef3;
+
+	FORCEINLINE int GetNumberOfEnemys() const { return NumberOfEnemys; };
+
+	UFUNCTION()
+	void DestroyEnemy();
 
 private:
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfEnemys = 0;
 
 	UFUNCTION()
 		void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,

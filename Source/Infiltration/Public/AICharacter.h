@@ -31,10 +31,12 @@ private:
 	UPROPERTY()
 	bool HasFood;
 
+	// Bool qui defini si l'IA doit aller dans les spots sans nourriture
 	UPROPERTY()
-		bool bHasWon = false;
-	UPROPERTY()
-		bool bHasLost = false;
+	bool PatrolState;
+
+	UPROPERTY(VisibleAnywhere)
+	int NumberOfPatrols;
 
 	// Food that AI is close to (OnOverlap)
 	AFood* InCollisionFood;
@@ -56,9 +58,6 @@ private:
 	UPROPERTY(EditAnywhere, Category="Animation")
 	UAnimSequence* PickUpAnimationSequence;
 
-	UFUNCTION()
-	void StopController();
-	
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
@@ -82,20 +81,19 @@ public:
 	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim);
 
 	UFUNCTION()
-	void SetHasFood(bool Value, AFood* NewFood);
+	void SetHasFood(bool NewValue, AFood* NewFood);
 
 	UFUNCTION()
-		bool GetHasLost();
-	UFUNCTION()
-		bool GetHasWon();
+	void SetPatrolState(bool Activate, int NewNumberOfPatrols);
 
 	UFUNCTION()
-		void HasLost();
-	UFUNCTION()
-		void HasWon();
-
+	void DecrementNumberOfPatrols();
 
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
+
+	bool GetPatrolState();
+
+	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
 
 	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
 
