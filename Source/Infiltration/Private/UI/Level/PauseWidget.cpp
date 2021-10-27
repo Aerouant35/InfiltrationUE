@@ -9,14 +9,17 @@ UPauseWidget::UPauseWidget(const FObjectInitializer& ObjectInitializer) : Super(
 {
 }
 
-void UPauseWidget::NativeConstruct()
+void UPauseWidget::InitDelegate()
 {
-	Super::NativeConstruct();
-
 	ResumeBtn->OnClicked.AddDynamic(this, &UPauseWidget::ResumeGame);
 	OptionsBtn->OnClicked.AddDynamic(this, &UPauseWidget::OptionsMenu);
 	MenuBtn->OnClicked.AddDynamic(this, &UPauseWidget::BackToMenu);
 	QuitBtn->OnClicked.AddDynamic(this, &UPauseWidget::QuitGame);
+}
+
+void UPauseWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
 }
 
 void UPauseWidget::ResumeGame()

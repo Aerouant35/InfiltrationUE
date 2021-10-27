@@ -23,6 +23,7 @@ class INFILTRATION_API UDefeatWidget : public UUserWidget
 public:
 	UDefeatWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 

@@ -10,11 +10,15 @@ UHowToPlayWidget::UHowToPlayWidget(const FObjectInitializer& ObjectInitializer) 
 {
 }
 
+void UHowToPlayWidget::InitDelegate()
+{
+	ReturnBtn->OnClicked.AddDynamic(this, &UHowToPlayWidget::Return);
+}
+
 void UHowToPlayWidget::NativeConstruct()
 {
 	Super::NativeConstruct();
 	
-	ReturnBtn->OnClicked.AddDynamic(this, &UHowToPlayWidget::Return);
 }
 
 void UHowToPlayWidget::Return()

@@ -20,6 +20,7 @@ class INFILTRATION_API UCreditsWidget : public UUserWidget
 public:
 	UCreditsWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 	

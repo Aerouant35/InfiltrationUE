@@ -56,9 +56,11 @@ class INFILTRATION_API UOptionsWidget : public UUserWidget
 public:
 	UOptionsWidget(const FObjectInitializer& ObjectInitializer);
 
+	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
 
+	
 	UFUNCTION()
 	void Return();
 
@@ -81,18 +83,21 @@ private:
 
 	#pragma region GetAction/AxisMapping
 	UFUNCTION()
-    FInputActionKeyMapping GetActionMapping(FString KeyName) const;
+    FInputActionKeyMapping GetActionMapping(const FString &KeyName);
 
     UFUNCTION()
-    FInputAxisKeyMapping GetAxisMapping(FString KeyName, bool bPositiveScale) const;
-	#pragma endregion
+    FInputAxisKeyMapping GetAxisMappingPositive(const FString &KeyName);
+
+	UFUNCTION()
+	FInputAxisKeyMapping GetAxisMappingNegative(const FString &KeyName);
+#pragma endregion
 
 	#pragma region ErrorKey
 	UFUNCTION()
-	bool IsAvailableKey(FKey Key);
+	bool IsAvailableKey(const FKey &Key);
 
 	UFUNCTION()
-	void ErrorKey(FString NameMapping, bool bPositiveScale = true) const;
+	void ErrorKey(FString NameMapping, bool bPositiveScale = true);
 
 	UFUNCTION()
 	void DisableErrorCanvas()

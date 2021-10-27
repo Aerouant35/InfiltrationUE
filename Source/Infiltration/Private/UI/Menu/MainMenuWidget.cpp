@@ -7,15 +7,18 @@ UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : 
 {
 }
 
-void UMainMenuWidget::NativeConstruct()
+void UMainMenuWidget::InitDelegate()
 {
-	Super::NativeConstruct();
-
 	PlayBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::PlayGame);
 	HowToBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::HowToPlayDisplay);
 	OptionsBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::OptionsDisplay);
 	CreditBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::CreditDisplay);
 	QuitBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
+}
+
+void UMainMenuWidget::NativeConstruct()
+{
+	Super::NativeConstruct();
 }
 
 #pragma region ButtonMethod

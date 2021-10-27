@@ -33,21 +33,25 @@ void AMainMenuHUD::InitWidget()
 	if (MainMenuWidgetClass)
 	{
 		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
+		MainMenuWidget->InitDelegate();
 	}
 
 	if (HowToPlayWidgetClass)
 	{
 		HowToPlayWidget = CreateWidget<UHowToPlayWidget>(GetWorld(), HowToPlayWidgetClass);
+		HowToPlayWidget->InitDelegate();
 	}
 	
 	if (OptionsWidgetClass)
 	{
 		OptionsWidget = CreateWidget<UMenuOptionsWidget>(GetWorld(), OptionsWidgetClass);
+		OptionsWidget->InitDelegate();
 	}
 	
 	if (CreditsWidgetClass)
 	{
 		CreditWidget = CreateWidget<UCreditsWidget>(GetWorld(), CreditsWidgetClass);
+		CreditWidget->InitDelegate();
 	}
 }
 
