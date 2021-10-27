@@ -35,7 +35,7 @@ private:
 	UPROPERTY()
 	bool PatrolState;
 
-	UPROPERTY()
+	UPROPERTY(VisibleAnywhere)
 	int NumberOfPatrols;
 
 	// Food that AI is close to (OnOverlap)
@@ -91,7 +91,7 @@ public:
 
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
 
-	FORCEINLINE bool GetPatrolState() const { return PatrolState; }
+	bool GetPatrolState();
 
 	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
 

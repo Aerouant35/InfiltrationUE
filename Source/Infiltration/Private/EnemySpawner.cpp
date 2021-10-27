@@ -54,7 +54,7 @@ void AEnemySpawner::SpawnEnemy()
 
 		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
 		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		if(true)
+		if(false)
 		{
 			GiveFood(AICharRef);
 		}
@@ -63,7 +63,7 @@ void AEnemySpawner::SpawnEnemy()
 			AICharRef->SetPatrolState(true, 2);
 		}
 
-		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("spawn"));
+		//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("spawn"));
 	}
 }
 

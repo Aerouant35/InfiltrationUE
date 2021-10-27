@@ -94,6 +94,15 @@ void AAICharacter::DecrementNumberOfPatrols()
 	}
 }
 
+bool AAICharacter::GetPatrolState()
+{
+	if(NumberOfPatrols > 1)
+	{
+		return true;
+	}
+	return false;
+}
+
 void AAICharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
