@@ -44,7 +44,7 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	/*Enregistre le spot de ma destination*/
 	UPROPERTY()
-	AFoodSpot* CurrentSpot;
+	AFoodSpot* CurrentFoodSpot;
 
 	/*Enemyspot*/
 	UPROPERTY()
@@ -78,21 +78,23 @@ public:
 
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
-	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentSpot; }
+	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentFoodSpot; }
 
 	UFUNCTION()
 		void Interact();
 
 	UFUNCTION()
-		AAICharacter* GetAICharacter();
+	AAICharacter* GetAICharacter();
 
 	UFUNCTION()
-		void SetCurrentSpot(AFoodSpot* NewCurrentSpot) { CurrentSpot = NewCurrentSpot; };
+		void SetCurrentSpot(AFoodSpot* NewCurrentSpot);
 
 	UFUNCTION()
 		void SetDefaultBehaviourTree();
-	void SetEnemySpot(AActor* NewEnemySpot);
+
+	UFUNCTION()
+		void SetEnemySpot(AActor* NewEnemySpot);
 	
 	UFUNCTION()
-	void SetFoodSpots(TArray<AActor*> NewFoodSpots);
+		void SetFoodSpots(TArray<AActor*> NewFoodSpots);
 };

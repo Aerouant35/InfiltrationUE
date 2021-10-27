@@ -87,7 +87,7 @@ public:
 	void SetPatrolState(bool Activate, int NewNumberOfPatrols);
 
 	UFUNCTION()
-	void DecrementNumberOfPatrols() { NumberOfPatrols--; if(NumberOfPatrols <= 0) { PatrolState = false; }};
+	void DecrementNumberOfPatrols();
 
 	FORCEINLINE bool GetHasFood() const { return HasFood; }
 

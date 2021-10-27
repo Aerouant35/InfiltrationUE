@@ -92,6 +92,11 @@ AAICharacter* AMyAIController::GetAICharacter()
 	return AIChar;
 }
 
+void AMyAIController::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
+{
+	CurrentFoodSpot = NewCurrentSpot;
+}
+
 void AMyAIController::SetDefaultBehaviourTree()
 {
 	bHasAlreadyDetected = false;

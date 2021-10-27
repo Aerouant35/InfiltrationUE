@@ -85,6 +85,15 @@ void AAICharacter::SetPatrolState(bool Activate, int NewNumberOfPatrols)
 	NumberOfPatrols = NewNumberOfPatrols;
 }
 
+void AAICharacter::DecrementNumberOfPatrols()
+{
+	NumberOfPatrols--;
+	if(NumberOfPatrols <= 0)
+	{
+		PatrolState = false;
+	}
+}
+
 void AAICharacter::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);

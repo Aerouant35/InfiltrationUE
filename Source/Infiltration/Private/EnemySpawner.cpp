@@ -13,6 +13,7 @@ AEnemySpawner::AEnemySpawner()
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
 
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("constructor!!!"));
 }
 
 // Called when the game starts or when spawned
@@ -20,12 +21,14 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
+	GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("spawn!!!"));
+
     // Spawn de deux ennemis en début de partie
-	SpawnEnemy();
-	GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
+	//SpawnEnemy();
+	//GetWorldTimerManager().SetTimer(TimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
 
 	// Spawn d'un troisième ennemi une minute plus tard
-	GetWorldTimerManager().SetTimer(SecondTimerHandle, this, &AEnemySpawner::SpawnEnemy, 60.f, false);
+	//GetWorldTimerManager().SetTimer(SecondTimerHandle, this, &AEnemySpawner::SpawnEnemy, 60.f, false);
 }
 
 // Called every frame
@@ -58,14 +61,15 @@ void AEnemySpawner::SpawnEnemy()
 
 		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
 		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		if(true)
+		GiveFood(AICharRef);
+		/*if(true)
 		{
 			GiveFood(AICharRef);
 		}
 		else
 		{
 			AICharRef->SetPatrolState(true, 2);
-		}
+		}*/
 
 		GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("spawn"));
 	}
