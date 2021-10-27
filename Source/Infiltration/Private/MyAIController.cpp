@@ -72,15 +72,15 @@ void AMyAIController::BeginPlay()
 
 	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnTargetPerceptionUpdated);}
 
-void AMyAIController::SetEnemySpot(AActor* newEnemySpot)
+void AMyAIController::SetEnemySpot(AActor* NewEnemySpot)
 {
-	EnemySpot = newEnemySpot;
+	EnemySpot = NewEnemySpot;
 	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
 }
 
-void AMyAIController::SetFoodSpots(TArray<AActor*> newFoodSpots)
+void AMyAIController::SetFoodSpots(TArray<AActor*> NewFoodSpots)
 {
-	FoodSpots = newFoodSpots;
+	FoodSpots = NewFoodSpots;
 }
 
 void AMyAIController::Interact()
@@ -92,6 +92,11 @@ void AMyAIController::Interact()
 AAICharacter* AMyAIController::GetAICharacter()
 {
 	return AIChar;
+}
+
+void AMyAIController::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
+{
+	CurrentFoodSpot = NewCurrentSpot;
 }
 
 void AMyAIController::SetDefaultBehaviourTree()
