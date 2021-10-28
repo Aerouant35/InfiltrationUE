@@ -15,9 +15,7 @@
 AAICGoblin::AAICGoblin()
 {
 	//Initialize BehaviorTreeComponent, BlackboardComponent and the corresponding key
-
 	BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(FName("BehaviorComp"));
-
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
 
 
@@ -44,80 +42,46 @@ void AAICGoblin::OnPossess(APawn* InPawn)
 
 	//Get the possessed Character and check if it's my own AI Character
 	AIChar = Cast<AAIGoblin>(InPawn);
-
-	if(AIChar)
+	check(AIChar != nullptr);
+	
+	//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
+	if(AIChar->GetDefaultBehaviourTree()->BlackboardAsset)
 	{
-		//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
-		if(AIChar->DefaultBehaviorTree->BlackboardAsset)
-		{
-			BlackboardComp->InitializeBlackboard(*(AIChar->DefaultBehaviorTree->BlackboardAsset));
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, AIChar->GetName());
-		}
-
-		//Start the behavior tree which corresponds to the specific character
-		BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
+		BlackboardComp->InitializeBlackboard(*(AIChar->GetDefaultBehaviourTree()->BlackboardAsset));
 	}
+
+	//Start the behavior tree which corresponds to the specific character
+	BehaviorComp->StartTree(*AIChar->GetDefaultBehaviourTree());
 }
 
 void AAICGoblin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAICGoblin::OnTargetPerceptionUpdated);}
-
-void AAICGoblin::SetEnemySpot(AActor* NewEnemySpot)
-{
-	EnemySpot = NewEnemySpot;
-	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAICGoblin::OnTargetPerceptionUpdated);
 }
 
-void AAICGoblin::SetFoodSpots(TArray<AActor*> NewFoodSpots)
-{
-	FoodSpots = NewFoodSpots;
-}
-
-void AAICGoblin::Interact() const
-{
-	AIChar->Interact();
-	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetHasFood());
-}
-
-void AAICGoblin::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
-{
-	CurrentFoodSpot = NewCurrentSpot;
-}
-
-void AAICGoblin::SetDefaultBehaviourTree()
-{
-	bHasAlreadyDetected = false;
-	BehaviorComp->StopTree();
-	BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
-}
-
+#pragma region PrivateMethod
 void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
 	ACharactKnight* Player = Cast<ACharactKnight>(Actor);
-	if(Player)
+	if (Player == nullptr) return;
+	
+	if(!bHasAlreadyDetected)
 	{
-		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
-
-		if(!bHasAlreadyDetected)
+		bHasAlreadyDetected = true;
+		if(AIChar->GetHasFood())
 		{
-			bHasAlreadyDetected = true;
-			if(AIChar->GetHasFood())
-			{
-			    GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICGoblin::TimerKeepFoodLocation, 1.0f, false);
-			}
-			BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
+			GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICGoblin::TimerKeepFoodLocation, 1.0f, false);
 		}
-		
-		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
-
-		BehaviorComp->StopTree();
-		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
+		BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
 	}
+	
+	BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
+	BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
+
+	BehaviorComp->StopTree();
+	BehaviorComp->StartTree(*AIChar->GetChaseBehaviourTree());
 }
 
 void AAICGoblin::TimerKeepFoodLocation() const
@@ -138,4 +102,35 @@ FVector AAICGoblin::GetSupposedPlayerPosition(const ACharactKnight* Player) cons
 	NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
 	return NavLocation.Location;
 }
+#pragma endregion 
 
+#pragma region PublicMethod
+void AAICGoblin::Interact() const
+{
+	AIChar->Interact();
+	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetHasFood());
+}
+
+void AAICGoblin::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
+{
+	CurrentFoodSpot = NewCurrentSpot;
+}
+
+void AAICGoblin::SetDefaultBehaviourTree()
+{
+	bHasAlreadyDetected = false;
+	BehaviorComp->StopTree();
+	BehaviorComp->StartTree(*AIChar->GetDefaultBehaviourTree());
+}
+
+void AAICGoblin::SetEnemySpot(AActor* NewEnemySpot)
+{
+	EnemySpot = NewEnemySpot;
+	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
+}
+
+void AAICGoblin::SetFoodSpots(const TArray<AActor*> NewFoodSpots)
+{
+	FoodSpots = NewFoodSpots;
+}
+#pragma endregion 

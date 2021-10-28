@@ -38,17 +38,55 @@ void AAIGoblin::BeginPlay()
 	SetHasFood(false, nullptr);
 }
 
-// Called every frame
-void AAIGoblin::Tick(float DeltaTime)
+void AAIGoblin::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
-	Super::Tick(DeltaTime);
-
+	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
+#pragma region ProtectedMethod
+void AAIGoblin::TimerPickUpAnim() const
+{
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	CarryFood->PickUp(HoldingComponent);
+}
+
+void AAIGoblin::SetSpeed(const float NewSpeed) const
+{
+	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
+}
+#pragma endregion 
+
+#pragma region Overlap Methods
+void AAIGoblin::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		InCollisionFood = Cast<AFood>(OtherActor);
+	}
+
+	// If touch player : game over
+	if(OtherActor->IsA(ACharactKnight::StaticClass()))
+	{
+		// Game Over
+		AInfiltrationGameModeBase* InfiltrationGameModeBase = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
+		check(InfiltrationGameModeBase != nullptr);
+		InfiltrationGameModeBase->Defeat();
+	}
+}
+
+void AAIGoblin::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
+{
+	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
+		InCollisionFood = nullptr;
+	}
+}
+#pragma endregion 
+
+#pragma region PublicMethod
 // Take or drop food close around
 void AAIGoblin::Interact()
 {
-    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
 	if(HasFood)
 	{
 		SetHasFood(false, nullptr);
@@ -62,9 +100,21 @@ void AAIGoblin::Interact()
 	}
 }
 
-void AAIGoblin::SetHasFood(bool NewValue, AFood* NewFood)
+FVector AAIGoblin::GetCarryFoodLocation() const
+{
+	return DropFood->GetActorLocation();
+}
+
+void AAIGoblin::SetAnimation(const TSubclassOf<UAnimInstance> BP_Anim) const
+{
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	GetMesh()->SetAnimClass(BP_Anim);
+}
+
+void AAIGoblin::SetHasFood(const bool NewValue, AFood* NewFood)
 {
 	HasFood = NewValue;
+	
 	if(NewValue)
 	{
 		CarryFood = NewFood;
@@ -75,7 +125,7 @@ void AAIGoblin::SetHasFood(bool NewValue, AFood* NewFood)
 	{
 		SetSpeed(DefaultSpeed);
 
-		if(CarryFood != nullptr)
+		if (CarryFood != nullptr)
 		{
 			CarryFood->Drop();
 			DropFood = CarryFood;
@@ -84,25 +134,25 @@ void AAIGoblin::SetHasFood(bool NewValue, AFood* NewFood)
 	}
 }
 
-void AAIGoblin::SetPatrolState(bool Activate, int NewNumberOfPatrols)
+void AAIGoblin::SetPatrolState(const bool Activate, const uint8 NewNbPatrols)
 {
 	PatrolState = Activate;
-	NumberOfPatrols = NewNumberOfPatrols;
+	NbPatrols = NewNbPatrols;
 }
 
 void AAIGoblin::DecrementNumberOfPatrols()
 {
-	NumberOfPatrols--;
-	if(NumberOfPatrols <= 0)
+	NbPatrols--;
+	if(NbPatrols <= 0)
 	{
 		PatrolState = false;
 	}
 }
 
 // Something to modify
-bool AAIGoblin::GetPatrolState()
+bool AAIGoblin::GetPatrolState() const
 {
-	if(NumberOfPatrols > 1)
+	if(NbPatrols > 1)
 	{
 		return true;
 	}
@@ -123,7 +173,12 @@ void AAIGoblin::HasWon()
 	StopController();
 }
 
-bool AAIGoblin::GetHasDropFood()
+void AAIGoblin::StopController() const
+{
+	GetController()->UnPossess();
+}
+
+bool AAIGoblin::GetHasDropFood() const
 {
 	if(DropFood != nullptr)
 	{
@@ -131,63 +186,4 @@ bool AAIGoblin::GetHasDropFood()
 	}
 	return false;
 }
-
-void AAIGoblin::StopController()
-{
-	GetController()->UnPossess();
-}
-
-
-void AAIGoblin::TimerPickUpAnim()
-{
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp(HoldingComponent);
-}
-
-FVector AAIGoblin::GetCarryFoodLocation()
-{
-	return DropFood->GetActorLocation();
-}
-
-// Called to bind functionality to input
-void AAIGoblin::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
-{
-	Super::SetupPlayerInputComponent(PlayerInputComponent);
-}
-
-void AAIGoblin::SetSpeed(float NewSpeed)
-{
-	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
-}
-
-void AAIGoblin::SetAnimation(TSubclassOf<UAnimInstance> BP_Anim)
-{
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	GetMesh()->SetAnimClass(BP_Anim);
-}
-
-// Collisions
-void AAIGoblin::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
-{
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
-		InCollisionFood = Cast<AFood>(OtherActor);
-		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
-	}
-
-	// If touch player : game over
-	if(OtherActor->IsA(ACharactKnight::StaticClass()))
-	{
-		// Game Over
-		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->Defeat();
-	}
-}
-
-void AAIGoblin::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
-	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
-{
-	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
-		InCollisionFood = nullptr;
-	}
-}
-
+#pragma endregion 

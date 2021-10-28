@@ -16,19 +16,12 @@ class INFILTRATION_API AExitEnemySpot : public ATargetPoint
 {
 	GENERATED_BODY()
 
+	#pragma region Variables
 	UPROPERTY(EditDefaultsOnly)
 	USphereComponent* SphereComponent;
-
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:
-
-	AExitEnemySpot();
 	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
+	UPROPERTY(VisibleAnywhere)
+	uint8 NbEnemies = 0;
 
 	UPROPERTY()
 	AAIGoblin* EnemyRef1;
@@ -38,21 +31,25 @@ public:
 
 	UPROPERTY()
 	AAIGoblin* EnemyRef3;
+	#pragma endregion 
 
-	FORCEINLINE int GetNumberOfEnemys() const { return NumberOfEnemys; };
-
-	UFUNCTION()
-	AAIGoblin* DestroyEnemy();
+public:
+	AExitEnemySpot();
+	
+	uint8 GetNbEnemies() const { return NbEnemies; }
 
 private:
-
-	UPROPERTY(VisibleAnywhere)
-	int NumberOfEnemys = 0;
-
-	UFUNCTION()
-		void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
 
 	UFUNCTION()
-		void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	UFUNCTION()
+	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+
+public:
+	UFUNCTION()
+	AAIGoblin* DestroyEnemy() const;
 };

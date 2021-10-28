@@ -12,113 +12,123 @@ class INFILTRATION_API AAIGoblin : public ACharacter
 {
 	GENERATED_BODY()
 
-public:
-	// Sets default values for this character's properties
-	AAIGoblin();
+	#pragma region Variables
+	// Bool who define if AI go to spot without foods
+	bool PatrolState;
+	bool HasFood;
+	bool bHasWon = false;
+	bool bHasLost = false;
+	
+	FTimerHandle UnusedHandle;
+
+	// Food that AI is close to (OnOverlap)
+	UPROPERTY()
+	AFood* InCollisionFood;
+	
+	// Actual food AI is carrying
+	UPROPERTY()
+	AFood* CarryFood;
+	
+	// Food who was drop
+	UPROPERTY()
+	AFood* DropFood;
+
+	UPROPERTY(VisibleAnywhere)
+	uint8 NbPatrols;
 
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* DefaultBehaviorTree;
 
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* ChaseBehaviorTree;
+	
+	UPROPERTY(EditAnywhere, Category="Holding Component")
+	USceneComponent* HoldingComponent;
+	
+	UPROPERTY(EditAnywhere, Category="Holding Component")
+	float HoldingComponentOffset = 50.f;
 
+	UPROPERTY(EditAnywhere, Category="Animation")
+	UAnimSequence* PickUpAnimationSequence;
+
+	UPROPERTY(VisibleAnywhere, Category="Character Speed")
+	float DefaultSpeed = 400;
+	#pragma endregion 
+	
+public:
+	// Sets default values for this character's properties
+	AAIGoblin();
+
+	#pragma region Accessor
+	bool GetHasFood() const { return HasFood; }
+	
+	bool GetHasWon() const { return bHasWon; }
+
+	bool GetHasLost() const { return bHasLost; }
+
+	uint8 GetNumberOfPatrols() const { return NbPatrols; }
+
+	UBehaviorTree* GetDefaultBehaviourTree() const { return DefaultBehaviorTree; }
+	
+	UBehaviorTree* GetChaseBehaviourTree() const { return ChaseBehaviorTree; }
+	
+	USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
+	#pragma endregion 
+	
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
 
-private:
-
-	UPROPERTY()
-	bool HasFood;
-
-	bool bHasWon = false;
-	bool bHasLost = false;
-
-	// Bool who define if AI go to spot without foods
-	UPROPERTY()
-	bool PatrolState;
-
-	UPROPERTY(VisibleAnywhere)
-	int NumberOfPatrols;
-
-	// Food that AI is close to (OnOverlap)
-	AFood* InCollisionFood;
-	// Actual food AI is carrying
-	AFood* CarryFood;
-	// Food who was drop
-	AFood* DropFood;
-
-	FTimerHandle UnusedHandle;
-
-	UPROPERTY(EditAnywhere, Category="Holding Component")
-		USceneComponent* HoldingComponent;
-	UPROPERTY(EditAnywhere, Category="Holding Component")
-		float HoldingComponentOffset = 50.f;
-
-	UPROPERTY(VisibleAnywhere, Category="Character Speed")
-	float DefaultSpeed = 400;
-	UPROPERTY(VisibleAnywhere, Category="Character Speed")
-	float CarrySpeed = DefaultSpeed / 2;
-	
-	UPROPERTY(EditAnywhere, Category="Animation")
-	UAnimSequence* PickUpAnimationSequence;
-
-public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
+	#pragma region ProtectedMethod
+	UFUNCTION()
+	void TimerPickUpAnim() const;
+
+	UFUNCTION()
+	void SetSpeed(float NewSpeed) const;
+	#pragma endregion 
+
+	#pragma region Overlap Methods
+	UFUNCTION()
+	void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	UFUNCTION()
+	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	#pragma endregion
 	
+public:
+	#pragma region PublicMethod
 	UFUNCTION()
-		void Interact();
+	void Interact();
 
 	UFUNCTION()
-		void TimerPickUpAnim();
+	FVector GetCarryFoodLocation() const;
 
 	UFUNCTION()
-		FVector GetCarryFoodLocation();
-
-	UFUNCTION()
-	void SetSpeed(float NewSpeed);
-
-	UFUNCTION()
-	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim);
+	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim) const;
 
 	UFUNCTION()
 	void SetHasFood(bool NewValue, AFood* NewFood);
 
 	UFUNCTION()
-	void SetPatrolState(bool Activate, int NewNumberOfPatrols);
+	void SetPatrolState(bool Activate, uint8 NewNbPatrols);
 
 	UFUNCTION()
 	void DecrementNumberOfPatrols();
-
-	FORCEINLINE bool GetHasFood() const { return HasFood; }
-
-	bool GetPatrolState();
+	
+	bool GetPatrolState() const;
 
 	UFUNCTION()
-		void HasLost();
+	void HasLost();
+	
 	UFUNCTION()
-		void HasWon();
+	void HasWon();
 
-	void StopController();
+	void StopController() const;
 
-	FORCEINLINE bool GetHasWon() const { return bHasWon; }
-
-	FORCEINLINE bool GetHasLost() const { return bHasLost; }
-
-	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
-
-	bool GetHasDropFood(); 
-
-	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
-
-	UFUNCTION()
-		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-
-	UFUNCTION()
-		void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	bool GetHasDropFood() const;
+	#pragma endregion 
 };

@@ -16,15 +16,13 @@ void UAnimGoblin::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	APawn* Pawn = TryGetPawnOwner();
-	if(Pawn)
-	{
-		AAIGoblin* AIChar = Cast<AAIGoblin>(Pawn);
-		if(AIChar)
-		{
-			IsWalking = !AIChar->GetVelocity().IsZero();
-			IsCarrying = AIChar->GetHasFood();
-			HasWon = AIChar->GetHasWon();
-			HasLost = AIChar->GetHasLost();
-		}
-	}
+	check(Pawn != nullptr);
+	
+	AAIGoblin* AIChar = Cast<AAIGoblin>(Pawn);
+	check(AIChar != nullptr);
+	
+	IsWalking = !AIChar->GetVelocity().IsZero();
+	IsCarrying = AIChar->GetHasFood();
+	HasWon = AIChar->GetHasWon();
+	HasLost = AIChar->GetHasLost();
 }
