@@ -116,7 +116,10 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 		if(!bHasAlreadyDetected)
 		{
 			bHasAlreadyDetected = true;
-			GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyAIController::TimerKeepFoodLocation, 3.0f, false);
+			if(AIChar->GetHasFood())
+			{
+			    GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyAIController::TimerKeepFoodLocation, 1.0f, false);
+			}
 			BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
 		}
 		

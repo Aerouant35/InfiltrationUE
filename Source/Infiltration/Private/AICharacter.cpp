@@ -77,6 +77,8 @@ void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
 		if(CarryFood != nullptr)
 		{
 			CarryFood->Drop();
+			DropFood = CarryFood;
+			CarryFood = nullptr;
 		}
 	}
 }
@@ -133,7 +135,7 @@ void AAICharacter::TimerPickUpAnim()
 
 FVector AAICharacter::GetCarryFoodLocation()
 {
-	return CarryFood->GetActorLocation();
+	return DropFood->GetActorLocation();
 }
 
 // Called to bind functionality to input

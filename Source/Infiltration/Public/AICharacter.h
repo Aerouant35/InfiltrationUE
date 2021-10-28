@@ -45,6 +45,8 @@ private:
 	AFood* InCollisionFood;
 	// Actual food AI is carrying
 	AFood* CarryFood;
+	// Food qui a été drop
+    	AFood* DropFood;
 
 	FTimerHandle UnusedHandle;
 
