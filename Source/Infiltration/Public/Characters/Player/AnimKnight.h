@@ -3,6 +3,7 @@
 #pragma once
 
 #include "CoreMinimal.h"
+#include "CharactKnight.h"
 #include "Animation/AnimInstance.h"
 #include "AnimKnight.generated.h"
 
@@ -26,6 +27,9 @@ class INFILTRATION_API UAnimKnight : public UAnimInstance
 
 	UPROPERTY(VisibleAnywhere)
 	bool bHasWon;
+
+	UPROPERTY()
+	ACharactKnight* CharactKnight;
 	#pragma endregion
 
 public:
