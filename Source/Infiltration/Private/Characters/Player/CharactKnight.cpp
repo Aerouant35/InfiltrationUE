@@ -13,7 +13,7 @@
 ACharactKnight::ACharactKnight()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	AutoPossessPlayer = EAutoReceiveInput::Player0;
 
@@ -36,7 +36,6 @@ ACharactKnight::ACharactKnight()
 	HoldingComponent->SetupAttachment(GetCapsuleComponent());
 
 	GetCharacterMovement()->bOrientRotationToMovement = true;
-	
 	
 	GetMesh()->SetRelativeRotation(FRotator(0.f, -90.f, 0.f));
 	GetMesh()->SetRelativeLocation(FVector(0.f, 0.f, -90.f));
@@ -68,13 +67,6 @@ void ACharactKnight::BeginPlay()
 	
 }
 
-// Called every frame
-void ACharactKnight::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 // Called to bind functionality to input
 void ACharactKnight::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
@@ -93,37 +85,37 @@ void ACharactKnight::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
-void ACharactKnight::MoveForward(float Value)
+void ACharactKnight::MoveForward(const float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
 		// Get the Rotation of the Controller as this may not be the same as the camera
-		FRotator Rotation = Controller->GetControlRotation();
+		const FRotator Rotation = Controller->GetControlRotation();
 		// We only want the Yaw part
-		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
 		// Get the forward vector of the Rotator Yaw and make sure the length is 1
-		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+		const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
 		
 		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
-void ACharactKnight::MoveRight(float Value)
+void ACharactKnight::MoveRight(const float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
 		// Get the Rotation of the Controller as this may not be the same as the camera
-		FRotator Rotation = Controller->GetControlRotation();
+		const FRotator Rotation = Controller->GetControlRotation();
 		// We only want the Yaw part
-		FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+		const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
 		// Get the right vector of the Rotator Yaw and make sure the length is 1
-		FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
+		const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::Y);
 		
 		AddMovementInput(Direction, Value * CurrentSpeed);
 	}
 }
 
-void ACharactKnight::HorizontalRotation(float Value)
+void ACharactKnight::HorizontalRotation(const float Value)
 {
 	if(Value)
 	{
@@ -131,7 +123,7 @@ void ACharactKnight::HorizontalRotation(float Value)
 	}
 }
 
-void ACharactKnight::VerticalRotation(float Value)
+void ACharactKnight::VerticalRotation(const float Value)
 {
 	if(Value)
 	{
@@ -139,11 +131,11 @@ void ACharactKnight::VerticalRotation(float Value)
 	}
 }
 
-void ACharactKnight::Zoom(float Value)
+void ACharactKnight::Zoom(const float Value)
 {
 	if(Value)
 	{
-		float FinalZoomLength = SpringArmComponent->TargetArmLength + (Value * -10);
+		const float FinalZoomLength = SpringArmComponent->TargetArmLength + (Value * -10);
 		// Avoid infinite Zoom
 		if(FinalZoomLength < ZoomOutMax && FinalZoomLength > ZoomInMax)
 		{
@@ -170,21 +162,6 @@ void ACharactKnight::HasLost()
 {
 	bHasLost = true;
 	StopMovement();
-}
-
-bool ACharactKnight::GetHasWon()
-{
-	return bHasWon;
-}
-
-bool ACharactKnight::GetHasLost()
-{
-	return bHasLost;
-}
-
-bool ACharactKnight::GetIsCarrying()
-{
-	return bIsCarrying;
 }
 
 void ACharactKnight::StopMovement()
@@ -246,5 +223,9 @@ void ACharactKnight::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 
 void ACharactKnight::PauseGame()
 {
-	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD())->ShowPauseScreen();
+	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
+	if(!PlayerController) return;
+	AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
+	if(!GameHUD) return;
+	GameHUD->ShowPauseScreen();
 }

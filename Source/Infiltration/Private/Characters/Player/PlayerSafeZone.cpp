@@ -10,7 +10,7 @@
 APlayerSafeZone::APlayerSafeZone()
 {
  	// Set this actor to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
-	PrimaryActorTick.bCanEverTick = true;
+	PrimaryActorTick.bCanEverTick = false;
 
 	BoxComponent = CreateDefaultSubobject<UBoxComponent>("BoxCollider");
 	BoxComponent->SetupAttachment(RootComponent);
@@ -33,13 +33,6 @@ void APlayerSafeZone::BeginPlay()
 	}
 }
 
-// Called every frame
-void APlayerSafeZone::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
 void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -50,23 +43,28 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			AFood* Food = Player->DropFood();
 			Food->Destroy();
 
-			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementFood();
+			AInfiltrationGameModeBase* InfiltrationGameModeBase = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
+			if(!InfiltrationGameModeBase) return;
+			InfiltrationGameModeBase->IncrementFood();
+			
+			FillShelf(InfiltrationGameModeBase->GetCurrentNbFood());
 
-			FillShelf(Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetCurrentNbFood());
-
-			// Decremente la food au state
-			Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->DecrementFood();
+			// Decrement food in global state
+			AInfiltrationGameState* InfiltrationGameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+			if(!InfiltrationGameState) return;
+			InfiltrationGameState->DecrementFood();
 		}
 	}
 }
 
-void APlayerSafeZone::FillShelf(uint8 CurrentFood)
+void APlayerSafeZone::FillShelf(const uint8 CurrentFood)
 {
 	for (uint8 i = 0; i < FoodShelves.Num(); i++)
 	{
 		if (i != CurrentFood - 1) continue;
 		for (const auto FoodMesh : FoodShelves[i].FoodMeshes)
 		{
+			if(!FoodMesh) return;
 			const auto StaticMeshComp = FoodMesh->FindComponentByClass<UStaticMeshComponent>();
 			StaticMeshComp->SetVisibility(true);
 		}

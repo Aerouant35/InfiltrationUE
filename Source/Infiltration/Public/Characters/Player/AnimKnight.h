@@ -14,23 +14,23 @@ class INFILTRATION_API UAnimKnight : public UAnimInstance
 {
 	GENERATED_BODY()
 
-	public:
+	#pragma region Variables
+	UPROPERTY(VisibleAnywhere)
+	bool bIsWalking;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bIsCarrying;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHasLost;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHasWon;
+	#pragma endregion
+
+public:
 	UAnimKnight();
 	
-	protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool bIsWalking;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool bIsCarrying;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool bHasLost;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-		bool bHasWon;
-
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 
 };

@@ -25,7 +25,7 @@ class INFILTRATION_API APlayerSafeZone : public AActor
 	TArray<FFoodShelf> FoodShelves;
 	
 	UPROPERTY(EditDefaultsOnly)
-		UBoxComponent* BoxComponent;
+	UBoxComponent* BoxComponent;
 		
 public:	
 	// Sets default values for this actor's properties
@@ -34,17 +34,12 @@ public:
 protected:
 	// Called when the game starts or when spawned
 	virtual void BeginPlay() override;
-
-public:
 	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
-	private:
+private:
 
 	UFUNCTION()
-		void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	void OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UFUNCTION()
 	void FillShelf(uint8 CurrentFood);
