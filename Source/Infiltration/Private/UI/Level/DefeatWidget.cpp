@@ -18,14 +18,9 @@ void UDefeatWidget::InitDelegate()
 	QuitBtn->OnClicked.AddDynamic(this, &UDefeatWidget::QuitGame);
 }
 
-void UDefeatWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
 void UDefeatWidget::RestartGame()
 {
-	UGameplayStatics::OpenLevel(this, FName(*GetWorld()->GetName()), false);
+	UGameplayStatics::OpenLevel(this, FName(GetWorld()->GetName()), false);
 }
 
 void UDefeatWidget::QuitGame()

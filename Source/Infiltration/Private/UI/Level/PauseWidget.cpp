@@ -15,13 +15,12 @@ void UPauseWidget::InitDelegate()
 	OptionsBtn->OnClicked.AddDynamic(this, &UPauseWidget::OptionsMenu);
 	MenuBtn->OnClicked.AddDynamic(this, &UPauseWidget::BackToMenu);
 	QuitBtn->OnClicked.AddDynamic(this, &UPauseWidget::QuitGame);
+
+	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(GameHUD != nullptr);
 }
 
-void UPauseWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
+#pragma region ButtonMethod
 void UPauseWidget::ResumeGame()
 {
 	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->ResumeGame();
@@ -41,3 +40,4 @@ void UPauseWidget::QuitGame()
 {
 	UKismetSystemLibrary::QuitGame(GetWorld(), GetWorld()->GetFirstPlayerController(), EQuitPreference::Quit, true);
 }
+#pragma endregion 

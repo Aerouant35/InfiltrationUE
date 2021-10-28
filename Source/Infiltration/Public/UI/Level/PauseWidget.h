@@ -7,14 +7,15 @@
 #include "UI/Level/GameHUD.h"
 #include "PauseWidget.generated.h"
 
-/**
+/**	
  * 
  */
 UCLASS()
 class INFILTRATION_API UPauseWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+	#pragma region Variables
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* ResumeBtn;
 	
@@ -26,15 +27,17 @@ class INFILTRATION_API UPauseWidget : public UUserWidget
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* QuitBtn;
+
+	UPROPERTY()
+	class AGameHUD* GameHUD;
+	#pragma endregion 
 	
 public:
 	UPauseWidget(const FObjectInitializer& ObjectInitializer);
 
 	void InitDelegate();
-private:
-	virtual void NativeConstruct() override;
 
-public:
+	#pragma region ButtonMethod
 	UFUNCTION()
 	void ResumeGame();
 
@@ -46,4 +49,5 @@ public:
 
 	UFUNCTION()
 	void QuitGame();
+	#pragma endregion 
 };

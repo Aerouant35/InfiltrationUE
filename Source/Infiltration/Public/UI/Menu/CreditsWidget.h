@@ -21,9 +21,8 @@ public:
 	UCreditsWidget(const FObjectInitializer& ObjectInitializer);
 
 	void InitDelegate();
-private:
-	virtual void NativeConstruct() override;
 	
+private:
 	UFUNCTION()
 	void Return();
 };

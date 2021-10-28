@@ -59,7 +59,6 @@ public:
 	void InitDelegate();
 private:
 	virtual void NativeConstruct() override;
-
 	
 	UFUNCTION()
 	void Return();

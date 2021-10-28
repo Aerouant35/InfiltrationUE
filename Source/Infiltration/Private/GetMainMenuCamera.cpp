@@ -16,8 +16,8 @@ AGetMainMenuCamera::AGetMainMenuCamera()
 void AGetMainMenuCamera::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (MenuCamera == nullptr) return;
+	
+	check(MenuCamera != nullptr);
 	Cast<AMainMenuGameModeBase>(GetWorld()->GetAuthGameMode())->SetMainMenuCamera(MenuCamera);
 
 }

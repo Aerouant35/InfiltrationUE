@@ -2,7 +2,6 @@
 
 
 #include "UI/Level/GameHUD.h"
-
 #include "Infiltration/InfiltrationGameModeBase.h"
 #include "Kismet/GameplayStatics.h"
 
@@ -16,7 +15,6 @@ void AGameHUD::BeginPlay()
 
 	InitWidget();
 
-	if (!PlayerWidget) return;
 	EnableMouseCursor(false);
 	PlayerWidget->UpdateProgressBarPercent(0);
 	PlayerWidget->AddToViewport();
@@ -27,63 +25,73 @@ void AGameHUD::InitWidget()
 	if (PlayerWidgetClass)
 	{
 		PlayerWidget = CreateWidget<UPlayerWidget>(GetWorld(), PlayerWidgetClass);
+		check(PlayerWidget != nullptr);
 	}
 
 	if (VictoryWidgetClass)
 	{
 		VictoryWidget = CreateWidget<UVictoryWidget>(GetWorld(), VictoryWidgetClass);
+		check(VictoryWidget != nullptr);
 		VictoryWidget->InitDelegate();
 	}
 
 	if (DefeatWidgetClass)
 	{
 		DefeatWidget = CreateWidget<UDefeatWidget>(GetWorld(), DefeatWidgetClass);
+		check(DefeatWidget != nullptr);
 		DefeatWidget->InitDelegate();
 	}
 
 	if (PauseWidgetClass)
 	{
 		PauseWidget = CreateWidget<UPauseWidget>(GetWorld(), PauseWidgetClass);
+		check(PauseWidget != nullptr);
 		PauseWidget->InitDelegate();
 	}
 
 	if (OptionsWidgetClass)
 	{
 		OptionsWidget = CreateWidget<UOptionsWidget>(GetWorld(), OptionsWidgetClass);
+		check(OptionsWidget != nullptr);
 		OptionsWidget->InitDelegate();
 	}
 }
 
 void AGameHUD::EnableMouseCursor(const bool bEnable) const
 {
-	APlayerController* MyController = UGameplayStatics::GetPlayerController(this, 0);
-
-	MyController->bShowMouseCursor = bEnable;
-	MyController->bEnableClickEvents = bEnable;
-	MyController->bEnableMouseOverEvents = bEnable;
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	check(PlayerController != nullptr);
+	
+	PlayerController->bShowMouseCursor = bEnable;
+	PlayerController->bEnableClickEvents = bEnable;
+	PlayerController->bEnableMouseOverEvents = bEnable;
 
 	if (bEnable)
 	{
 		FInputModeUIOnly InputModeUIOnly;
 		InputModeUIOnly.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
-		MyController->SetInputMode(InputModeUIOnly);
+		PlayerController->SetInputMode(InputModeUIOnly);
 	}
 	else
 	{
 		FInputModeGameOnly InputModeGameOnly;
-		MyController->SetInputMode(InputModeGameOnly);
+		PlayerController->SetInputMode(InputModeGameOnly);
 	}
 }
 
-void AGameHUD::UpdateProgressBarPercent(const float Percent) const
+void AGameHUD::UpdateProgressBarPercent(const uint8 CurrentNbFood) const
 {
-	if (!PlayerWidget) return;
-	PlayerWidget->UpdateProgressBarPercent(Percent / Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetNbFoodWin());
+	check(PlayerWidget != nullptr);
+
+	AInfiltrationGameModeBase* InGameMode = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
+	check(InGameMode != nullptr);
+	
+	PlayerWidget->UpdateProgressBarPercent(CurrentNbFood / InGameMode->GetNbFoodWin());
 }
 
 void AGameHUD::ShowVictoryScreen() const
 {
-	if (!VictoryWidget) return;
+	check(VictoryWidget != nullptr && PlayerWidget != nullptr);
 	if (VictoryWidget->IsInViewport()) return;
 
 	EnableMouseCursor(true);
@@ -94,7 +102,7 @@ void AGameHUD::ShowVictoryScreen() const
 
 void AGameHUD::ShowDefeatScreen() const
 {
-	if (!DefeatWidget) return;
+	check(DefeatWidget != nullptr && PlayerWidget != nullptr);
 	if (DefeatWidget->IsInViewport()) return;
 
 	EnableMouseCursor(true);
@@ -105,7 +113,7 @@ void AGameHUD::ShowDefeatScreen() const
 
 void AGameHUD::ShowPauseScreen()
 {
-	if (!PauseWidget) return;
+	check(PauseWidget != nullptr && PlayerWidget != nullptr);
 	if (PauseWidget->IsInViewport()) return;
 
 	EnableMouseCursor(true);
@@ -117,7 +125,7 @@ void AGameHUD::ShowPauseScreen()
 
 void AGameHUD::ResumeGame()
 {
-	if (!PauseWidget) return;
+	check(PauseWidget != nullptr && PlayerWidget != nullptr);
 	if (PlayerWidget->IsInViewport()) return;
 
 	EnableMouseCursor(false);
@@ -129,7 +137,7 @@ void AGameHUD::ResumeGame()
 
 void AGameHUD::OptionsMenu()
 {
-	if (!OptionsWidget && !PauseWidget) return;
+	check(PauseWidget != nullptr && OptionsWidget != nullptr);
 	if (OptionsWidget->IsInViewport()) return;
 
 	PauseWidget->RemoveFromViewport();
@@ -138,7 +146,7 @@ void AGameHUD::OptionsMenu()
 
 void AGameHUD::BackToPauseMenu()
 {
-	if (!OptionsWidget && !PauseWidget) return;
+	check(OptionsWidget != nullptr && PlayerWidget != nullptr);
 	if (PauseWidget->IsInViewport()) return;
 	
 	OptionsWidget->RemoveFromViewport();

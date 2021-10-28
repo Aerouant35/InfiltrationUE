@@ -5,8 +5,6 @@
 #include "CoreMinimal.h"
 #include "Blueprint/UserWidget.h"
 #include "Components/Button.h"
-#include "Kismet/GameplayStatics.h"
-#include "Kismet/KismetSystemLibrary.h"
 #include "UI/Menu/MainMenuHUD.h"
 #include "MainMenuWidget.generated.h"
 
@@ -18,7 +16,7 @@ class INFILTRATION_API UMainMenuWidget : public UUserWidget
 {
 	GENERATED_BODY()
 
-#pragma region Variables
+	#pragma region Variables
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* PlayBtn;
 
@@ -33,16 +31,17 @@ class INFILTRATION_API UMainMenuWidget : public UUserWidget
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* QuitBtn;
-#pragma endregion 
+
+	UPROPERTY()
+	class AMainMenuHUD* MainMenuHUD;
+	#pragma endregion 
 
 public:
 	UMainMenuWidget(const FObjectInitializer& ObjectInitializer);
 
 	void InitDelegate();
 private:
-	virtual void NativeConstruct() override;
-
-#pragma region ButtonMethod
+	#pragma region ButtonMethod
 	UFUNCTION()
 	void PlayGame();
 
@@ -57,5 +56,5 @@ private:
 
 	UFUNCTION()
 	void QuitGame();
-#pragma endregion 
+	#pragma endregion 
 };
