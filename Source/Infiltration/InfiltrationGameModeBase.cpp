@@ -20,6 +20,7 @@ void AInfiltrationGameModeBase::BeginPlay()
 	Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	//check(!(FoodSpots.Num() < 1));
+	if(FoodSpots.Num() < 1) return;
 	GenerateStartFood();
 }
 
