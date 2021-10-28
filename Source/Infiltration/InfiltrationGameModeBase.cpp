@@ -29,7 +29,7 @@ void AInfiltrationGameModeBase::GenerateStartFood()
 
 	UE_LOG(LogTemp, Warning, TEXT("Food spot : %d"), RandomNumSpot);
 	
-	GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
+		GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
 }
 
 #pragma region PublicMethod
