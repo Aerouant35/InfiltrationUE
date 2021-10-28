@@ -88,7 +88,7 @@ private:
     FInputAxisKeyMapping GetAxisMappingPositive(const FString &KeyName) const;
 
 	UFUNCTION()
-	FInputAxisKeyMapping GetAxisMappingNegative(const FString &KeyName);
+	FInputAxisKeyMapping GetAxisMappingNegative(const FString &KeyName) const;
 #pragma endregion
 
 	#pragma region ErrorKey

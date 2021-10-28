@@ -131,7 +131,7 @@ FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyNa
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale > 0)
 		{
@@ -143,14 +143,14 @@ FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyNa
 	return KeyMapping;
 }
 
-FInputAxisKeyMapping UOptionsWidget::GetAxisMappingNegative(const FString& KeyName)
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingNegative(const FString& KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale < 0)
 		{
