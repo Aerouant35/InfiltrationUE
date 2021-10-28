@@ -78,7 +78,7 @@ void AMyAIController::SetEnemySpot(AActor* NewEnemySpot)
 	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
 }
 
-void AMyAIController::SetFoodSpots(TArray<AFoodSpot*> NewFoodSpots)
+void AMyAIController::SetFoodSpots(TArray<AActor*> NewFoodSpots)
 {
 	FoodSpots = NewFoodSpots;
 }

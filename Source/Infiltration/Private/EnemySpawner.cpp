@@ -21,8 +21,6 @@ void AEnemySpawner::BeginPlay()
 
 	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->RegisterSpawner(this);
 
-	FoodSpots = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetFoodSpots();
-
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
 	GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
