@@ -8,6 +8,7 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
+#include "UI/Level/GameHUD.h"
 #include "CharactKnight.generated.h"
 
 UCLASS()
@@ -15,12 +16,19 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 {
 	GENERATED_BODY()
 
+	#pragma region Variables
 	UPROPERTY()
 	bool bIsPickingUp;
 
 	UPROPERTY()
 	bool bCanPickUp;
-
+	
+	UPROPERTY()
+	bool bHasWon;
+	
+	UPROPERTY()
+	bool bHasLost;
+	
 	UPROPERTY()
 	float CurrentSpeed;
 
@@ -35,14 +43,12 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 	UPROPERTY()
 	AFood* CarryFood;
 
-	UPROPERTY(VisibleAnywhere)
-	bool bHasWon = false;
-	
-	UPROPERTY(VisibleAnywhere)
-	bool bHasLost = false;
+	UPROPERTY()
+	AGameHUD* GameHUD;
 
 	UPROPERTY()
 	FTimerHandle UnusedHandle;
+	#pragma endregion 
 
 	#pragma region EditorVariables
 	UPROPERTY(VisibleAnywhere, Category="Animation boolean")
@@ -63,6 +69,9 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 	UPROPERTY(EditAnywhere, Category="Zoom")
 	float ZoomOutMax = 600.f;
 
+	UPROPERTY(EditAnywhere, Category="Zoom")
+	float ZoomStep = -10.f;
+
 	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
 	UAnimSequence* PickUpAnimationSequence;
 
@@ -77,6 +86,7 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 	FRotator RotationRate = FRotator(0.f, 540.f, 0.f);
 	#pragma endregion
 
+	#pragma region ComponentVariables
 	UPROPERTY(EditDefaultsOnly)
 	UAIPerceptionStimuliSourceComponent* StimuliSource;
 	
@@ -85,30 +95,12 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 	
 	UPROPERTY()
 	UCameraComponent* CameraComponent;
+	#pragma endregion 
 public:
 	// Sets default values for this character's properties
 	ACharactKnight();
 
-protected:
-	// Called when the game starts or when spawned
-	virtual void BeginPlay() override;
-
-public:	
-	// Called to bind functionality to input
-	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
-
-	UFUNCTION()
-	AFood* DropFood();
-
-	UFUNCTION()
-	void HasWon();
-	
-	UFUNCTION()
-	void HasLost();
-
-	UFUNCTION()
-	void StopMovement();
-	
+	#pragma region Accessor
 	UFUNCTION()
 	bool GetHasWon() const { return bHasWon; }
 	
@@ -117,9 +109,15 @@ public:
 	
 	UFUNCTION()
 	bool GetIsCarrying() const { return bIsCarrying; }
-		
-private:
+	#pragma endregion
 	
+protected:
+	// Called when the game starts or when spawned
+	virtual void BeginPlay() override;
+	
+	// Called to bind functionality to input
+	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
+
 	#pragma region Delegate Methods
 	void MoveForward(const float Value);
 	
@@ -139,14 +137,31 @@ private:
 	#pragma region Overlap Methods
 	UFUNCTION()
 	void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-		int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+	int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
 
 	UFUNCTION()
 	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
 	#pragma endregion
 
+	#pragma region ProtectedMethod
 	UFUNCTION()
 	void TimerPickUpAnim();
+
+	UFUNCTION()
+	void StopMovement();
+	#pragma endregion
+	
+public:
+	#pragma region PublicMethod
+	UFUNCTION()
+	AFood* DropFood();
+
+	UFUNCTION()
+	void HasWon();
+	
+	UFUNCTION()
+	void HasLost();
+	#pragma endregion 
 };
 
 

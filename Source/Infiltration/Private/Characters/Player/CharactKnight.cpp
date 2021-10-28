@@ -64,7 +64,6 @@ void ACharactKnight::BeginPlay()
 
 	GetCharacterMovement()->RotationRate = RotationRate;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
-	
 }
 
 // Called to bind functionality to input
@@ -85,6 +84,7 @@ void ACharactKnight::SetupPlayerInputComponent(UInputComponent* PlayerInputCompo
 
 }
 
+#pragma region Delegate Methods
 void ACharactKnight::MoveForward(const float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
@@ -117,92 +117,65 @@ void ACharactKnight::MoveRight(const float Value)
 
 void ACharactKnight::HorizontalRotation(const float Value)
 {
-	if(Value)
-	{
-		AddControllerYawInput(Value * GetWorld()->GetDeltaSeconds() * TurnRate);
-	}
+	if(!Value) return;
+
+	AddControllerYawInput(Value * GetWorld()->GetDeltaSeconds() * TurnRate);
 }
 
 void ACharactKnight::VerticalRotation(const float Value)
 {
-	if(Value)
-	{
-		AddControllerPitchInput(Value * -1 * GetWorld()->GetDeltaSeconds() * LookUpRate);
-	}
+	if(!Value) return;
+	
+	AddControllerPitchInput(Value * -1 * GetWorld()->GetDeltaSeconds() * LookUpRate);
 }
 
 void ACharactKnight::Zoom(const float Value)
 {
-	if(Value)
+	if(Value) return;
+	
+	const float FinalZoomLength = SpringArmComponent->TargetArmLength + Value * ZoomStep;
+	
+	// Avoid infinite Zoom
+	if(FinalZoomLength < ZoomOutMax && FinalZoomLength > ZoomInMax)
 	{
-		const float FinalZoomLength = SpringArmComponent->TargetArmLength + (Value * -10);
-		// Avoid infinite Zoom
-		if(FinalZoomLength < ZoomOutMax && FinalZoomLength > ZoomInMax)
-		{
-			SpringArmComponent->TargetArmLength = FinalZoomLength;
-		}
+		SpringArmComponent->TargetArmLength = FinalZoomLength;
 	}
 }
 
-AFood* ACharactKnight::DropFood()
-{
-	bIsCarrying = false;
-	CurrentSpeed = DefaultSpeed;
-	CarryFood->Drop();
-	return CarryFood;
-}
-
-void ACharactKnight::HasWon()
-{
-	bHasWon = true;
-	StopMovement();
-}
-
-void ACharactKnight::HasLost()
-{
-	bHasLost = true;
-	StopMovement();
-}
-
-void ACharactKnight::StopMovement()
+void ACharactKnight::Interact()
 {
 	if(bIsCarrying)
 	{
 		DropFood();
 	}
-	DisableInput(GetWorld()->GetFirstPlayerController());
-}
+	else if (bCanPickUp)
+	{	
+		bIsCarrying = true;
+		bIsPickingUp = true;
+		CurrentSpeed = DefaultSpeed / 2.f;
 
-void ACharactKnight::Interact()
-{
-	if(bCanPickUp || bIsCarrying)
-	{
-		if(bIsCarrying)
-		{
-			DropFood();
-		} else
-		{
-			bIsCarrying = true;
-			bIsPickingUp = true;
-			CurrentSpeed = DefaultSpeed / 2.f;
-			if(InCollisionFood != nullptr)
-			{
-				CarryFood = InCollisionFood;
+		check(InCollisionFood != nullptr);
 
-				GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
-				GetWorldTimerManager().SetTimer(UnusedHandle, this, &ACharactKnight::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
-			}
-		}
+		CarryFood = InCollisionFood;
+
+		GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &ACharactKnight::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 	}
 }
 
-void ACharactKnight::TimerPickUpAnim()
+void ACharactKnight::PauseGame()
 {
-	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
-	CarryFood->PickUp(HoldingComponent);
-	bIsPickingUp = false;
+	if (GameHUD == nullptr)
+	{
+		GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+		check(GameHUD != nullptr);
+	}
+	else
+		GameHUD->ShowPauseScreen();
 }
+#pragma endregion
 
+#pragma region Overlap Methods
 void ACharactKnight::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
@@ -220,12 +193,47 @@ void ACharactKnight::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 		InCollisionFood = nullptr;
 	}
 }
+#pragma endregion
 
-void ACharactKnight::PauseGame()
+#pragma region ProtectedMethod
+void ACharactKnight::TimerPickUpAnim()
 {
-	APlayerController* PlayerController = UGameplayStatics::GetPlayerController(GetWorld(), 0);
-	if(!PlayerController) return;
-	AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
-	if(!GameHUD) return;
-	GameHUD->ShowPauseScreen();
+	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
+	CarryFood->PickUp(HoldingComponent);
+	bIsPickingUp = false;
 }
+
+void ACharactKnight::StopMovement()
+{
+	if(bIsCarrying)
+	{
+		DropFood();
+	}
+	
+	DisableInput(GetWorld()->GetFirstPlayerController());
+}
+#pragma endregion
+
+#pragma region PublicMethod
+AFood* ACharactKnight::DropFood()
+{
+	check(CarryFood != nullptr);
+	
+	bIsCarrying = false;
+	CurrentSpeed = DefaultSpeed;
+	CarryFood->Drop();
+	return CarryFood;
+}
+
+void ACharactKnight::HasWon()
+{
+	bHasWon = true;
+	StopMovement();
+}
+
+void ACharactKnight::HasLost()
+{
+	bHasLost = true;
+	StopMovement();
+}
+#pragma endregion 
