@@ -20,6 +20,7 @@ void AInfiltrationGameModeBase::BeginPlay()
 	Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	//check(!(FoodSpots.Num() < 1));
+	if(FoodSpots.Num() < 1) return;
 	GenerateStartFood();
 }
 
@@ -29,7 +30,7 @@ void AInfiltrationGameModeBase::GenerateStartFood()
 
 	UE_LOG(LogTemp, Warning, TEXT("Food spot : %d"), RandomNumSpot);
 	
-	GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
+		GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
 }
 
 #pragma region PublicMethod
