@@ -48,7 +48,7 @@ void AAIGoblin::Tick(float DeltaTime)
 // Prend ou dépose la nourriture à proximité
 void AAIGoblin::Interact()
 {
-    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
+    //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
 	if(HasFood)
 	{
 		SetHasFood(false, nullptr);

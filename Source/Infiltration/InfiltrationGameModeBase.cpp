@@ -3,6 +3,7 @@
 
 #include "InfiltrationGameModeBase.h"
 #include "EngineUtils.h"
+#include "InfiltrationGameState.h"
 #include "Characters/AI/AIGoblin.h"
 
 AInfiltrationGameModeBase::AInfiltrationGameModeBase()
@@ -30,6 +31,8 @@ void AInfiltrationGameModeBase::GenerateStartFood()
 	UE_LOG(LogTemp, Warning, TEXT("Food spot : %d"), RandomNumSpot);
 	
 		GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
+		// Incremente la food au state
+		Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->IncrementNumberOfFoods();
 }
 
 #pragma region PublicMethod

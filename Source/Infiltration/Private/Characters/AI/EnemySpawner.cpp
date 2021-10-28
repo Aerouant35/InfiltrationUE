@@ -22,7 +22,7 @@ void AEnemySpawner::BeginPlay()
 
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
-	GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
+	//GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
 
 	// Spawn d'un troisième ennemi une minute plus tard
 	GetWorldTimerManager().SetTimer(SecondTimerHandle, this, &AEnemySpawner::SpawnEnemy, 60.f, false);
@@ -91,7 +91,7 @@ void AEnemySpawner::GiveFood(AAIGoblin* AICharRef)
 		AICharRef->SetHasFood(true, FoodRef);
 
 		// Incremente la food au state
-		Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->IncrementFood();
+		Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->IncrementNumberOfFoods();
 	}
 }
 
@@ -103,22 +103,32 @@ void AEnemySpawner::RecreateAnEnemy()
 	{
 		SpawnedEnemy.Remove(AICharToDestroy);
 	}
-	
-	// Spawn un ennemi entre 0 et 5s après
-	switch (SpawnIndice)
-	{
-		case 0:
-			GetWorldTimerManager().SetTimer(ThirdTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
-			SpawnIndice++;
-			break;
 
-		case 1: GetWorldTimerManager().SetTimer(FourthTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
-			SpawnIndice++;
-			break;
+	// If there is no enemy, spawn directly one other, if not, spawn beetween 0 and 5s one other
+	AInfiltrationGameState* GameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+	check(GameState != nullptr);
+	int NumberOfEnemys = GameState->GetNumberOfEnemys();
+	if(NumberOfEnemys > 0)
+	{
+		switch (SpawnIndice)
+		{
+			case 0:
+				GetWorldTimerManager().SetTimer(ThirdTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
+				SpawnIndice++;
+				break;
+
+			case 1: GetWorldTimerManager().SetTimer(FourthTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
+				SpawnIndice++;
+				break;
 		
-		case 2: GetWorldTimerManager().SetTimer(FifthTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
-			SpawnIndice = 0;
-			break;
+			case 2: GetWorldTimerManager().SetTimer(FifthTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
+				SpawnIndice = 0;
+				break;
+		}
+	}
+	else
+	{
+		SpawnEnemy();
 	}
 }
 

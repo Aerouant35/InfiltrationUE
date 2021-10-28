@@ -55,7 +55,7 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			FillShelf(Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetCurrentNbFood());
 
 			// Decremente la food au state
-			Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->DecrementFood();
+			Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->DecrementNumberOfFoods();
 		}
 	}
 }
