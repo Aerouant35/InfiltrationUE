@@ -100,7 +100,7 @@ void AAIGoblin::Interact()
 	}
 }
 
-FVector AAIGoblin::GetCarryFoodLocation() const
+FVector AAIGoblin::GetDroppedFoodLocation() const
 {
 	return DropFood->GetActorLocation();
 }

@@ -105,7 +105,7 @@ public:
 	void Interact();
 
 	UFUNCTION()
-	FVector GetCarryFoodLocation() const;
+	FVector GetDroppedFoodLocation() const;
 
 	UFUNCTION()
 	void SetAnimation(TSubclassOf<UAnimInstance> BP_Anim) const;

@@ -77,7 +77,7 @@ void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 		BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
 	}
 	
-	BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
+	BlackboardComp->SetValueAsVector("PlayerLocation", GetClosestLocationInNavMesh(Player->GetActorLocation()));
 	BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
 
 	BehaviorComp->StopTree();
@@ -86,7 +86,7 @@ void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 
 void AAICGoblin::TimerKeepFoodLocation() const
 {
-	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
+	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetDroppedFoodLocation());
 }
 
 FVector AAICGoblin::GetSupposedPlayerPosition(const ACharactKnight* Player) const 
@@ -97,9 +97,14 @@ FVector AAICGoblin::GetSupposedPlayerPosition(const ACharactKnight* Player) cons
 	const FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
 
 	// Avoid being outside of the playground
+	return GetClosestLocationInNavMesh(SupposedPlayerLocation);
+}
+
+FVector AAICGoblin::GetClosestLocationInNavMesh(FVector Location) const
+{
 	FNavLocation NavLocation;
 	UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
+	NavigationSystem->ProjectPointToNavigation(Location, NavLocation, FVector(1000.f, 1000.f, 100.f));
 	return NavLocation.Location;
 }
 #pragma endregion 

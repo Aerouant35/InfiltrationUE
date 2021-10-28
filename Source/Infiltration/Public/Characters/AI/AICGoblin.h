@@ -93,6 +93,9 @@ private:
 
 	UFUNCTION()
 	FVector GetSupposedPlayerPosition(const ACharactKnight* Player) const;
+
+	UFUNCTION()
+	FVector GetClosestLocationInNavMesh(FVector Location) const;
 	
 	#pragma endregion 
 
