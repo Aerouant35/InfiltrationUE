@@ -4,32 +4,33 @@
 
 #include "CoreMinimal.h"
 #include "Animation/AnimInstance.h"
-#include "AIAnimations.generated.h"
+#include "AnimKnight.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INFILTRATION_API UAIAnimations : public UAnimInstance
+class INFILTRATION_API UAnimKnight : public UAnimInstance
 {
 	GENERATED_BODY()
 
-public:
-	UAIAnimations();
+	public:
+	UAnimKnight();
 	
-protected:
+	protected:
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsWalking;
+		bool bIsWalking;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsCarrying;
+		bool bIsCarrying;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HasLost;
+		bool bHasLost;
 
 	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HasWon;
+		bool bHasWon;
 
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
+
 };

@@ -3,9 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemySpawner.h"
+#include "Characters/AI/EnemySpawner.h"
 #include "Food.h"
 #include "FoodSpot.h"
+#include "Characters/Player/CharactKnight.h"
 #include "GameFramework/GameModeBase.h"
 #include "UI/Level/GameHUD.h"
 #include "InfiltrationGameModeBase.generated.h"
@@ -40,7 +41,7 @@ class INFILTRATION_API AInfiltrationGameModeBase : public AGameModeBase
 	AGameHUD* GameHUD;
 
 	UPROPERTY()
-	APlayerCharacter* Player;
+	ACharactKnight* Player;
 	#pragma endregion 
 
 public:

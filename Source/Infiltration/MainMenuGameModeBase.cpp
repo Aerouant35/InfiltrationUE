@@ -2,15 +2,14 @@
 
 
 #include "MainMenuGameModeBase.h"
-
 #include "EngineUtils.h"
-#include "PlayerCharacter.h"
+#include "Characters/Player/CharactKnight.h"
 #include "Camera/CameraActor.h"
 #include "UI/Menu/MainMenuHUD.h"
 
 AMainMenuGameModeBase::AMainMenuGameModeBase()
 {
-	DefaultPawnClass = APlayerCharacter::StaticClass();
+	DefaultPawnClass = ACharactKnight::StaticClass();
 	HUDClass = AMainMenuHUD::StaticClass();
 }
 

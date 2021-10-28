@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTask/BTTaskNode_DefaultTree.h"
+#include "Characters/AI/BTTask/BTTaskNode_DefaultTree.h"
 
 EBTNodeResult::Type UBTTaskNode_DefaultTree::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory)
 {
-	AICon = Cast<AMyAIController>(OwnerComp.GetAIOwner());
+	AICon = Cast<AAICGoblin>(OwnerComp.GetAIOwner());
 	
 	if(AICon)
 	{

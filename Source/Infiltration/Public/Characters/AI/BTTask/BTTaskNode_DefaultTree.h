@@ -3,8 +3,8 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyAIController.h"
 #include "BehaviorTree/BTTaskNode.h"
+#include "Characters/AI/AICGoblin.h"
 #include "BTTaskNode_DefaultTree.generated.h"
 
 /**
@@ -20,6 +20,6 @@ class INFILTRATION_API UBTTaskNode_DefaultTree : public UBTTaskNode
 	protected:
 
 	//UPROPERTY(VisibleAnywhere)
-	AMyAIController* AICon;
+	AAICGoblin* AICon;
 	
 };

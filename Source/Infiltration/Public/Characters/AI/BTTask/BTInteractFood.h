@@ -3,22 +3,22 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "MyAIController.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "BTTaskNode_StartChase.generated.h"
+#include "Characters/AI/AICGoblin.h"
+#include "BTInteractFood.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class INFILTRATION_API UBTTaskNode_StartChase : public UBTTaskNode
+class INFILTRATION_API UBTInteractFood : public UBTTaskNode
 {
 	GENERATED_BODY()
-	
+
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory) override;
 
-	protected:
+protected:
+	
+	//UPROPERTY(VisibleAnywhere)
+	AAICGoblin* AICon;
 
 	//UPROPERTY(VisibleAnywhere)
-	AMyAIController* AICon;		
+	UBlackboardComponent* BlackboardComp;
 };
