@@ -11,3 +11,11 @@ void AMyGameState::IncrementFood()
 {
 	NumberOfFoods += 1;
 }
+
+void AMyGameState::DecrementFood()
+{
+	if(NumberOfFoods > 1)
+	{
+		NumberOfFoods -= 1;
+	}
+}
