@@ -22,7 +22,7 @@ void AEnemySpawner::BeginPlay()
 
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
-	//GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
+	GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
 
 	// Spawn d'un troisième ennemi une minute plus tard
 	GetWorldTimerManager().SetTimer(SecondTimerHandle, this, &AEnemySpawner::SpawnEnemy, 60.f, false);
