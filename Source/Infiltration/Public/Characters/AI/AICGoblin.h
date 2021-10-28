@@ -72,6 +72,10 @@ class INFILTRATION_API AAICGoblin : public AAIController
 	UFUNCTION()
 	FVector GetSupposedPlayerPosition(const ACharactKnight* Player) const;
 
+	UFUNCTION()
+	FVector GetClosestLocationInNavMesh(FVector Location) const;
+
+
 
 public:
 
