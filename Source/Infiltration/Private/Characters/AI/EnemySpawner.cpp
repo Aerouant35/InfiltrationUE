@@ -18,13 +18,15 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->SetEnemySpawner(this);
+	AInfiltrationGameModeBase* GameModeBase = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
+	check(GameModeBase != nullptr);
+	GameModeBase->SetEnemySpawner(this);
 
-    // Spawn de deux ennemis en début de partie
+    // Spawn of two enemy in the start of the game
 	SpawnEnemy();
 	GetWorldTimerManager().SetTimer(FirstTimerHandle, this, &AEnemySpawner::SpawnEnemy, 2.f, false);
 
-	// Spawn d'un troisième ennemi une minute plus tard
+	// Spawn of the third enemy, one minute later
 	GetWorldTimerManager().SetTimer(SecondTimerHandle, this, &AEnemySpawner::SpawnEnemy, 60.f, false);
 }
 
@@ -33,9 +35,7 @@ void AEnemySpawner::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
-	// SpawnedEnemy = RemoveDestroyedEnemy();
-
-	// Si l'ennemi reviens alors je le détruit pour en recrée un autre
+	// If the enemy come back, I destroy him and create another one
 	if(EnemySpot->GetNumberOfEnemys() > 0)
 	{
 		RecreateAnEnemy();
@@ -51,18 +51,22 @@ void AEnemySpawner::SpawnEnemy()
 	
 		AAIGoblin* AICharRef = GetWorld()->SpawnActor<AAIGoblin>(EnemyToSpawn, Location, Rotation);
 
-		// Attribut les spots au controller
-		Cast<AAICGoblin>(AICharRef->Controller)->SetEnemySpot(EnemySpot);
-		Cast<AAICGoblin>(AICharRef->Controller)->SetFoodSpots(FoodSpots);
+		// Add the spots to the controller
+		AAICGoblin* AICGobelin = Cast<AAICGoblin>(AICharRef->Controller);
+		check(AICGobelin != nullptr);
+		AICGobelin->SetEnemySpot(EnemySpot);
+		AICGobelin->SetFoodSpots(FoodSpots);
 
-		// Attribut le BP_anim au personnage
+		// Add the BP_anim to the player
 		AICharRef->SetAnimation(BP_Anim);
 
 		SpawnedEnemy.Add(AICharRef);
 
-		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
-		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		int NumberOfFoods = Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->GetNumberOfFoods();
+		// If there is less than 5 foods in the game, I give one to the AI
+		// Else, the AI go to two spot without food before come back
+		AInfiltrationGameState* GameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+		check(GameState != nullptr);
+		int NumberOfFoods = GameState->GetNumberOfFoods();
 		
 		if(NumberOfFoods < 5)
 		{
@@ -86,32 +90,34 @@ void AEnemySpawner::GiveFood(AAIGoblin* AICharRef)
 	
 		AFood* FoodRef = GetWorld()->SpawnActor<AFood>(FoodToSpawn, Location, Rotation);
 
-		// Attribut la food a l'ennemi
+		// Add food to enemy
 		FoodRef->PickUp(AICharRef->GetHoldingComponent());
 		AICharRef->SetHasFood(true, FoodRef);
 
-		// Incremente la food au state
-		Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->IncrementNumberOfFoods();
+		// Increments the number of foods in the GameState
+		AInfiltrationGameState* GameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+		check(GameState != nullptr);
+		GameState->IncrementNumberOfFoods();
 	}
 }
 
-// Detruit l'enemy dans le spot enemy et en recrée un nouveau
+// Destroy enemy and create another one
 void AEnemySpawner::RecreateAnEnemy()
 {
 	AAIGoblin* AICharToDestroy = EnemySpot->DestroyEnemy();
+	
 	if(AICharToDestroy)
 	{
 		SpawnedEnemy.Remove(AICharToDestroy);
-	}
 
-	// If there is no enemy, spawn directly one other, if not, spawn beetween 0 and 5s one other
-	AInfiltrationGameState* GameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
-	check(GameState != nullptr);
-	int NumberOfEnemys = GameState->GetNumberOfEnemys();
-	if(NumberOfEnemys > 0)
-	{
-		switch (SpawnIndice)
+		// If there is no enemy, spawn directly one other, if not, spawn between 0 and 5s one other
+		AInfiltrationGameState* GameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+		check(GameState != nullptr);
+		int NumberOfEnemys = GameState->GetNumberOfEnemys();
+		if(NumberOfEnemys > 0)
 		{
+			switch (SpawnIndice)
+			{
 			case 0:
 				GetWorldTimerManager().SetTimer(ThirdTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
 				SpawnIndice++;
@@ -124,11 +130,12 @@ void AEnemySpawner::RecreateAnEnemy()
 			case 2: GetWorldTimerManager().SetTimer(FifthTimerHandle, this, &AEnemySpawner::SpawnEnemy, FMath::RandRange(0.f, 5.f), false);
 				SpawnIndice = 0;
 				break;
+			}
 		}
-	}
-	else
-	{
-		SpawnEnemy();
+		else
+		{
+			SpawnEnemy();
+		}
 	}
 }
 

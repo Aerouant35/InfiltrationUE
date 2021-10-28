@@ -48,18 +48,17 @@ void UBTTask_FoodSpotSelection::GoToFoodSpot()
 	TArray<AActor*> AvailableFoodSpots = AICon->GetAvailableFoodSpots();
 	
 	AFoodSpot* NextSpot = nullptr;
-
-	// Cette boucle est nécessaire si on enchaine des GoToFoodSpot à la suite
-	// C'est à dire quand tout les spots de nourriture sont remplis
+	
+	// This loop is for give a foodSpot who doesn't have food and who is not like the previous one
 	do
 	{
 		// Random index of FoodSpot
 		int32 RandomIndex = FMath::RandRange(0, AvailableFoodSpots.Num()-1);
 		
 		NextSpot = Cast<AFoodSpot>(AvailableFoodSpots[RandomIndex]);
-	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Choisit un spot qui n'a pas de la nourriture ou et qui ne correspond pas au précédent
+	} while(CurrentSpot == NextSpot || NextSpot->HasAFood);
 
-	// /!\ Si le nombre de spot est égale ou inférieur au nombre de nourriture max d'un level alors le jeu peu crash /!\
+	// /!\ If the numberOfFood can be equal or superior to the NumberOfFoodSpots, the game can crash /!\
 
 	// Update next location in blackboard
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
@@ -75,9 +74,6 @@ void UBTTask_FoodSpotSelection::GoToEnemySpot()
 	AExitEnemySpot* NextSpot = Cast<AExitEnemySpot>(AICon->GetEnemySpot());
 
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
-	
-	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, BlackboardComp->GetValueAsObject("LocationToGo")->GetName());
-	
 }
 
 

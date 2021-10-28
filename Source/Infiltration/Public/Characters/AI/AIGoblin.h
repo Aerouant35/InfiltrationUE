@@ -34,7 +34,7 @@ private:
 	bool bHasWon = false;
 	bool bHasLost = false;
 
-	// Bool qui defini si l'IA doit aller dans les spots sans nourriture
+	// Bool who define if AI go to spot without foods
 	UPROPERTY()
 	bool PatrolState;
 
@@ -45,7 +45,7 @@ private:
 	AFood* InCollisionFood;
 	// Actual food AI is carrying
 	AFood* CarryFood;
-	// Food qui a été drop
+	// Food who was drop
 	AFood* DropFood;
 
 	FTimerHandle UnusedHandle;

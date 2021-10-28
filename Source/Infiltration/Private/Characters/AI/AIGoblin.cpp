@@ -23,7 +23,7 @@ void AAIGoblin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	// Delegate pour collision de la capsule
+	// Delegate for overlap
 	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAIGoblin::OnComponentBeginOverlap);
 	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAIGoblin::OnComponentEndOverlap);
 
@@ -34,7 +34,7 @@ void AAIGoblin::BeginPlay()
 	GetMesh()->SetCollisionProfileName(TEXT("CharacterMesh"));
 	GetMesh()->SetCollisionResponseToChannel(ECC_Camera, ECR_Ignore);
 
-	// Ne possède pas de nourriture de base
+	// Don't possess food in the beginning
 	SetHasFood(false, nullptr);
 }
 
@@ -45,7 +45,7 @@ void AAIGoblin::Tick(float DeltaTime)
 
 }
 
-// Prend ou dépose la nourriture à proximité
+// Take or drop food close around
 void AAIGoblin::Interact()
 {
     //GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
@@ -99,6 +99,7 @@ void AAIGoblin::DecrementNumberOfPatrols()
 	}
 }
 
+// Something to modify
 bool AAIGoblin::GetPatrolState()
 {
 	if(NumberOfPatrols > 1)
@@ -174,7 +175,7 @@ void AAIGoblin::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent
 		//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("In areafood"));
 	}
 
-	// Si touche joueur : défaite
+	// If touch player : game over
 	if(OtherActor->IsA(ACharactKnight::StaticClass()))
 	{
 		// Game Over
