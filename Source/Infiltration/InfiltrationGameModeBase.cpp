@@ -40,8 +40,7 @@ void AInfiltrationGameModeBase::IncrementFood()
 {
 	CurrentFoodScore += 1;
 
-	check(!(GameHUD == nullptr));
-	if (GameHUD == nullptr) return;
+	check(GameHUD != nullptr);
 	GameHUD->UpdateProgressBarPercent(CurrentFoodScore);
 	
 	if (CurrentFoodScore >= NbFoodWin) Victory();

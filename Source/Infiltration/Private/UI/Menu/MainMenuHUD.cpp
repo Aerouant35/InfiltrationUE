@@ -13,17 +13,16 @@ void AMainMenuHUD::BeginPlay()
 	
 	InitWidget();
 	
-	if (!MainMenuWidget) return;
+	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
+	check(PlayerController != nullptr);
 	
-	APlayerController* MyController = GetWorld()->GetFirstPlayerController();
- 
-	MyController->bShowMouseCursor = true;
-	MyController->bEnableClickEvents = true;
-	MyController->bEnableMouseOverEvents = true;
+	PlayerController->bShowMouseCursor = true;
+	PlayerController->bEnableClickEvents = true;
+	PlayerController->bEnableMouseOverEvents = true;
 
 	FInputModeUIOnly InputModeUIOnly;
 	InputModeUIOnly.SetLockMouseToViewportBehavior(EMouseLockMode::LockOnCapture);
-	MyController->SetInputMode(InputModeUIOnly);
+	PlayerController->SetInputMode(InputModeUIOnly);
 	
 	MainMenuWidget->AddToViewport();
 }
@@ -33,24 +32,32 @@ void AMainMenuHUD::InitWidget()
 	if (MainMenuWidgetClass)
 	{
 		MainMenuWidget = CreateWidget<UMainMenuWidget>(GetWorld(), MainMenuWidgetClass);
+		check(MainMenuWidget != nullptr);
+
 		MainMenuWidget->InitDelegate();
 	}
 
 	if (HowToPlayWidgetClass)
 	{
 		HowToPlayWidget = CreateWidget<UHowToPlayWidget>(GetWorld(), HowToPlayWidgetClass);
+		check(HowToPlayWidget != nullptr);
+
 		HowToPlayWidget->InitDelegate();
 	}
 	
 	if (OptionsWidgetClass)
 	{
 		OptionsWidget = CreateWidget<UMenuOptionsWidget>(GetWorld(), OptionsWidgetClass);
+		check(OptionsWidget != nullptr);
+
 		OptionsWidget->InitDelegate();
 	}
 	
 	if (CreditsWidgetClass)
 	{
 		CreditWidget = CreateWidget<UCreditsWidget>(GetWorld(), CreditsWidgetClass);
+		check(CreditWidget != nullptr);
+
 		CreditWidget->InitDelegate();
 	}
 }
@@ -58,7 +65,7 @@ void AMainMenuHUD::InitWidget()
 #pragma region ToDisplayMethod
 void AMainMenuHUD::HowToPlayDisplay()
 {
-	if (!HowToPlayWidget && !MainMenuWidget) return;
+	check(HowToPlayWidget != nullptr && MainMenuWidget != nullptr);
 	if (HowToPlayWidget->IsInViewport()) return;
 
 	MainMenuWidget->RemoveFromViewport();
@@ -67,7 +74,7 @@ void AMainMenuHUD::HowToPlayDisplay()
 
 void AMainMenuHUD::OptionsDisplay()
 {
-	if (!OptionsWidget && !MainMenuWidget) return;
+	check(OptionsWidget != nullptr && MainMenuWidget != nullptr);
 	if (OptionsWidget->IsInViewport()) return;
 
 	MainMenuWidget->RemoveFromViewport();
@@ -76,7 +83,7 @@ void AMainMenuHUD::OptionsDisplay()
 
 void AMainMenuHUD::CreditsDisplay()
 {
-	if (!CreditWidget && !MainMenuWidget) return;
+	check(CreditWidget != nullptr && MainMenuWidget != nullptr);
 	if (CreditWidget->IsInViewport()) return;
 
 	MainMenuWidget->RemoveFromViewport();
@@ -87,7 +94,7 @@ void AMainMenuHUD::CreditsDisplay()
 #pragma region BackToMenuMethod
 void AMainMenuHUD::HowToPlayToMainMenu()
 {
-	if (!HowToPlayWidget && !MainMenuWidget) return;
+	check(HowToPlayWidget != nullptr && MainMenuWidget != nullptr);
 	if (MainMenuWidget->IsInViewport()) return;
 	
 	HowToPlayWidget->RemoveFromViewport();
@@ -96,7 +103,7 @@ void AMainMenuHUD::HowToPlayToMainMenu()
 
 void AMainMenuHUD::OptionsToMainMenu()
 {
-	if (!OptionsWidget && !MainMenuWidget) return;
+	check(OptionsWidget != nullptr && MainMenuWidget != nullptr);
 	if (MainMenuWidget->IsInViewport()) return;
 	
 	OptionsWidget->RemoveFromViewport();
@@ -105,7 +112,7 @@ void AMainMenuHUD::OptionsToMainMenu()
 
 void AMainMenuHUD::CreditsToMainMenu()
 {
-	if (!CreditWidget && !MainMenuWidget) return;
+	check(CreditWidget != nullptr && MainMenuWidget != nullptr);
 	if (MainMenuWidget->IsInViewport()) return;
 	
 	CreditWidget->RemoveFromViewport();

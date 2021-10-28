@@ -1,6 +1,5 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
-
 #include "Characters/Player/AnimKnight.h"
 #include "Characters/Player/CharactKnight.h"
 
@@ -8,7 +7,6 @@ UAnimKnight::UAnimKnight()
 {
 	bIsWalking = false;
 }
-
 
 void UAnimKnight::NativeUpdateAnimation(float DeltaSeconds)
 {

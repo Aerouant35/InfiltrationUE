@@ -20,11 +20,7 @@ class INFILTRATION_API UPlayerWidget : public UUserWidget
 	
 public:
 	UPlayerWidget(const FObjectInitializer& ObjectInitializer);
-
-private:
-	virtual void NativeConstruct() override;
-
-public:
+	
 	/** Update progress bar percent in Player UI.
 	 * @param	Percent					Float range between 0 and 1.
 	 */

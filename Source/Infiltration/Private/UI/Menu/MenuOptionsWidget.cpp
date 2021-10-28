@@ -29,6 +29,7 @@ void UMenuOptionsWidget::NativeConstruct()
 	Super::NativeConstruct();
 	
 	InputSettings = UInputSettings::GetInputSettings();
+	check(InputSettings != nullptr);
 	
 	InteractionKeySelector->SetSelectedKey(GetActionMapping(MappingName[0]).Key);
 	ForwardKeySelector->SetSelectedKey(GetAxisMappingPositive(MappingName[1]).Key);
@@ -42,7 +43,10 @@ void UMenuOptionsWidget::NativeConstruct()
 void UMenuOptionsWidget::Return()
 {
 	InputSettings->SaveKeyMappings();
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->OptionsToMainMenu();
+	
+	AMainMenuHUD* MainMenuHUD = Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(MainMenuHUD != nullptr);
+	MainMenuHUD->OptionsToMainMenu();
 }
 
 #pragma region KeyRebindButton
@@ -113,7 +117,7 @@ void UMenuOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 #pragma endregion 
 
 #pragma region GetAction/AxisMapping=
-FInputActionKeyMapping UMenuOptionsWidget::GetActionMapping(const FString& KeyName)
+FInputActionKeyMapping UMenuOptionsWidget::GetActionMapping(const FString& KeyName) const
 {
 	TArray<FInputActionKeyMapping> OutMappings;
 	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
@@ -121,14 +125,14 @@ FInputActionKeyMapping UMenuOptionsWidget::GetActionMapping(const FString& KeyNa
 	return OutMappings[0];
 }
 
-FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingPositive(const FString& KeyName)
+FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingPositive(const FString& KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale > 0)
 		{
@@ -140,14 +144,14 @@ FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingPositive(const FString& K
 	return KeyMapping;
 }
 
-FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingNegative(const FString& KeyName)
+FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingNegative(const FString& KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale < 0)
 		{
@@ -164,6 +168,8 @@ FInputAxisKeyMapping UMenuOptionsWidget::GetAxisMappingNegative(const FString& K
 bool UMenuOptionsWidget::IsAvailableKey(const FKey &Key)
 {
 	InputSettings = UInputSettings::GetInputSettings();
+	check(InputSettings != nullptr);
+
 	bool bFind = false;
 
 	for (auto ActionKeyMapping : InputSettings->GetActionMappings())

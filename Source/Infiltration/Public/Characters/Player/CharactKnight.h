@@ -15,6 +15,76 @@ class INFILTRATION_API ACharactKnight : public ACharacter
 {
 	GENERATED_BODY()
 
+	UPROPERTY()
+	bool bIsPickingUp;
+
+	UPROPERTY()
+	bool bCanPickUp;
+
+	UPROPERTY()
+	float CurrentSpeed;
+
+	UPROPERTY()
+	float DefaultSpeed = 1.f;
+
+	// Food that we are close to (OnOverlap)
+	UPROPERTY()
+	AFood* InCollisionFood;
+	
+	// Actual food we are carrying
+	UPROPERTY()
+	AFood* CarryFood;
+
+	UPROPERTY(VisibleAnywhere)
+	bool bHasWon = false;
+	
+	UPROPERTY(VisibleAnywhere)
+	bool bHasLost = false;
+
+	UPROPERTY()
+	FTimerHandle UnusedHandle;
+
+	#pragma region EditorVariables
+	UPROPERTY(VisibleAnywhere, Category="Animation boolean")
+	bool bIsCarrying;
+
+	UPROPERTY(EditAnywhere, Category="Character Speed")
+	float WalkSpeed = 500.f;
+	
+	UPROPERTY(EditAnywhere, Category="Camera Speed")
+	float TurnRate = 45.f;
+	
+	UPROPERTY(EditAnywhere, Category="Camera Speed")
+	float LookUpRate = 45.f;
+
+	UPROPERTY(EditAnywhere, Category="Zoom")
+	float ZoomInMax = 200.f;
+	
+	UPROPERTY(EditAnywhere, Category="Zoom")
+	float ZoomOutMax = 600.f;
+
+	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
+	UAnimSequence* PickUpAnimationSequence;
+
+	UPROPERTY(VisibleAnywhere, Category="Holding Component")
+	USceneComponent* HoldingComponent;
+	
+	UPROPERTY(EditAnywhere, Category="Holding Component")
+	float HoldingComponentOffset = 50.f;
+	
+	// Speed in which the mesh rotate to be in the same direction as the movement
+	UPROPERTY(EditAnywhere, Category="Rotation")
+	FRotator RotationRate = FRotator(0.f, 540.f, 0.f);
+	#pragma endregion
+
+	UPROPERTY(EditDefaultsOnly)
+	UAIPerceptionStimuliSourceComponent* StimuliSource;
+	
+	UPROPERTY()
+	USpringArmComponent* SpringArmComponent;
+	
+	UPROPERTY()
+	UCameraComponent* CameraComponent;
 public:
 	// Sets default values for this character's properties
 	ACharactKnight();
@@ -24,105 +94,59 @@ protected:
 	virtual void BeginPlay() override;
 
 public:	
-	// Called every frame
-	virtual void Tick(float DeltaTime) override;
-
 	// Called to bind functionality to input
 	virtual void SetupPlayerInputComponent(class UInputComponent* PlayerInputComponent) override;
 
 	UFUNCTION()
-		AFood* DropFood();
+	AFood* DropFood();
 
 	UFUNCTION()
-		void HasWon();
-	UFUNCTION()
-		void HasLost();
-	UFUNCTION()
-		bool GetHasWon();
-	UFUNCTION()
-		bool GetHasLost();
-	UFUNCTION()
-		bool GetIsCarrying();
-	UFUNCTION()
-		void StopMovement();
+	void HasWon();
 	
-	private:
-	
-	bool bIsPickingUp;
-	bool bCanPickUp;
+	UFUNCTION()
+	void HasLost();
 
-	// Food that we are close to (OnOverlap)
-	AFood* InCollisionFood;
-	// Actual food we are carrying
-	AFood* CarryFood;
-
-	FTimerHandle UnusedHandle;
+	UFUNCTION()
+	void StopMovement();
 	
-	void MoveForward(float Value);
-	void MoveRight(float Value);
+	UFUNCTION()
+	bool GetHasWon() const { return bHasWon; }
 	
-	void HorizontalRotation(float Value);
-	void VerticalRotation(float Value);
+	UFUNCTION()
+	bool GetHasLost() const { return bHasLost; }
 	
-	void Zoom(float Value);
+	UFUNCTION()
+	bool GetIsCarrying() const { return bIsCarrying; }
+		
+private:
+	
+	#pragma region Delegate Methods
+	void MoveForward(const float Value);
+	
+	void MoveRight(const float Value);
+	
+	void HorizontalRotation(const float Value);
+	
+	void VerticalRotation(const float Value);
+	
+	void Zoom(const float Value);
+	
 	void Interact();
-	
-	float CurrentSpeed;
-	float DefaultSpeed = 1.f;
 
-	UPROPERTY(EditAnywhere, Category="Animation boolean")
-		bool bIsCarrying;
-
-	UPROPERTY(VisibleAnywhere)
-		bool bHasWon = false;
-	UPROPERTY(VisibleAnywhere)
-		bool bHasLost = false;
-
-	UPROPERTY(EditAnywhere, Category="Character Speed")
-		float WalkSpeed = 500.f;
-	
-	UPROPERTY(EditAnywhere, Category="Camera Speed")
-		float TurnRate = 45.f;
-	UPROPERTY(EditAnywhere, Category="Camera Speed")
-		float LookUpRate = 45.f;
-
-	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomInMax = 200.f;
-	UPROPERTY(EditAnywhere, Category="Zoom")
-		float ZoomOutMax = 600.f;
-
-	UPROPERTY(EditAnywhere, Category="Pick Up Animation")
-		UAnimSequence* PickUpAnimationSequence;
-
-	UPROPERTY(EditAnywhere, Category="Holding Component")
-		USceneComponent* HoldingComponent;
-	UPROPERTY(EditAnywhere, Category="Holding Component")
-		float HoldingComponentOffset = 50.f;
-
-	UPROPERTY(EditDefaultsOnly)
-		UAIPerceptionStimuliSourceComponent* StimuliSource;
-
-	// Speed in which the mesh rotate to be in the same direction as the movement
-	UPROPERTY(EditAnywhere, Category="Rotation")
-		FRotator RotationRate = FRotator(0.f, 540.f, 0.f);
-
-	UPROPERTY()
-		USpringArmComponent* SpringArmComponent;
-	UPROPERTY()
-		UCameraComponent* CameraComponent;
-	
-	UFUNCTION()
-		void TimerPickUpAnim();
-
-	UFUNCTION()
-		void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
-			int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
-
-	UFUNCTION()
-		void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
-
-	UFUNCTION()
 	void PauseGame();
+	#pragma endregion
+	
+	#pragma region Overlap Methods
+	UFUNCTION()
+	void OnComponentBeginOverlap( UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp,
+		int32 OtherBodyIndex, bool bFromSweep, const FHitResult & SweepResult);
+
+	UFUNCTION()
+	void OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor, UPrimitiveComponent* OtherComp, int32 OtherBodyIndex);
+	#pragma endregion
+
+	UFUNCTION()
+	void TimerPickUpAnim();
 };
 
 
