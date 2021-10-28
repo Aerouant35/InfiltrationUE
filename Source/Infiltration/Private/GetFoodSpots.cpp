@@ -2,7 +2,6 @@
 
 
 #include "GetFoodSpots.h"
-
 #include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values

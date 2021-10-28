@@ -3,16 +3,16 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AICharacter.h"
+#include "AIGoblin.h"
 #include "Components/SphereComponent.h"
 #include "Engine/TargetPoint.h"
-#include "EnemySpot.generated.h"
+#include "ExitEnemySpot.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INFILTRATION_API AEnemySpot : public ATargetPoint
+class INFILTRATION_API AExitEnemySpot : public ATargetPoint
 {
 	GENERATED_BODY()
 
@@ -25,24 +25,24 @@ protected:
 
 public:
 
-	AEnemySpot();
+	AExitEnemySpot();
 	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY()
-	AAICharacter* EnemyRef1;
+	AAIGoblin* EnemyRef1;
 
 	UPROPERTY()
-	AAICharacter* EnemyRef2;
+	AAIGoblin* EnemyRef2;
 
 	UPROPERTY()
-	AAICharacter* EnemyRef3;
+	AAIGoblin* EnemyRef3;
 
 	FORCEINLINE int GetNumberOfEnemys() const { return NumberOfEnemys; };
 
 	UFUNCTION()
-	AAICharacter* DestroyEnemy();
+	AAIGoblin* DestroyEnemy();
 
 private:
 

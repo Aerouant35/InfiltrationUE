@@ -5,16 +5,16 @@
 #include "CoreMinimal.h"
 #include "GameFramework/Character.h"
 #include "Food.h"
-#include "AICharacter.generated.h"
+#include "AIGoblin.generated.h"
 
 UCLASS()
-class INFILTRATION_API AAICharacter : public ACharacter
+class INFILTRATION_API AAIGoblin : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	AAICharacter();
+	AAIGoblin();
 
 	UPROPERTY(EditAnywhere, Category="AI")
 	class UBehaviorTree* DefaultBehaviorTree;

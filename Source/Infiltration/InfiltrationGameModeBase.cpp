@@ -3,12 +3,11 @@
 
 #include "InfiltrationGameModeBase.h"
 #include "EngineUtils.h"
-#include "PlayerCharacter.h"
-
+#include "Characters/AI/AIGoblin.h"
 
 AInfiltrationGameModeBase::AInfiltrationGameModeBase()
 {
-	DefaultPawnClass = APlayerCharacter::StaticClass();
+	DefaultPawnClass = ACharactKnight::StaticClass();
 	HUDClass = AGameHUD::StaticClass();
 }
 
@@ -17,7 +16,7 @@ void AInfiltrationGameModeBase::BeginPlay()
 	Super::BeginPlay();
 	
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
-	Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	Player = Cast<ACharactKnight>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
 	//check(!(FoodSpots.Num() < 1));
 	if(FoodSpots.Num() < 1) return;
@@ -56,7 +55,7 @@ void AInfiltrationGameModeBase::Defeat() const
 	Player->HasLost();
 	
 	// AI : Won
-	for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+	for(AAIGoblin* AICharacter : EnemySpawner->GetSpawnedEnemy())
 	{
 		check(!(AICharacter == nullptr))
 		
@@ -76,7 +75,7 @@ void AInfiltrationGameModeBase::Victory() const
 	Player->HasWon();
 	
 	// AI : Lose
-	for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+	for(AAIGoblin* AICharacter : EnemySpawner->GetSpawnedEnemy())
 	{
 		check(!(AICharacter == nullptr))
 

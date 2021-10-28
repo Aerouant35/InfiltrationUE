@@ -4,7 +4,7 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "MyAIController.h"
+#include "Characters/AI/AICGoblin.h"
 #include "BTFoodSpotSelection.generated.h"
 
 /**
@@ -20,7 +20,7 @@ class INFILTRATION_API UBTFoodSpotSelection : public UBTTaskNode
 protected:
 	
 	//UPROPERTY(VisibleAnywhere)
-	AMyAIController* AICon;
+	AAICGoblin* AICon;
 
 	//UPROPERTY(VisibleAnywhere)
 	UBlackboardComponent* BlackboardComp;

@@ -1,11 +1,11 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTInteractFood.h"
+#include "Characters/AI/BTTask/BTInteractFood.h"
 
 EBTNodeResult::Type UBTInteractFood::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory)
 {
-	AICon = Cast<AMyAIController>(OwnerComp.GetAIOwner());
+	AICon = Cast<AAICGoblin>(OwnerComp.GetAIOwner());
 
 	if(AICon)
 	{

@@ -1,22 +1,18 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "MyAIController.h"
-
-#include "AICharacter.h"
-#include "EnemySpot.h"
+#include "Characters/AI/AICGoblin.h"
+#include "Characters/AI/AIGoblin.h"
 #include "NavigationSystem.h"
-#include "PlayerCharacter.h"
+#include "Characters/Player/CharactKnight.h"
 #include "BehaviorTree/BlackboardComponent.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
 #include "BehaviorTree/BehaviorTree.h"
-#include "NavigationSystem.h"
-
 #include "Kismet/GameplayStatics.h"
 #include "Perception/AIPerceptionComponent.h"
 #include "Perception/AISenseConfig_Sight.h"
 
-AMyAIController::AMyAIController()
+AAICGoblin::AAICGoblin()
 {
 	//Initialize BehaviorTreeComponent, BlackboardComponent and the corresponding key
 
@@ -42,12 +38,12 @@ AMyAIController::AMyAIController()
 	bHasAlreadyDetected = false;
 }
 
-void AMyAIController::OnPossess(APawn* InPawn)
+void AAICGoblin::OnPossess(APawn* InPawn)
 {
 	Super::OnPossess(InPawn);
 
 	//Get the possessed Character and check if it's my own AI Character
-	AIChar = Cast<AAICharacter>(InPawn);
+	AIChar = Cast<AAIGoblin>(InPawn);
 
 	if(AIChar)
 	{
@@ -66,49 +62,49 @@ void AMyAIController::OnPossess(APawn* InPawn)
 	}
 }
 
-void AMyAIController::BeginPlay()
+void AAICGoblin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AMyAIController::OnTargetPerceptionUpdated);}
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAICGoblin::OnTargetPerceptionUpdated);}
 
-void AMyAIController::SetEnemySpot(AActor* NewEnemySpot)
+void AAICGoblin::SetEnemySpot(AActor* NewEnemySpot)
 {
 	EnemySpot = NewEnemySpot;
 	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
 }
 
-void AMyAIController::SetFoodSpots(TArray<AActor*> NewFoodSpots)
+void AAICGoblin::SetFoodSpots(TArray<AActor*> NewFoodSpots)
 {
 	FoodSpots = NewFoodSpots;
 }
 
-void AMyAIController::Interact()
+void AAICGoblin::Interact()
 {
 	AIChar->Interact();
 	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetHasFood());
 }
 
-AAICharacter* AMyAIController::GetAICharacter()
+AAIGoblin* AAICGoblin::GetAICharacter()
 {
 	return AIChar;
 }
 
-void AMyAIController::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
+void AAICGoblin::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
 {
 	CurrentFoodSpot = NewCurrentSpot;
 }
 
-void AMyAIController::SetDefaultBehaviourTree()
+void AAICGoblin::SetDefaultBehaviourTree()
 {
 	bHasAlreadyDetected = false;
 	BehaviorComp->StopTree();
 	BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
 }
 
-void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
+void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
-	APlayerCharacter* Player = Cast<APlayerCharacter>(Actor);
+	ACharactKnight* Player = Cast<ACharactKnight>(Actor);
 	if(Player)
 	{
 		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
@@ -118,7 +114,7 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 			bHasAlreadyDetected = true;
 			if(AIChar->GetHasFood())
 			{
-			    GetWorldTimerManager().SetTimer(UnusedHandle, this, &AMyAIController::TimerKeepFoodLocation, 1.0f, false);
+			    GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICGoblin::TimerKeepFoodLocation, 1.0f, false);
 			}
 			BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
 		}
@@ -131,12 +127,12 @@ void AMyAIController::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimu
 	}
 }
 
-void AMyAIController::TimerKeepFoodLocation()
+void AAICGoblin::TimerKeepFoodLocation()
 {
 	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
 }
 
-FVector AMyAIController::GetSupposedPlayerPosition(APlayerCharacter* Player)
+FVector AAICGoblin::GetSupposedPlayerPosition(ACharactKnight* Player)
 {
 	FRotator Rotation = Player->GetActorRotation();
 	FRotator Yaw = FRotator(0, Rotation.Yaw, 0);

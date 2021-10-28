@@ -3,10 +3,10 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "AIAnimations.h"
-#include "AICharacter.h"
-#include "EnemySpot.h"
-#include "MyAIController.h"
+#include "AnimGoblin.h"
+#include "AIGoblin.h"
+#include "AICGoblin.h"
+#include "ExitEnemySpot.h"
 #include "GameFramework/Actor.h"
 #include "EnemySpawner.generated.h"
 
@@ -36,20 +36,20 @@ private:
 	int SpawnIndice = 0;
 
 	UPROPERTY(VisibleAnywhere)
-	TArray<AAICharacter*> SpawnedEnemy;
+	TArray<AAIGoblin*> SpawnedEnemy;
 
 public:	
 	// Called every frame
 	virtual void Tick(float DeltaTime) override;
 
 	UPROPERTY(EditAnywhere, Category="Spots")
-	AEnemySpot* EnemySpot;
+	AExitEnemySpot* EnemySpot;
 
 	UPROPERTY(EditAnywhere, Category="Spots")
 	TArray<AActor*> FoodSpots;
 	
 	UPROPERTY(EditAnywhere, Category="ObjectToSpawn")
-	TSubclassOf<AAICharacter> EnemyToSpawn;
+	TSubclassOf<AAIGoblin> EnemyToSpawn;
 
 	UPROPERTY(EditAnywhere, Category="ObjectToSpawn")
 	TSubclassOf<AFood> FoodToSpawn;
@@ -58,13 +58,13 @@ public:
 	TSubclassOf<UAnimInstance> BP_Anim;
 
 	UFUNCTION()
-		FORCEINLINE TArray<AAICharacter*> GetSpawnedEnemy() const { return SpawnedEnemy; }
+		FORCEINLINE TArray<AAIGoblin*> GetSpawnedEnemy() const { return SpawnedEnemy; }
 		
 	UFUNCTION()
 	void SpawnEnemy();
 
 	UFUNCTION()
-	void GiveFood(AAICharacter* AICharRef);
+	void GiveFood(AAIGoblin* AICharRef);
 
 	UFUNCTION()
 	void RecreateAnEnemy();
@@ -73,5 +73,5 @@ public:
 	void StopSpawner();
 
 	UFUNCTION()
-	TArray<AAICharacter*> RemoveDestroyedEnemy();
+	TArray<AAIGoblin*> RemoveDestroyedEnemy();
 };

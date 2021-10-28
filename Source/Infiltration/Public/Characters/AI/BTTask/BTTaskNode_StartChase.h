@@ -4,21 +4,21 @@
 
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
-#include "MyAIController.h"
-#include "BTInteractFood.generated.h"
+#include "Characters/AI/AICGoblin.h"
+#include "BTTaskNode_StartChase.generated.h"
 
+/**
+ * 
+ */
 UCLASS()
-class INFILTRATION_API UBTInteractFood : public UBTTaskNode
+class INFILTRATION_API UBTTaskNode_StartChase : public UBTTaskNode
 {
 	GENERATED_BODY()
-
+	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory) override;
 
-protected:
-	
-	//UPROPERTY(VisibleAnywhere)
-	AMyAIController* AICon;
+	protected:
 
 	//UPROPERTY(VisibleAnywhere)
-	UBlackboardComponent* BlackboardComp;
+	AAICGoblin* AICon;		
 };

@@ -1,8 +1,7 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerCharacter.h"
-
+#include "Characters/Player/CharactKnight.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Kismet/GameplayStatics.h"
@@ -11,7 +10,7 @@
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
 
 // Sets default values
-APlayerCharacter::APlayerCharacter()
+ACharactKnight::ACharactKnight()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -57,12 +56,12 @@ APlayerCharacter::APlayerCharacter()
 }
 
 // Called when the game starts or when spawned
-void APlayerCharacter::BeginPlay()
+void ACharactKnight::BeginPlay()
 {
 	Super::BeginPlay();
 	
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &APlayerCharacter::OnComponentBeginOverlap);
-	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &APlayerCharacter::OnComponentEndOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &ACharactKnight::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &ACharactKnight::OnComponentEndOverlap);
 
 	GetCharacterMovement()->RotationRate = RotationRate;
 	GetCharacterMovement()->MaxWalkSpeed = WalkSpeed;
@@ -70,31 +69,31 @@ void APlayerCharacter::BeginPlay()
 }
 
 // Called every frame
-void APlayerCharacter::Tick(float DeltaTime)
+void ACharactKnight::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Called to bind functionality to input
-void APlayerCharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void ACharactKnight::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 
-	PlayerInputComponent->BindAxis("MoveForward", this, &APlayerCharacter::MoveForward);
-	PlayerInputComponent->BindAxis("MoveRight", this, &APlayerCharacter::MoveRight);
+	PlayerInputComponent->BindAxis("MoveForward", this, &ACharactKnight::MoveForward);
+	PlayerInputComponent->BindAxis("MoveRight", this, &ACharactKnight::MoveRight);
 
-	PlayerInputComponent->BindAxis("Zoom", this, &APlayerCharacter::Zoom);
+	PlayerInputComponent->BindAxis("Zoom", this, &ACharactKnight::Zoom);
 	
-	PlayerInputComponent->BindAxis("HorizontalRotation", this, &APlayerCharacter::HorizontalRotation);
-	PlayerInputComponent->BindAxis("VerticalRotation", this, &APlayerCharacter::VerticalRotation);
+	PlayerInputComponent->BindAxis("HorizontalRotation", this, &ACharactKnight::HorizontalRotation);
+	PlayerInputComponent->BindAxis("VerticalRotation", this, &ACharactKnight::VerticalRotation);
 
-	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &APlayerCharacter::Interact);
-	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &APlayerCharacter::PauseGame);
+	PlayerInputComponent->BindAction("Interact", IE_Pressed, this, &ACharactKnight::Interact);
+	PlayerInputComponent->BindAction("Pause", IE_Pressed, this, &ACharactKnight::PauseGame);
 
 }
 
-void APlayerCharacter::MoveForward(float Value)
+void ACharactKnight::MoveForward(float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
@@ -109,7 +108,7 @@ void APlayerCharacter::MoveForward(float Value)
 	}
 }
 
-void APlayerCharacter::MoveRight(float Value)
+void ACharactKnight::MoveRight(float Value)
 {
 	if(!bIsPickingUp && Controller != nullptr && Value != 0)
 	{
@@ -124,7 +123,7 @@ void APlayerCharacter::MoveRight(float Value)
 	}
 }
 
-void APlayerCharacter::HorizontalRotation(float Value)
+void ACharactKnight::HorizontalRotation(float Value)
 {
 	if(Value)
 	{
@@ -132,7 +131,7 @@ void APlayerCharacter::HorizontalRotation(float Value)
 	}
 }
 
-void APlayerCharacter::VerticalRotation(float Value)
+void ACharactKnight::VerticalRotation(float Value)
 {
 	if(Value)
 	{
@@ -140,7 +139,7 @@ void APlayerCharacter::VerticalRotation(float Value)
 	}
 }
 
-void APlayerCharacter::Zoom(float Value)
+void ACharactKnight::Zoom(float Value)
 {
 	if(Value)
 	{
@@ -153,7 +152,7 @@ void APlayerCharacter::Zoom(float Value)
 	}
 }
 
-AFood* APlayerCharacter::DropFood()
+AFood* ACharactKnight::DropFood()
 {
 	bIsCarrying = false;
 	CurrentSpeed = DefaultSpeed;
@@ -161,34 +160,34 @@ AFood* APlayerCharacter::DropFood()
 	return CarryFood;
 }
 
-void APlayerCharacter::HasWon()
+void ACharactKnight::HasWon()
 {
 	bHasWon = true;
 	StopMovement();
 }
 
-void APlayerCharacter::HasLost()
+void ACharactKnight::HasLost()
 {
 	bHasLost = true;
 	StopMovement();
 }
 
-bool APlayerCharacter::GetHasWon()
+bool ACharactKnight::GetHasWon()
 {
 	return bHasWon;
 }
 
-bool APlayerCharacter::GetHasLost()
+bool ACharactKnight::GetHasLost()
 {
 	return bHasLost;
 }
 
-bool APlayerCharacter::GetIsCarrying()
+bool ACharactKnight::GetIsCarrying()
 {
 	return bIsCarrying;
 }
 
-void APlayerCharacter::StopMovement()
+void ACharactKnight::StopMovement()
 {
 	if(bIsCarrying)
 	{
@@ -197,7 +196,7 @@ void APlayerCharacter::StopMovement()
 	DisableInput(GetWorld()->GetFirstPlayerController());
 }
 
-void APlayerCharacter::Interact()
+void ACharactKnight::Interact()
 {
 	if(bCanPickUp || bIsCarrying)
 	{
@@ -214,20 +213,20 @@ void APlayerCharacter::Interact()
 				CarryFood = InCollisionFood;
 
 				GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
-				GetWorldTimerManager().SetTimer(UnusedHandle, this, &APlayerCharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
+				GetWorldTimerManager().SetTimer(UnusedHandle, this, &ACharactKnight::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 			}
 		}
 	}
 }
 
-void APlayerCharacter::TimerPickUpAnim()
+void ACharactKnight::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	CarryFood->PickUp(HoldingComponent);
 	bIsPickingUp = false;
 }
 
-void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ACharactKnight::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->IsA(AFood::StaticClass())){
@@ -236,7 +235,7 @@ void APlayerCharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCo
 	}
 }
 
-void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void ACharactKnight::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if(OtherActor->IsA(AFood::StaticClass())){
@@ -245,7 +244,7 @@ void APlayerCharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComp
 	}
 }
 
-void APlayerCharacter::PauseGame()
+void ACharactKnight::PauseGame()
 {
 	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(GetWorld(), 0)->GetHUD())->ShowPauseScreen();
 }

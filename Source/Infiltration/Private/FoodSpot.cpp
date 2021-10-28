@@ -2,7 +2,6 @@
 
 
 #include "FoodSpot.h"
-
 #include "Food.h"
 
 // Sets default values

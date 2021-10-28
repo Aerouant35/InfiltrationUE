@@ -2,7 +2,6 @@
 
 
 #include "GetMainMenuCamera.h"
-
 #include "Infiltration/MainMenuGameModeBase.h"
 
 // Sets default values

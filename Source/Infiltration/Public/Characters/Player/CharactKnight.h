@@ -8,16 +8,16 @@
 #include "GameFramework/Character.h"
 #include "GameFramework/SpringArmComponent.h"
 #include "Perception/AIPerceptionStimuliSourceComponent.h"
-#include "PlayerCharacter.generated.h"
+#include "CharactKnight.generated.h"
 
 UCLASS()
-class INFILTRATION_API APlayerCharacter : public ACharacter
+class INFILTRATION_API ACharactKnight : public ACharacter
 {
 	GENERATED_BODY()
 
 public:
 	// Sets default values for this character's properties
-	APlayerCharacter();
+	ACharactKnight();
 
 protected:
 	// Called when the game starts or when spawned
