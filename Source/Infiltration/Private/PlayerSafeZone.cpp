@@ -3,6 +3,7 @@
 
 #include "PlayerSafeZone.h"
 
+#include "MyGameState.h"
 #include "PlayerCharacter.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 
@@ -53,6 +54,9 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementFood();
 
 			FillShelf(Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetCurrentNbFood());
+
+			// Decremente la food au state
+			Cast<AMyGameState>(GetWorld()->GetGameState())->DecrementFood();
 		}
 	}
 }

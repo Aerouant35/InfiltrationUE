@@ -25,5 +25,8 @@ public:
 	void IncrementFood();
 
 	UFUNCTION()
+	void DecrementFood();
+
+	UFUNCTION()
 	FORCEINLINE uint8 GetNumberOfFoods() const { return NumberOfFoods; };
 };
