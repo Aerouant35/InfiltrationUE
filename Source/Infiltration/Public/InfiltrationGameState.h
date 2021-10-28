@@ -17,16 +17,28 @@ class INFILTRATION_API AInfiltrationGameState : public AGameStateBase
 	UPROPERTY(VisibleAnywhere)
 	uint8 NumberOfFoods;
 
+	UPROPERTY(VisibleAnywhere)
+	uint8 NumberOfEnemys;
+
 public:
 
 	AInfiltrationGameState();
 
 	UFUNCTION()
-	void IncrementFood();
+	void IncrementNumberOfFoods();
 
 	UFUNCTION()
-	void DecrementFood();
+	void DecrementNumberOfFoods();
+
+	UFUNCTION()
+	void IncrementNumberOfEnemys();
+
+	UFUNCTION()
+	void DecrementNumberOfEnemys();
 
 	UFUNCTION()
 	FORCEINLINE uint8 GetNumberOfFoods() const { return NumberOfFoods; };
+
+	UFUNCTION()
+	FORCEINLINE uint8 GetNumberOfEnemys() const { return NumberOfEnemys; };
 };

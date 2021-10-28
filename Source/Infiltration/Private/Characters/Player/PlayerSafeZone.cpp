@@ -52,7 +52,7 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			// Decrement food in global state
 			AInfiltrationGameState* InfiltrationGameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
 			if(!InfiltrationGameState) return;
-			InfiltrationGameState->DecrementFood();
+			InfiltrationGameState->DecrementNumberOfFoods();
 		}
 	}
 }

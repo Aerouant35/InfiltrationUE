@@ -7,15 +7,28 @@ AInfiltrationGameState::AInfiltrationGameState()
 {
 }
 
-void AInfiltrationGameState::IncrementFood()
+void AInfiltrationGameState::IncrementNumberOfFoods()
 {
 	NumberOfFoods += 1;
 }
 
-void AInfiltrationGameState::DecrementFood()
+void AInfiltrationGameState::DecrementNumberOfFoods()
 {
 	if(NumberOfFoods > 1)
 	{
 		NumberOfFoods -= 1;
+	}
+}
+
+void AInfiltrationGameState::IncrementNumberOfEnemys()
+{
+	NumberOfEnemys += 1;
+}
+
+void AInfiltrationGameState::DecrementNumberOfEnemys()
+{
+	if(NumberOfEnemys > 1)
+	{
+		NumberOfEnemys -= 1;
 	}
 }
