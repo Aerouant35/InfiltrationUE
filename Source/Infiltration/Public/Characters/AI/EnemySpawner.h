@@ -25,7 +25,7 @@ protected:
 
 private:
 
-	// Pour crée un delais d'appel de fonction
+	// For delay spawn
 	FTimerHandle FirstTimerHandle;
 	FTimerHandle SecondTimerHandle;
 	

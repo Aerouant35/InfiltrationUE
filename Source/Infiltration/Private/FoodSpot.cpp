@@ -30,15 +30,14 @@ void AFoodSpot::Tick(float DeltaTime)
 
 }
 
-/// Regarde si une nourriture est présent dans sa zone de collision
+// Look if food is already inside his overlap area
 void AFoodSpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->IsA(AFood::StaticClass()))
 	{
-		NumberOfFoods+=1;
 		HasAFood = true;
-		//FirstFood = Cast<AFood>(OtherActor);
+		NumberOfFoods++;
 
 		//GEngine->AddOnScreenDebugMessage(-1, 3.f, FColor::Red, TEXT("ADD"));
 	}
