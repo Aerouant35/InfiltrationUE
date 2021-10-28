@@ -50,7 +50,7 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			AFood* Food = Player->DropFood();
 			Food->Destroy();
 
-			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementReturnedFood();
+			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementFood();
 
 			FillShelf(Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetCurrentNbFood());
 		}

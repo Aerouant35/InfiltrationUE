@@ -19,7 +19,7 @@ void AEnemySpawner::BeginPlay()
 {
 	Super::BeginPlay();
 
-	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->RegisterSpawner(this);
+	Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->SetEnemySpawner(this);
 
     // Spawn de deux ennemis en début de partie
 	SpawnEnemy();
