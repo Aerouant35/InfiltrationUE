@@ -131,7 +131,7 @@ void ACharactKnight::VerticalRotation(const float Value)
 
 void ACharactKnight::Zoom(const float Value)
 {
-	if(Value) return;
+	if(!Value) return;
 	
 	const float FinalZoomLength = SpringArmComponent->TargetArmLength + Value * ZoomStep;
 	
