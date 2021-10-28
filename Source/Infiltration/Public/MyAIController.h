@@ -40,7 +40,7 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	/*Foodspot storage*/
 	UPROPERTY()
-	TArray<AActor*> FoodSpots;
+	TArray<AFoodSpot*> FoodSpots;
 
 	/*Enregistre le spot de ma destination*/
 	UPROPERTY()
@@ -75,7 +75,7 @@ public:
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 
-	FORCEINLINE TArray<AActor*> GetAvailableFoodSpots() const { return FoodSpots; }
+	FORCEINLINE TArray<AFoodSpot*> GetAvailableFoodSpots() const { return FoodSpots; }
 
 	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
 
@@ -97,5 +97,5 @@ public:
 		void SetEnemySpot(AActor* NewEnemySpot);
 	
 	UFUNCTION()
-		void SetFoodSpots(TArray<AActor*> NewFoodSpots);
+		void SetFoodSpots(TArray<AFoodSpot*> NewFoodSpots);
 };

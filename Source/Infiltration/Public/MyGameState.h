@@ -3,8 +3,6 @@
 #pragma once
 
 #include "CoreMinimal.h"
-#include "EnemySpot.h"
-#include "FoodSpot.h"
 #include "GameFramework/GameStateBase.h"
 #include "MyGameState.generated.h"
 
@@ -16,16 +14,16 @@ class INFILTRATION_API AMyGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
-	UPROPERTY(EditAnywhere, Category="Spots")
-	AEnemySpot* EnemySpot;
-
-	UPROPERTY(EditAnywhere, Category="Spots")
-	TArray<AFoodSpot*> FoodSpots;
+	UPROPERTY(VisibleAnywhere)
+	uint8 NumberOfFoods;
 
 public:
 
 	AMyGameState();
 
 	UFUNCTION()
-	bool ThereIsAFreeFoodSpot();
+	void IncrementFood();
+
+	UFUNCTION()
+	FORCEINLINE uint8 GetNumberOfFoods() const { return NumberOfFoods; };
 };

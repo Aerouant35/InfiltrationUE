@@ -45,7 +45,7 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 
 	AFoodSpot* CurrentSpot = Cast<AFoodSpot>(BlackboardLocation);
 
-	TArray<AActor*> AvailableFoodSpots = AICon->GetAvailableFoodSpots();
+	TArray<AFoodSpot*> AvailableFoodSpots = AICon->GetAvailableFoodSpots();
 
 	//Random index of FoodSpot
 	int32 RandomIndex;

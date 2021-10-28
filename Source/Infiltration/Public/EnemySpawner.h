@@ -46,7 +46,7 @@ public:
 	AEnemySpot* EnemySpot;
 
 	UPROPERTY(EditAnywhere, Category="Spots")
-	TArray<AActor*> FoodSpots;
+	TArray<AFoodSpot*> FoodSpots;
 	
 	UPROPERTY(EditAnywhere, Category="ObjectToSpawn")
 	TSubclassOf<AAICharacter> EnemyToSpawn;
