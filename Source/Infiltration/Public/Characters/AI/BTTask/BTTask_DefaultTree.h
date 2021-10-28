@@ -5,20 +5,15 @@
 #include "CoreMinimal.h"
 #include "BehaviorTree/BTTaskNode.h"
 #include "Characters/AI/AICGoblin.h"
-#include "BTTaskNode_StartChase.generated.h"
+#include "BTTask_DefaultTree.generated.h"
 
-/**
- * 
- */
 UCLASS()
-class INFILTRATION_API UBTTaskNode_StartChase : public UBTTaskNode
+class INFILTRATION_API UBTTask_DefaultTree : public UBTTaskNode
 {
 	GENERATED_BODY()
+
+	UPROPERTY()
+	AAICGoblin* AICon;
 	
 	virtual EBTNodeResult::Type ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory) override;
-
-	protected:
-
-	//UPROPERTY(VisibleAnywhere)
-	AAICGoblin* AICon;		
 };
