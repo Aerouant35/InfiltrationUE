@@ -85,8 +85,8 @@ void AGameHUD::UpdateProgressBarPercent(const uint8 CurrentNbFood) const
 
 	AInfiltrationGameModeBase* InGameMode = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
 	check(InGameMode != nullptr);
-	
-	PlayerWidget->UpdateProgressBarPercent(CurrentNbFood / InGameMode->GetNbFoodWin());
+
+	PlayerWidget->UpdateProgressBarPercent(CurrentNbFood / static_cast<float>(InGameMode->GetNbFoodWin()));
 }
 
 void AGameHUD::ShowVictoryScreen() const
