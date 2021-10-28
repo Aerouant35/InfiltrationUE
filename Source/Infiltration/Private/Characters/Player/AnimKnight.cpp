@@ -12,7 +12,7 @@ void UAnimKnight::NativeUpdateAnimation(float DeltaSeconds)
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	APawn* Pawn = UAnimInstance::TryGetPawnOwner();
-	check(Pawn != nullptr);
+	if(Pawn == nullptr) return;
 
 	CharactKnight = Cast<ACharactKnight>(Pawn);
 	check(CharactKnight != nullptr);
