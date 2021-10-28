@@ -168,7 +168,7 @@ void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	if(OtherActor->IsA(APlayerCharacter::StaticClass()))
 	{
 		// Game Over
-		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->PlayerTouched();
+		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->Defeat();
 	}
 }
 

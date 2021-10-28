@@ -15,8 +15,11 @@ AInfiltrationGameModeBase::AInfiltrationGameModeBase()
 void AInfiltrationGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
-
-	if (FoodSpots.Num() < 1) return;
+	
+	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
+	
+	check(!(FoodSpots.Num() < 1));
 	GenerateStartFood();
 }
 
@@ -29,87 +32,55 @@ void AInfiltrationGameModeBase::GenerateStartFood()
 	GetWorld()->SpawnActor<AFood>(FoodClass, FoodSpots[RandomNumSpot]->GetActorLocation(), FoodSpots[RandomNumSpot]->GetActorRotation());
 }
 
-void AInfiltrationGameModeBase::Victory()
+#pragma region PublicMethod
+void AInfiltrationGameModeBase::IncrementFood()
 {
-	Cast<AGameHUD>(HUDClass)->ShowVictoryScreen();
-}
+	CurrentFoodScore += 1;
 
-void AInfiltrationGameModeBase::Defeat()
-{
-	Cast<AGameHUD>(HUDClass)->ShowDefeatScreen();
-}
-
-void AInfiltrationGameModeBase::PlayerTouched()
-{
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	if(PlayerController)
-	{
-		AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
-		if(GameHUD)
-		{
-			GameHUD->ShowDefeatScreen();
-
-			// Player : Lost
-			APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerController->GetPawn());
-			if(Player)
-			{
-				Player->HasLost();
-			}
-			
-			// AI : Won
-			if(EnemySpawner)
-			{
-				for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
-				{
-					AICharacter->HasWon();
-				}
-				EnemySpawner->StopSpawner();
-			}
-		}
-	}
-}
-
-void AInfiltrationGameModeBase::IncrementReturnedFood()
-{
-	CurrentScore += 1;
+	check(!(GameHUD == nullptr));
+	if (GameHUD == nullptr) return;
+	GameHUD->UpdateProgressBarPercent(CurrentFoodScore);
 	
-	APlayerController* PlayerController = GetWorld()->GetFirstPlayerController();
-	if(PlayerController)
-	{
-		AGameHUD* GameHUD = Cast<AGameHUD>(PlayerController->GetHUD());
-		if(GameHUD)
-		{
-			GameHUD->UpdateProgressBarPercent(CurrentScore);
-			
-			if(CurrentScore == NbFoodWin)
-			{
-				GameHUD->ShowVictoryScreen();
-				
-				// Player : Won
-				APlayerCharacter* Player = Cast<APlayerCharacter>(PlayerController->GetPawn());
-				if(Player)
-				{
-					Player->HasWon();
-				}
-				
-				// AI : Lose
-				if(EnemySpawner)
-				{
-					for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
-					{
-						if(AICharacter != nullptr)
-						{
-							AICharacter->HasLost();
-						}
-					}
-					EnemySpawner->StopSpawner();
-				}
-			}
-		}
-	}
+	if (CurrentFoodScore >= NbFoodWin) Victory();
 }
 
-void AInfiltrationGameModeBase::RegisterSpawner(AEnemySpawner* Spawner)
+void AInfiltrationGameModeBase::Defeat() const
 {
-	EnemySpawner = Spawner;
+	check(!(GameHUD == nullptr || Player == nullptr || EnemySpawner == nullptr));
+
+	// Show defeat widget
+	GameHUD->ShowDefeatScreen();
+
+	// Player : Lost
+	Player->HasLost();
+	
+	// AI : Won
+	for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+	{
+		check(!(AICharacter == nullptr))
+		
+		AICharacter->HasWon();
+	}
+	EnemySpawner->StopSpawner();
 }
+
+void AInfiltrationGameModeBase::Victory() const
+{
+	check(!(GameHUD == nullptr || Player == nullptr || EnemySpawner == nullptr));
+	
+	// Show Victory widget
+	GameHUD->ShowVictoryScreen();
+	
+	// Player : Won
+	Player->HasWon();
+	
+	// AI : Lose
+	for(AAICharacter* AICharacter : EnemySpawner->GetSpawnedEnemy())
+	{
+		check(!(AICharacter == nullptr))
+
+		AICharacter->HasLost();
+	}
+	EnemySpawner->StopSpawner();
+}
+#pragma endregion 
