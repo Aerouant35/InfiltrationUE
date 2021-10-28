@@ -111,7 +111,7 @@ void AGameHUD::ShowDefeatScreen() const
 	DefeatWidget->AddToViewport();
 }
 
-void AGameHUD::ShowPauseScreen()
+void AGameHUD::ShowPauseScreen() const
 {
 	check(PauseWidget != nullptr && PlayerWidget != nullptr);
 	if (PauseWidget->IsInViewport()) return;
@@ -123,7 +123,7 @@ void AGameHUD::ShowPauseScreen()
 	PauseWidget->AddToViewport();
 }
 
-void AGameHUD::ResumeGame()
+void AGameHUD::ResumeGame() const
 {
 	check(PauseWidget != nullptr && PlayerWidget != nullptr);
 	if (PlayerWidget->IsInViewport()) return;
@@ -135,7 +135,7 @@ void AGameHUD::ResumeGame()
 	PlayerWidget->AddToViewport();
 }
 
-void AGameHUD::OptionsMenu()
+void AGameHUD::OptionsMenu() const
 {
 	check(PauseWidget != nullptr && OptionsWidget != nullptr);
 	if (OptionsWidget->IsInViewport()) return;
@@ -144,7 +144,7 @@ void AGameHUD::OptionsMenu()
 	OptionsWidget->AddToViewport();
 }
 
-void AGameHUD::BackToPauseMenu()
+void AGameHUD::BackToPauseMenu() const
 {
 	check(OptionsWidget != nullptr && PlayerWidget != nullptr);
 	if (PauseWidget->IsInViewport()) return;

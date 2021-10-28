@@ -116,7 +116,7 @@ void UOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 #pragma endregion 
 
 #pragma region GetAction/AxisMapping
-FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName) 
+FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName) const
 {
 	TArray<FInputActionKeyMapping> OutMappings;
 	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
@@ -124,7 +124,7 @@ FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName)
 	return OutMappings[0];
 }
 
-FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyName)
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);

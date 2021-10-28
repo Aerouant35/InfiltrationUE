@@ -78,15 +78,15 @@ public:
 	void ShowDefeatScreen() const;
 
 	UFUNCTION()
-	void ShowPauseScreen();
+	void ShowPauseScreen() const;
 
 	UFUNCTION()
-	void ResumeGame();
+	void ResumeGame() const;
 
 	UFUNCTION()
-	void OptionsMenu();
+	void OptionsMenu() const;
 
 	UFUNCTION()
-	void BackToPauseMenu();
+	void BackToPauseMenu() const;
 	#pragma endregion 
 };
