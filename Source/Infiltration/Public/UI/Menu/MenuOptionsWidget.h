@@ -81,13 +81,13 @@ private:
 
 	#pragma region GetAction/AxisMapping
 	UFUNCTION()
-	FInputActionKeyMapping GetActionMapping(const FString &KeyName);
+	FInputActionKeyMapping GetActionMapping(const FString &KeyName) const;
 
 	UFUNCTION()
-	FInputAxisKeyMapping GetAxisMappingPositive(const FString &KeyName);
+	FInputAxisKeyMapping GetAxisMappingPositive(const FString &KeyName) const;
 	
 	UFUNCTION()
-	FInputAxisKeyMapping GetAxisMappingNegative(const FString &KeyName);
+	FInputAxisKeyMapping GetAxisMappingNegative(const FString &KeyName) const;
 
 	#pragma endregion 
 

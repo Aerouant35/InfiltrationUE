@@ -16,6 +16,7 @@ void UOptionsWidget::NativeConstruct()
 	Super::NativeConstruct();
 	
 	InputSettings = UInputSettings::GetInputSettings();
+	check(InputSettings != nullptr);
 	
 	InteractionKeySelector->SetSelectedKey(GetActionMapping(MappingName[0]).Key);
 	ForwardKeySelector->SetSelectedKey(GetAxisMappingPositive(MappingName[1]).Key);
@@ -41,7 +42,10 @@ void UOptionsWidget::InitDelegate()
 void UOptionsWidget::Return()
 {
 	InputSettings->SaveKeyMappings();
-	Cast<AGameHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->BackToPauseMenu();
+	
+	AGameHUD* GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(GameHUD != nullptr);
+	GameHUD->BackToPauseMenu();
 }
 
 #pragma region KeyRebindButton

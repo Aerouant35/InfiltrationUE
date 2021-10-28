@@ -18,7 +18,8 @@ UCLASS()
 class INFILTRATION_API AGameHUD : public AHUD
 {
 	GENERATED_BODY()
-
+	
+	#pragma region WidgetVariables
 	UPROPERTY()
 	class UPlayerWidget* PlayerWidget;
 	
@@ -33,7 +34,9 @@ class INFILTRATION_API AGameHUD : public AHUD
 	
 	UPROPERTY()
 	class UOptionsWidget* OptionsWidget;
-
+	#pragma endregion
+	
+	#pragma region WidgetClassVariables
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UUserWidget> PlayerWidgetClass;
 	
@@ -48,6 +51,7 @@ class INFILTRATION_API AGameHUD : public AHUD
 	
 	UPROPERTY(EditDefaultsOnly, Category="Widget")
 	TSubclassOf<UOptionsWidget> OptionsWidgetClass;
+	#pragma endregion
 	
 public:
 	AGameHUD();
@@ -61,11 +65,12 @@ protected:
 
 public:
 	/** Update progress bar percent in Player UI.
-	 * @param	Percent					Float range between 0 and 1.
+	 * @param	CurrentNbFood				Uint8 current number food.
 	 */
 	UFUNCTION()
-	void UpdateProgressBarPercent(const float Percent) const;
+	void UpdateProgressBarPercent(const uint8 CurrentNbFood) const;
 
+	#pragma region ToDisplayMethod
 	UFUNCTION()
 	void ShowVictoryScreen() const;
 
@@ -83,4 +88,5 @@ public:
 
 	UFUNCTION()
 	void BackToPauseMenu();
+	#pragma endregion 
 };

@@ -7,11 +7,6 @@ UPlayerWidget::UPlayerWidget(const FObjectInitializer& ObjectInitializer) : Supe
 {
 }
 
-void UPlayerWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-}
-
 void UPlayerWidget::UpdateProgressBarPercent(const float Percent) const
 {
 	FoodProgress->SetPercent(Percent);
