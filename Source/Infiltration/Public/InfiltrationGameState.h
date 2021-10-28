@@ -4,13 +4,13 @@
 
 #include "CoreMinimal.h"
 #include "GameFramework/GameStateBase.h"
-#include "MyGameState.generated.h"
+#include "InfiltrationGameState.generated.h"
 
 /**
  * 
  */
 UCLASS()
-class INFILTRATION_API AMyGameState : public AGameStateBase
+class INFILTRATION_API AInfiltrationGameState : public AGameStateBase
 {
 	GENERATED_BODY()
 
@@ -19,10 +19,13 @@ class INFILTRATION_API AMyGameState : public AGameStateBase
 
 public:
 
-	AMyGameState();
+	AInfiltrationGameState();
 
 	UFUNCTION()
 	void IncrementFood();
+
+	UFUNCTION()
+	void DecrementFood();
 
 	UFUNCTION()
 	FORCEINLINE uint8 GetNumberOfFoods() const { return NumberOfFoods; };

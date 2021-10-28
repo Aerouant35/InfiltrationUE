@@ -1,9 +1,8 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "EnemySpawner.h"
-
-#include "MyGameState.h"
+#include "Characters/AI/EnemySpawner.h"
+#include "InfiltrationGameState.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 
 
@@ -50,11 +49,11 @@ void AEnemySpawner::SpawnEnemy()
 		FVector Location = GetActorLocation();
 		FRotator Rotation = FRotator (0,0,0);
 	
-		AAICharacter* AICharRef = GetWorld()->SpawnActor<AAICharacter>(EnemyToSpawn, Location, Rotation);
+		AAIGoblin* AICharRef = GetWorld()->SpawnActor<AAIGoblin>(EnemyToSpawn, Location, Rotation);
 
 		// Attribut les spots au controller
-		Cast<AMyAIController>(AICharRef->Controller)->SetEnemySpot(EnemySpot);
-		Cast<AMyAIController>(AICharRef->Controller)->SetFoodSpots(FoodSpots);
+		Cast<AAICGoblin>(AICharRef->Controller)->SetEnemySpot(EnemySpot);
+		Cast<AAICGoblin>(AICharRef->Controller)->SetFoodSpots(FoodSpots);
 
 		// Attribut le BP_anim au personnage
 		AICharRef->SetAnimation(BP_Anim);
@@ -63,7 +62,7 @@ void AEnemySpawner::SpawnEnemy()
 
 		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
 		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		int NumberOfFoods = Cast<AMyGameState>(GetWorld()->GetGameState())->GetNumberOfFoods();
+		int NumberOfFoods = Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->GetNumberOfFoods();
 		
 		if(NumberOfFoods < 5)
 		{
@@ -78,7 +77,7 @@ void AEnemySpawner::SpawnEnemy()
 	}
 }
 
-void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
+void AEnemySpawner::GiveFood(AAIGoblin* AICharRef)
 {
 	if(FoodToSpawn)
 	{
@@ -92,14 +91,14 @@ void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
 		AICharRef->SetHasFood(true, FoodRef);
 
 		// Incremente la food au state
-		Cast<AMyGameState>(GetWorld()->GetGameState())->IncrementFood();
+		Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->IncrementFood();
 	}
 }
 
 // Detruit l'enemy dans le spot enemy et en recrée un nouveau
 void AEnemySpawner::RecreateAnEnemy()
 {
-	AAICharacter* AICharToDestroy = EnemySpot->DestroyEnemy();
+	AAIGoblin* AICharToDestroy = EnemySpot->DestroyEnemy();
 	if(AICharToDestroy)
 	{
 		SpawnedEnemy.Remove(AICharToDestroy);
@@ -133,9 +132,9 @@ void AEnemySpawner::StopSpawner()
 	FifthTimerHandle.Invalidate();
 }
 
-TArray<AAICharacter*> AEnemySpawner::RemoveDestroyedEnemy()
+TArray<AAIGoblin*> AEnemySpawner::RemoveDestroyedEnemy()
 {
-	TArray<AAICharacter*> NewArray;
+	TArray<AAIGoblin*> NewArray;
 	for (int32 i = 0; i < SpawnedEnemy.Num(); ++i)
 	{
 		if (SpawnedEnemy[i] != nullptr)

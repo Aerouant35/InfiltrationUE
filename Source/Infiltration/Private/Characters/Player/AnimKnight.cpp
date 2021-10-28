@@ -1,25 +1,23 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerAnimations.h"
+#include "Characters/Player/AnimKnight.h"
+#include "Characters/Player/CharactKnight.h"
 
-#include "PlayerCharacter.h"
-
-
-UPlayerAnimations::UPlayerAnimations()
+UAnimKnight::UAnimKnight()
 {
 	bIsWalking = false;
 }
 
 
-void UPlayerAnimations::NativeUpdateAnimation(float DeltaSeconds)
+void UAnimKnight::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	APawn* Pawn = TryGetPawnOwner();
 	if(Pawn)
 	{
-		APlayerCharacter* MyCharacter = Cast<APlayerCharacter>(Pawn);
+		ACharactKnight* MyCharacter = Cast<ACharactKnight>(Pawn);
 		if(MyCharacter)
 		{
 			bIsWalking = !MyCharacter->GetVelocity().IsZero();

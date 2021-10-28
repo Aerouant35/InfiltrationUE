@@ -1,9 +1,9 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "PlayerSafeZone.h"
-
-#include "PlayerCharacter.h"
+#include "Characters/Player/PlayerSafeZone.h"
+#include "InfiltrationGameState.h"
+#include "Characters/Player/CharactKnight.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values
@@ -43,8 +43,8 @@ void APlayerSafeZone::Tick(float DeltaTime)
 void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
-	if(OtherActor->IsA(APlayerCharacter::StaticClass())) {
-		APlayerCharacter* Player = Cast<APlayerCharacter>(OtherActor);
+	if(OtherActor->IsA(ACharactKnight::StaticClass())) {
+		ACharactKnight* Player = Cast<ACharactKnight>(OtherActor);
 		if(Player->GetIsCarrying())
 		{
 			AFood* Food = Player->DropFood();
@@ -53,6 +53,9 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 			Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->IncrementFood();
 
 			FillShelf(Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->GetCurrentNbFood());
+
+			// Decremente la food au state
+			Cast<AInfiltrationGameState>(GetWorld()->GetGameState())->DecrementFood();
 		}
 	}
 }

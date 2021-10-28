@@ -1,25 +1,24 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AIAnimations.h"
+#include "Characters/AI/AnimGoblin.h"
+#include "Characters/AI/AIGoblin.h"
 
-#include "AICharacter.h"
 
-
-UAIAnimations::UAIAnimations()
+UAnimGoblin::UAnimGoblin()
 {
 	IsWalking = false;
 }
 
 
-void UAIAnimations::NativeUpdateAnimation(float DeltaSeconds)
+void UAnimGoblin::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
 	APawn* Pawn = TryGetPawnOwner();
 	if(Pawn)
 	{
-		AAICharacter* AIChar = Cast<AAICharacter>(Pawn);
+		AAIGoblin* AIChar = Cast<AAIGoblin>(Pawn);
 		if(AIChar)
 		{
 			IsWalking = !AIChar->GetVelocity().IsZero();

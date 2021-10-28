@@ -1,16 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
-#include "BTFoodSpotSelection.h"
 
+#include "Characters/AI/BTTask/BTFoodSpotSelection.h"
 #include "FoodSpot.h"
-#include "EnemySpot.h"
-#include "MyAIController.h"
+#include "Characters/AI/ExitEnemySpot.h"
+#include "Characters/AI/AICGoblin.h"
 #include "BehaviorTree/BlackboardComponent.h"
-
-
 
 EBTNodeResult::Type UBTFoodSpotSelection::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory)
 {
-	AICon = Cast<AMyAIController>(OwnerComp.GetAIOwner());
+	AICon = Cast<AAICGoblin>(OwnerComp.GetAIOwner());
 
 	//Get blackboard Comp. and Current Spot
 	//Search for the next spot != current spot
@@ -74,7 +72,7 @@ void UBTFoodSpotSelection::GoToEnemySpot()
 {
 	//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Green, TEXT("EnemySpotLocation"));
 
-	AEnemySpot* NextSpot = Cast<AEnemySpot>(AICon->GetEnemySpot());
+	AExitEnemySpot* NextSpot = Cast<AExitEnemySpot>(AICon->GetEnemySpot());
 
 	BlackboardComp->SetValueAsObject("LocationToGo", NextSpot);
 	

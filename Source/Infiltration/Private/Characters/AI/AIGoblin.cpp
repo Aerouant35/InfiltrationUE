@@ -1,15 +1,14 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "AICharacter.h"
-
-#include "PlayerCharacter.h"
+#include "Characters/AI/AIGoblin.h"
+#include "Characters/Player/CharactKnight.h"
 #include "Components/CapsuleComponent.h"
 #include "GameFramework/CharacterMovementComponent.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 
 // Sets default values
-AAICharacter::AAICharacter()
+AAIGoblin::AAIGoblin()
 {
  	// Set this character to call Tick() every frame.  You can turn this off to improve performance if you don't need it.
 	PrimaryActorTick.bCanEverTick = true;
@@ -20,13 +19,13 @@ AAICharacter::AAICharacter()
 }
 
 // Called when the game starts or when spawned
-void AAICharacter::BeginPlay()
+void AAIGoblin::BeginPlay()
 {
 	Super::BeginPlay();
 
 	// Delegate pour collision de la capsule
-	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAICharacter::OnComponentBeginOverlap);
-	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAICharacter::OnComponentEndOverlap);
+	GetCapsuleComponent()->OnComponentBeginOverlap.AddDynamic(this, &AAIGoblin::OnComponentBeginOverlap);
+	GetCapsuleComponent()->OnComponentEndOverlap.AddDynamic(this, &AAIGoblin::OnComponentEndOverlap);
 
 	// Avoid the camera to stop before the enemy
 	GetCapsuleComponent()->SetCollisionProfileName(TEXT("CharacterMesh"));
@@ -40,14 +39,14 @@ void AAICharacter::BeginPlay()
 }
 
 // Called every frame
-void AAICharacter::Tick(float DeltaTime)
+void AAIGoblin::Tick(float DeltaTime)
 {
 	Super::Tick(DeltaTime);
 
 }
 
 // Prend ou dépose la nourriture à proximité
-void AAICharacter::Interact()
+void AAIGoblin::Interact()
 {
     GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
 	if(HasFood)
@@ -59,11 +58,11 @@ void AAICharacter::Interact()
 		SetHasFood(true, InCollisionFood);
 
 		GetMesh()->PlayAnimation(PickUpAnimationSequence, false);
-		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICharacter::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
+		GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAIGoblin::TimerPickUpAnim, PickUpAnimationSequence->SequenceLength, false);
 	}
 }
 
-void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
+void AAIGoblin::SetHasFood(bool NewValue, AFood* NewFood)
 {
 	HasFood = NewValue;
 	if(NewValue)
@@ -85,13 +84,13 @@ void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
 	}
 }
 
-void AAICharacter::SetPatrolState(bool Activate, int NewNumberOfPatrols)
+void AAIGoblin::SetPatrolState(bool Activate, int NewNumberOfPatrols)
 {
 	PatrolState = Activate;
 	NumberOfPatrols = NewNumberOfPatrols;
 }
 
-void AAICharacter::DecrementNumberOfPatrols()
+void AAIGoblin::DecrementNumberOfPatrols()
 {
 	NumberOfPatrols--;
 	if(NumberOfPatrols <= 0)
@@ -100,7 +99,7 @@ void AAICharacter::DecrementNumberOfPatrols()
 	}
 }
 
-bool AAICharacter::GetPatrolState()
+bool AAIGoblin::GetPatrolState()
 {
 	if(NumberOfPatrols > 1)
 	{
@@ -109,21 +108,21 @@ bool AAICharacter::GetPatrolState()
 	return false;
 }
 
-void AAICharacter::HasLost()
+void AAIGoblin::HasLost()
 {
 	bHasLost = true;
 	SetHasFood(false, nullptr);
 	StopController();
 }
 
-void AAICharacter::HasWon()
+void AAIGoblin::HasWon()
 {
 	bHasWon = true;
 	SetHasFood(false, nullptr);
 	StopController();
 }
 
-bool AAICharacter::GetHasDropFood()
+bool AAIGoblin::GetHasDropFood()
 {
 	if(DropFood != nullptr)
 	{
@@ -132,42 +131,42 @@ bool AAICharacter::GetHasDropFood()
 	return false;
 }
 
-void AAICharacter::StopController()
+void AAIGoblin::StopController()
 {
 	GetController()->UnPossess();
 }
 
 
-void AAICharacter::TimerPickUpAnim()
+void AAIGoblin::TimerPickUpAnim()
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	CarryFood->PickUp(HoldingComponent);
 }
 
-FVector AAICharacter::GetCarryFoodLocation()
+FVector AAIGoblin::GetCarryFoodLocation()
 {
 	return DropFood->GetActorLocation();
 }
 
 // Called to bind functionality to input
-void AAICharacter::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
+void AAIGoblin::SetupPlayerInputComponent(UInputComponent* PlayerInputComponent)
 {
 	Super::SetupPlayerInputComponent(PlayerInputComponent);
 }
 
-void AAICharacter::SetSpeed(float NewSpeed)
+void AAIGoblin::SetSpeed(float NewSpeed)
 {
 	GetCharacterMovement()->MaxWalkSpeed = NewSpeed;
 }
 
-void AAICharacter::SetAnimation(TSubclassOf<UAnimInstance> BP_Anim)
+void AAIGoblin::SetAnimation(TSubclassOf<UAnimInstance> BP_Anim)
 {
 	GetMesh()->SetAnimationMode(EAnimationMode::AnimationBlueprint);
 	GetMesh()->SetAnimClass(BP_Anim);
 }
 
 // Collisions
-void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AAIGoblin::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){
@@ -176,14 +175,14 @@ void AAICharacter::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCompon
 	}
 
 	// Si touche joueur : défaite
-	if(OtherActor->IsA(APlayerCharacter::StaticClass()))
+	if(OtherActor->IsA(ACharactKnight::StaticClass()))
 	{
 		// Game Over
 		Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode())->Defeat();
 	}
 }
 
-void AAICharacter::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
+void AAIGoblin::OnComponentEndOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex)
 {
 	if(OtherActor->GetClass()->IsChildOf(AFood::StaticClass())){

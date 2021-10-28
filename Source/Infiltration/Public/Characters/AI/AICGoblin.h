@@ -4,16 +4,15 @@
 
 #include "CoreMinimal.h"
 #include "AIController.h"
-#include "AICharacter.h"
+#include "AIGoblin.h"
 #include "FoodSpot.h"
-#include "PlayerCharacter.h"
+#include "Characters/Player/CharactKnight.h"
 #include "BehaviorTree/BehaviorTreeComponent.h"
-#include "Perception/AIPerceptionComponent.h"
 #include "Perception/AIPerceptionTypes.h"
-#include "MyAIController.generated.h"
+#include "AICGoblin.generated.h"
 
 UCLASS()
-class INFILTRATION_API AMyAIController : public AAIController
+class INFILTRATION_API AAICGoblin : public AAIController
 {
 	GENERATED_BODY()
 
@@ -36,7 +35,7 @@ class INFILTRATION_API AMyAIController : public AAIController
 
 	/*AIChar*/
 	UPROPERTY()
-	AAICharacter* AIChar;
+	AAIGoblin* AIChar;
 
 	/*Foodspot storage*/
 	UPROPERTY()
@@ -65,13 +64,13 @@ class INFILTRATION_API AMyAIController : public AAIController
 		void TimerKeepFoodLocation();
 
 	UFUNCTION()
-	FVector GetSupposedPlayerPosition(APlayerCharacter* Player);
+	FVector GetSupposedPlayerPosition(ACharactKnight* Player);
 
 
 public:
 
 	/*Constructor*/
-	AMyAIController();
+	AAICGoblin();
 
 	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
 
@@ -85,7 +84,7 @@ public:
 		void Interact();
 
 	UFUNCTION()
-	AAICharacter* GetAICharacter();
+	AAIGoblin* GetAICharacter();
 
 	UFUNCTION()
 		void SetCurrentSpot(AFoodSpot* NewCurrentSpot);

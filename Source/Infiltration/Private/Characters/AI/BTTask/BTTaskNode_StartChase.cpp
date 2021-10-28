@@ -1,15 +1,15 @@
 // Fill out your copyright notice in the Description page of Project Settings.
 
 
-#include "BTTask/BTTaskNode_StartChase.h"
+#include "Characters/AI/BTTask/BTTaskNode_StartChase.h"
 
 EBTNodeResult::Type UBTTaskNode_StartChase::ExecuteTask(UBehaviorTreeComponent & OwnerComp, uint8* NodeMemory)
 {
-	AICon = Cast<AMyAIController>(OwnerComp.GetAIOwner());
+	AICon = Cast<AAICGoblin>(OwnerComp.GetAIOwner());
 	
 	if(AICon)
 	{
-		AAICharacter* AICharacter =  AICon->GetAICharacter();
+		AAIGoblin* AICharacter =  AICon->GetAICharacter();
 		// If AI is carrying : Drop the food
 		if(AICharacter->GetHasFood())
 		{
