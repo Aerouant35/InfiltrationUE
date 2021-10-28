@@ -15,8 +15,8 @@ void UAnimGoblin::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	APawn* Pawn = TryGetPawnOwner();
-	check(Pawn != nullptr);
+	APawn* Pawn = UAnimInstance::TryGetPawnOwner();
+	if(Pawn == nullptr) return;
 	
 	AAIGoblin* AIChar = Cast<AAIGoblin>(Pawn);
 	check(AIChar != nullptr);
