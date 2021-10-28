@@ -46,7 +46,7 @@ private:
 	// Actual food AI is carrying
 	AFood* CarryFood;
 	// Food qui a été drop
-    	AFood* DropFood;
+	AFood* DropFood;
 
 	FTimerHandle UnusedHandle;
 
@@ -110,6 +110,8 @@ public:
 	FORCEINLINE bool GetHasLost() const { return bHasLost; }
 
 	FORCEINLINE int GetNumberOfPatrols() const { return NumberOfPatrols; }
+
+	bool GetHasDropFood(); 
 
 	FORCEINLINE USceneComponent* GetHoldingComponent() const { return HoldingComponent; }
 

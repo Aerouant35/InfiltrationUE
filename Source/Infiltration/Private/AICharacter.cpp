@@ -49,6 +49,7 @@ void AAICharacter::Tick(float DeltaTime)
 // Prend ou dépose la nourriture à proximité
 void AAICharacter::Interact()
 {
+    GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Orange, TEXT("Interact"));
 	if(HasFood)
 	{
 		SetHasFood(false, nullptr);
@@ -68,6 +69,7 @@ void AAICharacter::SetHasFood(bool NewValue, AFood* NewFood)
 	if(NewValue)
 	{
 		CarryFood = NewFood;
+		DropFood = nullptr;
 		SetSpeed(DefaultSpeed * 0.5f);
 	}
 	else
@@ -119,6 +121,15 @@ void AAICharacter::HasWon()
 	bHasWon = true;
 	SetHasFood(false, nullptr);
 	StopController();
+}
+
+bool AAICharacter::GetHasDropFood()
+{
+	if(DropFood != nullptr)
+	{
+		return true;
+	}
+	return false;
 }
 
 void AAICharacter::StopController()
