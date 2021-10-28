@@ -3,6 +3,8 @@
 
 #include "UI/Menu/MainMenuWidget.h"
 
+#include "Kismet/GameplayStatics.h"
+
 UMainMenuWidget::UMainMenuWidget(const FObjectInitializer& ObjectInitializer) : Super(ObjectInitializer)
 {
 }
@@ -14,15 +16,12 @@ void UMainMenuWidget::InitDelegate()
 	OptionsBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::OptionsDisplay);
 	CreditBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::CreditDisplay);
 	QuitBtn->OnClicked.AddDynamic(this, &UMainMenuWidget::QuitGame);
-}
 
-void UMainMenuWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
+	MainMenuHUD = Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(MainMenuHUD != nullptr);
 }
 
 #pragma region ButtonMethod
-
 void UMainMenuWidget::PlayGame()
 {
 	UGameplayStatics::OpenLevel(GetWorld(), FName(TEXT("Level1")));
@@ -30,17 +29,17 @@ void UMainMenuWidget::PlayGame()
 
 void UMainMenuWidget::HowToPlayDisplay()
 {
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->HowToPlayDisplay();
+	MainMenuHUD->HowToPlayDisplay();
 }
 
 void UMainMenuWidget::OptionsDisplay()
 {
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->OptionsDisplay();
+	MainMenuHUD->OptionsDisplay();
 }
 
 void UMainMenuWidget::CreditDisplay()
 {
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->CreditsDisplay();
+	MainMenuHUD->CreditsDisplay();
 }
 
 void UMainMenuWidget::QuitGame()

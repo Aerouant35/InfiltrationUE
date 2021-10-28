@@ -15,13 +15,9 @@ void UCreditsWidget::InitDelegate()
 	ReturnBtn->OnClicked.AddDynamic(this, &UCreditsWidget::Return);
 }
 
-void UCreditsWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-
-}
-
 void UCreditsWidget::Return()
 {
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->CreditsToMainMenu();
+	AMainMenuHUD* MainMenuHUD = Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(MainMenuHUD != nullptr);
+	MainMenuHUD->CreditsToMainMenu();
 }

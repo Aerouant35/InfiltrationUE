@@ -13,23 +13,23 @@ UCLASS()
 class INFILTRATION_API UDefeatWidget : public UUserWidget
 {
 	GENERATED_BODY()
-	
+
+	#pragma region Variables
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* RestartBtn;
 
 	UPROPERTY(EditAnywhere, meta = (BindWidget))
 	class UButton* QuitBtn;
+	#pragma endregion
 	
 public:
 	UDefeatWidget(const FObjectInitializer& ObjectInitializer);
 
 	void InitDelegate();
-private:
-	virtual void NativeConstruct() override;
-
-public:
+	
 	UFUNCTION()
-		void RestartGame();
+	void RestartGame();
+	
 	UFUNCTION()
-		void QuitGame();
+	void QuitGame();
 };

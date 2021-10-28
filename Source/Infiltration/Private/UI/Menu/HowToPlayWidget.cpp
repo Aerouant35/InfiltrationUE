@@ -15,13 +15,9 @@ void UHowToPlayWidget::InitDelegate()
 	ReturnBtn->OnClicked.AddDynamic(this, &UHowToPlayWidget::Return);
 }
 
-void UHowToPlayWidget::NativeConstruct()
-{
-	Super::NativeConstruct();
-	
-}
-
 void UHowToPlayWidget::Return()
 {
-	Cast<AMainMenuHUD>(UGameplayStatics::GetPlayerController(this,0)->GetHUD())->HowToPlayToMainMenu();
+	AMainMenuHUD* MainMenuHUD = Cast<AMainMenuHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
+	check(MainMenuHUD != nullptr);
+	MainMenuHUD->HowToPlayToMainMenu();
 }
