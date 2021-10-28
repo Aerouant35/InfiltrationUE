@@ -3,6 +3,7 @@
 
 #include "EnemySpawner.h"
 
+#include "MyGameState.h"
 #include "Infiltration/InfiltrationGameModeBase.h"
 
 
@@ -62,7 +63,9 @@ void AEnemySpawner::SpawnEnemy()
 
 		// S'il y a moins de 5 nourriture dans le level alors j'en donne une à l'IA pour qu'il la dépose
 		// Sinon il va patrouiller sans nourriture vers 2 spots avant de revenir
-		if(true)
+		int NumberOfFoods = Cast<AMyGameState>(GetWorld()->GetGameState())->GetNumberOfFoods();
+		
+		if(NumberOfFoods < 5)
 		{
 			GiveFood(AICharRef);
 		}
@@ -87,6 +90,9 @@ void AEnemySpawner::GiveFood(AAICharacter* AICharRef)
 		// Attribut la food a l'ennemi
 		FoodRef->PickUp(AICharRef->GetHoldingComponent());
 		AICharRef->SetHasFood(true, FoodRef);
+
+		// Incremente la food au state
+		Cast<AMyGameState>(GetWorld()->GetGameState())->IncrementFood();
 	}
 }
 

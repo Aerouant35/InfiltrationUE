@@ -57,8 +57,7 @@ void UBTFoodSpotSelection::GoToFoodSpot()
 	do
 	{
 		RandomIndex = FMath::RandRange(0, AvailableFoodSpots.Num()-1);
-
-		//Cast because Array contains AActor*
+		
 		NextSpot = Cast<AFoodSpot>(AvailableFoodSpots[RandomIndex]);
 	} while(CurrentSpot == NextSpot || NextSpot->HasAFood); // Choisit un spot qui n'a pas de la nourriture ou et qui ne correspond pas au précédent
 

@@ -5,17 +5,9 @@
 
 AMyGameState::AMyGameState()
 {
-	
 }
 
-bool AMyGameState::ThereIsAFreeFoodSpot()
+void AMyGameState::IncrementFood()
 {
-	for (AFoodSpot* FoodSpot : FoodSpots)
-	{
-		if(!FoodSpot->HasAFood)
-		{
-			return true;
-		}
-	}
-	return false;
+	NumberOfFoods += 1;
 }
