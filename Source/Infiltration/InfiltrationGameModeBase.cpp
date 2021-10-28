@@ -16,12 +16,6 @@ void AInfiltrationGameModeBase::BeginPlay()
 {
 	Super::BeginPlay();
 
-	for (TActorIterator<AFoodSpot> FoodSpotItr(GetWorld()); FoodSpotItr; ++FoodSpotItr)
-	{
-		AFoodSpot* FoodSpot = *FoodSpotItr;
-		FoodSpots.Add(FoodSpot);
-	}
-
 	if (FoodSpots.Num() < 1) return;
 	GenerateStartFood();
 }

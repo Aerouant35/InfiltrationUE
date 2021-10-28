@@ -14,17 +14,7 @@ AMainMenuGameModeBase::AMainMenuGameModeBase()
 	HUDClass = AMainMenuHUD::StaticClass();
 }
 
-void AMainMenuGameModeBase::BeginPlay()
+void AMainMenuGameModeBase::SetMainMenuCamera(ACameraActor* MenuCamera) const
 {
-	Super::BeginPlay();
-
-	for (TActorIterator<ACameraActor> CamItr(GetWorld()); CamItr; ++CamItr)
-	{
-		if (CamItr->ActorHasTag("MenuCamera"))
-		{
-			MenuCamera = *CamItr;
-		}
-	}
-
 	GetWorld()->GetFirstPlayerController()->SetViewTarget(MenuCamera);
 }

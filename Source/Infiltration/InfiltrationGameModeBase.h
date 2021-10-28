@@ -49,6 +49,11 @@ public:
 	{
 		return FoodSpots;
 	}
+
+	void SetFoodSpots(const TArray<AFoodSpot*> NewFoodSpots)
+	{
+		FoodSpots = NewFoodSpots;
+	}
 	
 	virtual void BeginPlay() override;
 
