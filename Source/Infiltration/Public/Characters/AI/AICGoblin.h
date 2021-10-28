@@ -41,7 +41,7 @@ class INFILTRATION_API AAICGoblin : public AAIController
 	UPROPERTY()
 	TArray<AActor*> FoodSpots;
 
-	/*Enregistre le spot de ma destination*/
+	/*Current destination*/
 	UPROPERTY()
 	AFoodSpot* CurrentFoodSpot;
 

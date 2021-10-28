@@ -55,8 +55,6 @@ void AAICGoblin::OnPossess(APawn* InPawn)
 			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, AIChar->GetName());
 		}
 
-		// Les spots sont définie par le spawner
-
 		//Start the behavior tree which corresponds to the specific character
 		BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
 	}
