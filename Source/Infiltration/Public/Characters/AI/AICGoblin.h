@@ -52,6 +52,12 @@ class INFILTRATION_API AAICGoblin : public AAIController
 	UPROPERTY()
 	AActor* ExitSpot;
 
+	UPROPERTY()
+	float SightLength = 1000.f;
+
+	UPROPERTY()
+	float SightAngle = 135.f;
+	
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
 
@@ -61,10 +67,10 @@ class INFILTRATION_API AAICGoblin : public AAIController
 		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
 
 	UFUNCTION()
-		void TimerKeepFoodLocation();
+		void TimerKeepFoodLocation() const;
 
 	UFUNCTION()
-	FVector GetSupposedPlayerPosition(ACharactKnight* Player);
+	FVector GetSupposedPlayerPosition(const ACharactKnight* Player) const;
 
 
 public:
@@ -81,10 +87,10 @@ public:
 	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentFoodSpot; }
 
 	UFUNCTION()
-		void Interact();
+		void Interact() const;
 
 	UFUNCTION()
-	AAIGoblin* GetAICharacter();
+	AAIGoblin* GetAICharacter() const { return AIChar; }
 
 	UFUNCTION()
 		void SetCurrentSpot(AFoodSpot* NewCurrentSpot);

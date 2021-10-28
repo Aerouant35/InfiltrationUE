@@ -23,9 +23,9 @@ AAICGoblin::AAICGoblin()
 
 	UAISenseConfig_Sight* ConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	SetPerceptionComponent(*AIPerceptionComponent);
-	ConfigSight->SightRadius = 1000.0f;
+	ConfigSight->SightRadius = SightLength;
 	ConfigSight->LoseSightRadius = ConfigSight->SightRadius + 100.0f ;
-	ConfigSight->PeripheralVisionAngleDegrees = 135.0f / 2.0f;
+	ConfigSight->PeripheralVisionAngleDegrees = SightAngle / 2.0f;
 	ConfigSight->DetectionByAffiliation.bDetectEnemies = true;
 	ConfigSight->DetectionByAffiliation.bDetectNeutrals = true;
 	ConfigSight->DetectionByAffiliation.bDetectFriendlies = true;
@@ -77,15 +77,10 @@ void AAICGoblin::SetFoodSpots(TArray<AActor*> NewFoodSpots)
 	FoodSpots = NewFoodSpots;
 }
 
-void AAICGoblin::Interact()
+void AAICGoblin::Interact() const
 {
 	AIChar->Interact();
 	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetHasFood());
-}
-
-AAIGoblin* AAICGoblin::GetAICharacter()
-{
-	return AIChar;
 }
 
 void AAICGoblin::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
@@ -125,17 +120,17 @@ void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 	}
 }
 
-void AAICGoblin::TimerKeepFoodLocation()
+void AAICGoblin::TimerKeepFoodLocation() const
 {
 	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
 }
 
-FVector AAICGoblin::GetSupposedPlayerPosition(ACharactKnight* Player)
+FVector AAICGoblin::GetSupposedPlayerPosition(const ACharactKnight* Player) const 
 {
-	FRotator Rotation = Player->GetActorRotation();
-	FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
-	FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
-	FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
+	const FRotator Rotation = Player->GetActorRotation();
+	const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+	const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+	const FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
 
 	// Avoid being outside of the playground
 	FNavLocation NavLocation;
