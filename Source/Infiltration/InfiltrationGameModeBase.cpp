@@ -19,7 +19,7 @@ void AInfiltrationGameModeBase::BeginPlay()
 	GameHUD = Cast<AGameHUD>(GetWorld()->GetFirstPlayerController()->GetHUD());
 	Player = Cast<APlayerCharacter>(GetWorld()->GetFirstPlayerController()->GetPawn());
 	
-	check(!(FoodSpots.Num() < 1));
+	//check(!(FoodSpots.Num() < 1));
 	GenerateStartFood();
 }
 
