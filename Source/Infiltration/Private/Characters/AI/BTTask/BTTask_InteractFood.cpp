@@ -17,7 +17,7 @@ EBTNodeResult::Type UBTTask_InteractFood::ExecuteTask(UBehaviorTreeComponent & O
 
 		// Drop food if AI have one and if the spot doesn't
 		// I don't understand why the BP_Food overlap two time so if the value use is 3 it's because 2 correspond to one food
-		if((AICon->GetAICharacter()->GetHasFood() && AICon->GetCurrentSpot()->GetNumberOfFoods() < 3) || AICon->GetAICharacter()->GetHasDropFood())
+		if((AIGoblin->GetHasFood() && FoodSpot->GetNumberOfFoods() < 3) || AIGoblin->GetHasDropFood())
 		{
 			AICon->Interact();
 		

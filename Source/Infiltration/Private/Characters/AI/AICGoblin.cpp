@@ -15,17 +15,15 @@
 AAICGoblin::AAICGoblin()
 {
 	//Initialize BehaviorTreeComponent, BlackboardComponent and the corresponding key
-
 	BehaviorComp = CreateDefaultSubobject<UBehaviorTreeComponent>(FName("BehaviorComp"));
-
 	BlackboardComp = CreateDefaultSubobject<UBlackboardComponent>(TEXT("BlackboardComp"));
 
 
 	UAISenseConfig_Sight* ConfigSight = CreateDefaultSubobject<UAISenseConfig_Sight>(TEXT("SightConfig"));
 	SetPerceptionComponent(*AIPerceptionComponent);
-	ConfigSight->SightRadius = 1000.0f;
+	ConfigSight->SightRadius = SightLength;
 	ConfigSight->LoseSightRadius = ConfigSight->SightRadius + 100.0f ;
-	ConfigSight->PeripheralVisionAngleDegrees = 135.0f / 2.0f;
+	ConfigSight->PeripheralVisionAngleDegrees = SightAngle / 2.0f;
 	ConfigSight->DetectionByAffiliation.bDetectEnemies = true;
 	ConfigSight->DetectionByAffiliation.bDetectNeutrals = true;
 	ConfigSight->DetectionByAffiliation.bDetectFriendlies = true;
@@ -44,48 +42,78 @@ void AAICGoblin::OnPossess(APawn* InPawn)
 
 	//Get the possessed Character and check if it's my own AI Character
 	AIChar = Cast<AAIGoblin>(InPawn);
-
-	if(AIChar)
+	check(AIChar != nullptr);
+	
+	//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
+	if(AIChar->GetDefaultBehaviourTree()->BlackboardAsset)
 	{
-		//If the blackboard is valid initialize the blackboard for the corresponding behavior tree
-		if(AIChar->DefaultBehaviorTree->BlackboardAsset)
-		{
-			BlackboardComp->InitializeBlackboard(*(AIChar->DefaultBehaviorTree->BlackboardAsset));
-
-			//GEngine->AddOnScreenDebugMessage(-1, 5.f, FColor::Blue, AIChar->GetName());
-		}
-
-		//Start the behavior tree which corresponds to the specific character
-		BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
+		BlackboardComp->InitializeBlackboard(*(AIChar->GetDefaultBehaviourTree()->BlackboardAsset));
 	}
+
+	//Start the behavior tree which corresponds to the specific character
+	BehaviorComp->StartTree(*AIChar->GetDefaultBehaviourTree());
 }
 
 void AAICGoblin::BeginPlay()
 {
 	Super::BeginPlay();
 
-	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAICGoblin::OnTargetPerceptionUpdated);}
-
-void AAICGoblin::SetEnemySpot(AActor* NewEnemySpot)
-{
-	EnemySpot = NewEnemySpot;
-	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
+	AIPerceptionComponent->OnTargetPerceptionUpdated.AddDynamic(this, &AAICGoblin::OnTargetPerceptionUpdated);
 }
 
-void AAICGoblin::SetFoodSpots(TArray<AActor*> NewFoodSpots)
+#pragma region PrivateMethod
+void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
 {
-	FoodSpots = NewFoodSpots;
+	ACharactKnight* Player = Cast<ACharactKnight>(Actor);
+	if (Player == nullptr) return;
+	
+	if(!bHasAlreadyDetected)
+	{
+		bHasAlreadyDetected = true;
+		if(AIChar->GetHasFood())
+		{
+			GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICGoblin::TimerKeepFoodLocation, 1.0f, false);
+		}
+		BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
+	}
+	
+	BlackboardComp->SetValueAsVector("PlayerLocation", GetClosestLocationInNavMesh(Player->GetActorLocation()));
+	BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
+
+	BehaviorComp->StopTree();
+	BehaviorComp->StartTree(*AIChar->GetChaseBehaviourTree());
 }
 
-void AAICGoblin::Interact()
+void AAICGoblin::TimerKeepFoodLocation() const
+{
+	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetDroppedFoodLocation());
+}
+
+FVector AAICGoblin::GetSupposedPlayerPosition(const ACharactKnight* Player) const 
+{
+	const FRotator Rotation = Player->GetActorRotation();
+	const FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
+	const FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
+	const FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
+
+	// Avoid being outside of the playground
+	return GetClosestLocationInNavMesh(SupposedPlayerLocation);
+}
+
+FVector AAICGoblin::GetClosestLocationInNavMesh(FVector Location) const
+{
+	FNavLocation NavLocation;
+	UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
+	NavigationSystem->ProjectPointToNavigation(Location, NavLocation, FVector(1000.f, 1000.f, 100.f));
+	return NavLocation.Location;
+}
+#pragma endregion 
+
+#pragma region PublicMethod
+void AAICGoblin::Interact() const
 {
 	AIChar->Interact();
 	BlackboardComp->SetValueAsBool("bIsCarrying", AIChar->GetHasFood());
-}
-
-AAIGoblin* AAICGoblin::GetAICharacter()
-{
-	return AIChar;
 }
 
 void AAICGoblin::SetCurrentSpot(AFoodSpot* NewCurrentSpot)
@@ -97,50 +125,17 @@ void AAICGoblin::SetDefaultBehaviourTree()
 {
 	bHasAlreadyDetected = false;
 	BehaviorComp->StopTree();
-	BehaviorComp->StartTree(*AIChar->DefaultBehaviorTree);
+	BehaviorComp->StartTree(*AIChar->GetDefaultBehaviourTree());
 }
 
-void AAICGoblin::OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli)
+void AAICGoblin::SetEnemySpot(AActor* NewEnemySpot)
 {
-	ACharactKnight* Player = Cast<ACharactKnight>(Actor);
-	if(Player)
-	{
-		// GEngine->AddOnScreenDebugMessage(-1, 1.f, FColor::Yellow, TEXT("See Player"));
-
-		if(!bHasAlreadyDetected)
-		{
-			bHasAlreadyDetected = true;
-			if(AIChar->GetHasFood())
-			{
-			    GetWorldTimerManager().SetTimer(UnusedHandle, this, &AAICGoblin::TimerKeepFoodLocation, 1.0f, false);
-			}
-			BlackboardComp->SetValueAsBool("bWasCarrying", AIChar->GetHasFood());
-		}
-		
-		BlackboardComp->SetValueAsVector("PlayerLocation", Player->GetActorLocation());
-		BlackboardComp->SetValueAsVector("SupposedPlayerLocation", GetSupposedPlayerPosition(Player));
-
-		BehaviorComp->StopTree();
-		BehaviorComp->StartTree(*AIChar->ChaseBehaviorTree);
-	}
+	EnemySpot = NewEnemySpot;
+	BlackboardComp->SetValueAsObject("ExitSpot", EnemySpot);
 }
 
-void AAICGoblin::TimerKeepFoodLocation()
+void AAICGoblin::SetFoodSpots(const TArray<AActor*> NewFoodSpots)
 {
-	BlackboardComp->SetValueAsVector("DroppedFoodLocation", AIChar->GetCarryFoodLocation());
+	FoodSpots = NewFoodSpots;
 }
-
-FVector AAICGoblin::GetSupposedPlayerPosition(ACharactKnight* Player)
-{
-	FRotator Rotation = Player->GetActorRotation();
-	FRotator Yaw = FRotator(0, Rotation.Yaw, 0);
-	FVector Direction = FRotationMatrix(Yaw).GetUnitAxis(EAxis::X);
-	FVector SupposedPlayerLocation = Player->GetActorLocation() + Direction * 1000;
-
-	// Avoid being outside of the playground
-	FNavLocation NavLocation;
-	UNavigationSystemV1* NavigationSystem = UNavigationSystemV1::GetCurrent(GetWorld());
-	NavigationSystem->ProjectPointToNavigation(SupposedPlayerLocation, NavLocation, FVector(1000.f, 1000.f, 100.f));
-	return NavLocation.Location;
-}
-
+#pragma endregion 

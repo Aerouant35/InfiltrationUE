@@ -23,6 +23,12 @@ void APlayerSafeZone::BeginPlay()
 
 	BoxComponent->OnComponentBeginOverlap.AddDynamic(this, &APlayerSafeZone::OnComponentBeginOverlap);
 
+	InfiltrationGameModeBase = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
+	check(InfiltrationGameModeBase != nullptr);
+
+	InfiltrationGameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
+	check(InfiltrationGameState != nullptr);
+
 	for (auto Food : FoodShelves)
 	{
 		for (const auto FoodMesh : Food.FoodMeshes)
@@ -38,20 +44,18 @@ void APlayerSafeZone::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedCom
 {
 	if(OtherActor->IsA(ACharactKnight::StaticClass())) {
 		ACharactKnight* Player = Cast<ACharactKnight>(OtherActor);
+		
 		if(Player->GetIsCarrying())
 		{
 			AFood* Food = Player->DropFood();
+			check(Food != nullptr);
 			Food->Destroy();
 
-			AInfiltrationGameModeBase* InfiltrationGameModeBase = Cast<AInfiltrationGameModeBase>(GetWorld()->GetAuthGameMode());
-			if(!InfiltrationGameModeBase) return;
 			InfiltrationGameModeBase->IncrementFood();
 			
 			FillShelf(InfiltrationGameModeBase->GetCurrentNbFood());
 
 			// Decrement food in global state
-			AInfiltrationGameState* InfiltrationGameState = Cast<AInfiltrationGameState>(GetWorld()->GetGameState());
-			if(!InfiltrationGameState) return;
 			InfiltrationGameState->DecrementNumberOfFoods();
 		}
 	}

@@ -5,23 +5,20 @@
 
 UAnimKnight::UAnimKnight()
 {
-	bIsWalking = false;
 }
 
 void UAnimKnight::NativeUpdateAnimation(float DeltaSeconds)
 {
 	Super::NativeUpdateAnimation(DeltaSeconds);
 
-	APawn* Pawn = TryGetPawnOwner();
-	if(Pawn)
-	{
-		ACharactKnight* MyCharacter = Cast<ACharactKnight>(Pawn);
-		if(MyCharacter)
-		{
-			bIsWalking = !MyCharacter->GetVelocity().IsZero();
-			bIsCarrying = MyCharacter->GetIsCarrying();;
-			bHasWon = MyCharacter->GetHasWon();
-			bHasLost = MyCharacter->GetHasLost();
-		}
-	}
+	APawn* Pawn = UAnimInstance::TryGetPawnOwner();
+	if(Pawn == nullptr) return;
+
+	CharactKnight = Cast<ACharactKnight>(Pawn);
+	check(CharactKnight != nullptr);
+	
+	bIsWalking = !CharactKnight->GetVelocity().IsZero();
+	bIsCarrying = CharactKnight->GetIsCarrying();;
+	bHasWon = CharactKnight->GetHasWon();
+	bHasLost = CharactKnight->GetHasLost();
 }

@@ -116,7 +116,7 @@ void UOptionsWidget::OnLeftKeySelected(const FInputChord InputChord)
 #pragma endregion 
 
 #pragma region GetAction/AxisMapping
-FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName) 
+FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName) const
 {
 	TArray<FInputActionKeyMapping> OutMappings;
 	InputSettings->GetActionMappingByName(static_cast<FName>(KeyName), OutMappings);
@@ -124,14 +124,14 @@ FInputActionKeyMapping UOptionsWidget::GetActionMapping(const FString &KeyName)
 	return OutMappings[0];
 }
 
-FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyName)
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale > 0)
 		{
@@ -143,14 +143,14 @@ FInputAxisKeyMapping UOptionsWidget::GetAxisMappingPositive(const FString &KeyNa
 	return KeyMapping;
 }
 
-FInputAxisKeyMapping UOptionsWidget::GetAxisMappingNegative(const FString& KeyName)
+FInputAxisKeyMapping UOptionsWidget::GetAxisMappingNegative(const FString& KeyName) const
 {
 	TArray<FInputAxisKeyMapping> OutMappings;
 	InputSettings->GetAxisMappingByName(static_cast<FName>(KeyName), OutMappings);
 
 	FInputAxisKeyMapping KeyMapping;
 	
-	for (auto Mapping : OutMappings)
+	for (const auto Mapping : OutMappings)
 	{
 		if (Mapping.Scale < 0)
 		{

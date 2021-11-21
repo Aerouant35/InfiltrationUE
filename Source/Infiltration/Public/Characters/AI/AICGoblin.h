@@ -16,22 +16,16 @@ class INFILTRATION_API AAICGoblin : public AAIController
 {
 	GENERATED_BODY()
 
-	/*Behavior tree comp ref*/
-	UBehaviorTreeComponent* BehaviorComp;
-
-	/*Blackboard comp ref*/
-	UBlackboardComponent* BlackboardComp;
-
+	#pragma region Variables
 	bool bHasAlreadyDetected;
 
 	FTimerHandle UnusedHandle;
 
-	UPROPERTY(EditAnywhere)
-		UAIPerceptionComponent* AIPerceptionComponent; 
+	UPROPERTY()
+	float SightLength = 1000.f;
 
-	/*Blackboard keys*/
-	UPROPERTY(EditDefaultsOnly, Category = "AI")
-	FName LocationToGoKey;
+	UPROPERTY()
+	float SightAngle = 135.f;
 
 	/*AIChar*/
 	UPROPERTY()
@@ -52,49 +46,74 @@ class INFILTRATION_API AAICGoblin : public AAIController
 	UPROPERTY()
 	AActor* ExitSpot;
 
+	/*Behavior tree comp ref*/
+	UPROPERTY()
+	UBehaviorTreeComponent* BehaviorComp;
+
+	/*Blackboard comp ref*/
+	UPROPERTY()
+	UBlackboardComponent* BlackboardComp;
+	
+	UPROPERTY(EditAnywhere)
+	UAIPerceptionComponent* AIPerceptionComponent; 
+
+	/*Blackboard keys*/
+	UPROPERTY(EditDefaultsOnly, Category = "AI")
+	FName LocationToGoKey;
+	#pragma endregion 
+
+public:
+	AAICGoblin();
+
+	#pragma region Accessor
+	UFUNCTION()
+	AAIGoblin* GetAICharacter() const { return AIChar; }
+
+	FORCEINLINE TArray<AActor*> GetAvailableFoodSpots() const { return FoodSpots; }
+
+	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentFoodSpot; }
+	
+	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
+
+	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
+	#pragma endregion
+
+private:
 	/*Blackboard Initialize and start behavior tree*/
 	virtual void OnPossess(APawn* InPawn) override;
 
 	virtual void BeginPlay() override;
 
+	#pragma region PrivateMethod
 	UFUNCTION()
-		void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
+	void OnTargetPerceptionUpdated(AActor* Actor, FAIStimulus Stimuli);
 
 	UFUNCTION()
-		void TimerKeepFoodLocation();
+	void TimerKeepFoodLocation() const;
 
 	UFUNCTION()
-	FVector GetSupposedPlayerPosition(ACharactKnight* Player);
+	FVector GetSupposedPlayerPosition(const ACharactKnight* Player) const;
 
+	UFUNCTION()
+	FVector GetClosestLocationInNavMesh(FVector Location) const;
+	
+	#pragma endregion 
 
 public:
-
-	/*Constructor*/
-	AAICGoblin();
-
-	FORCEINLINE UBlackboardComponent* GetBlackboardComp() const { return BlackboardComp; }
-
-	FORCEINLINE TArray<AActor*> GetAvailableFoodSpots() const { return FoodSpots; }
-
-	FORCEINLINE AActor* GetEnemySpot() const { return EnemySpot; }
-
-	FORCEINLINE AFoodSpot* GetCurrentSpot() const { return CurrentFoodSpot; }
+	#pragma region PublicMethod
+	UFUNCTION()
+	void Interact() const;
 
 	UFUNCTION()
-		void Interact();
+	void SetCurrentSpot(AFoodSpot* NewCurrentSpot);
 
 	UFUNCTION()
-	AAIGoblin* GetAICharacter();
+	void SetDefaultBehaviourTree();
 
 	UFUNCTION()
-		void SetCurrentSpot(AFoodSpot* NewCurrentSpot);
-
-	UFUNCTION()
-		void SetDefaultBehaviourTree();
-
-	UFUNCTION()
-		void SetEnemySpot(AActor* NewEnemySpot);
+	void SetEnemySpot(AActor* NewEnemySpot);
 	
 	UFUNCTION()
-		void SetFoodSpots(TArray<AActor*> NewFoodSpots);
+	void SetFoodSpots(TArray<AActor*> NewFoodSpots);
+	#pragma endregion 
 };

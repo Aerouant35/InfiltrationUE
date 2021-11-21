@@ -14,22 +14,23 @@ class INFILTRATION_API UAnimGoblin : public UAnimInstance
 {
 	GENERATED_BODY()
 
+	#pragma region Variables
+	UPROPERTY(VisibleAnywhere)
+	bool IsWalking;
+
+	UPROPERTY(VisibleAnywhere)
+	bool IsCarrying;
+
+	UPROPERTY(VisibleAnywhere)
+	bool HasLost;
+
+	UPROPERTY(VisibleAnywhere)
+	bool HasWon;
+	#pragma endregion
+	
 public:
 	UAnimGoblin();
 	
 protected:
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsWalking;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool IsCarrying;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HasLost;
-
-	UPROPERTY(EditAnywhere, BlueprintReadWrite)
-	bool HasWon;
-
 	virtual void NativeUpdateAnimation(float DeltaSeconds) override;
 };

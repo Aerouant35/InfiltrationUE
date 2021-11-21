@@ -24,14 +24,7 @@ void AExitEnemySpot::BeginPlay()
 	SphereComponent->OnComponentEndOverlap.AddDynamic(this, &AExitEnemySpot::OnComponentEndOverlap);
 }
 
-// Called every frame
-void AExitEnemySpot::Tick(float DeltaTime)
-{
-	Super::Tick(DeltaTime);
-
-}
-
-AAIGoblin* AExitEnemySpot::DestroyEnemy()
+AAIGoblin* AExitEnemySpot::DestroyEnemy() const
 {
 	AAIGoblin* EnemyRef = nullptr;
 	if(EnemyRef1 != nullptr)
@@ -52,23 +45,23 @@ AAIGoblin* AExitEnemySpot::DestroyEnemy()
 	return EnemyRef;
 }
 
-/// Regarde si une nourriture est présent dans sa zone de collision
+// Check if food is in collide area
 void AExitEnemySpot::OnComponentBeginOverlap(UPrimitiveComponent* OverlappedComponent, AActor* OtherActor,
 	UPrimitiveComponent* OtherComp, int32 OtherBodyIndex, bool bFromSweep, const FHitResult& SweepResult)
 {
 	if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef1 == nullptr)
 	{
-		NumberOfEnemys++;
+		NbEnemies++;
 		EnemyRef1 = Cast<AAIGoblin>(OtherActor);
 	}
 	else if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef2 == nullptr)
 	{
-		NumberOfEnemys++;
+		NbEnemies++;
 		EnemyRef2 = Cast<AAIGoblin>(OtherActor);
 	}
 	else if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef3 == nullptr)
 	{
-		NumberOfEnemys++;
+		NbEnemies++;
 		EnemyRef3 = Cast<AAIGoblin>(OtherActor);
 	}
 }
@@ -78,17 +71,17 @@ void AExitEnemySpot::OnComponentEndOverlap(UPrimitiveComponent* OverlappedCompon
 {
 	if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef1 == OtherActor)
 	{
-		NumberOfEnemys--;
+		NbEnemies--;
 		EnemyRef1 = nullptr;
 	}
 	else if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef2 == OtherActor)
 	{
-		NumberOfEnemys--;
+		NbEnemies--;
 		EnemyRef2 = nullptr;
 	}
 	else if(OtherActor->IsA(AAIGoblin::StaticClass()) && EnemyRef3 == OtherActor)
 	{
-		NumberOfEnemys--;
+		NbEnemies--;
 		EnemyRef3 = nullptr;
 	}
 }
